@@ -1,37 +1,77 @@
-
 {% include "_top.html" %}
 
-<main class="w-full h-100vh d-flex p-items-center">
+<main 
+    class="w-full h-100vh d-flex p-items-center"
+    style="background-color: #ebe3db;" <!-- Baggrundsfarve -->
+>
+    <section 
+        class="bg-c-blue p-4 border-rounded shadow mx-auto w-30%"
+        style="
+            background-color: #fdfdfd;
+            padding: 2rem;
+            border-radius: 0.5rem;
+            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.357);
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+        "
+    >
+        <!-- Brugercirkel -->
+        <div >
+         
+           <h1>Login på din konto</h1> <!-- Brugersymbol -->
 
-    
-    <form id="frm_user_login" class="w-25% d-flex flex-col gap-4 mx-auto">
-        
-        <div class="text-c-green text-200">
-            {{ message }}
         </div>
-        
-        <div class="d-flex flex-col">
-            <label for="user_email">
-                <span>email</span>
-            </label>
-            <input name="user_email" type="text" mix-check="{{ x.REGEX_EMAIL }}">
-        </div>
 
-        <div class="d-flex flex-col">
-            <label for="user_password" class="d-flex">
-                <span>password</span>
-                <span class="ml-auto text-c-gray:+25">{{ x.USER_PASSWORD_MIN }} to {{ x.USER_PASSWORD_MAX }} chars</span>
-            </label>
-            <input name="user_password" type="text" mix-check="{{ x.REGEX_USER_PASSWORD }}">
-        </div>
+        <form id="frm_user_login" class="w-full d-flex flex-col gap-4">
+            
+            <div class="text-c-green text-200">
+                {{ message }}
+            </div>
+            
+            <div class="d-flex flex-col">
+                <label for="user_email">
+                    <span>email</span>
+                </label>
+                <input 
+                    name="user_email" 
+                    type="text" 
+                    mix-check="{{ x.REGEX_EMAIL }}" 
+                    style="padding: 0.5rem; border: 1px solid #ccc; border-radius: 0.25rem;"
+                >
+            </div>
 
-        <button mix-post="/login" mix-data="#frm_user_login">
-            Login
-        </button>
+            <div class="d-flex flex-col">
+                <label for="user_password" class="d-flex">
+                    <span>password</span>
+                    <span class="ml-auto text-c-gray:+25">{{ x.USER_PASSWORD_MIN }} to {{ x.USER_PASSWORD_MAX }} chars</span>
+                </label>
+                <input 
+                    name="user_password" 
+                    type="text" 
+                    mix-check="{{ x.REGEX_USER_PASSWORD }}" 
+                    style="padding: 0.5rem; border: 1px solid #ccc; border-radius: 0.25rem;"
+                >
+            </div>
 
-        <a href="{{url_for('view_signup')}}" class="text-a-center">Signup</a>
+            <button 
+                mix-post="/login" 
+                mix-data="#frm_user_login" 
+                style="padding: 0.75rem; background-color: #ebe3db; border: none; border-radius: 0.25rem; cursor: pointer; font-size: 1rem; margin-top: 1rem;"
+            >
+                Login
+            </button>
 
-    </form>
+            <a 
+                href="{{url_for('view_signup')}}" 
+                class="text-a-center" 
+                style="padding: 0.75rem; color: rgb(0, 0, 0); text-decoration: none; margin-top: 0.5rem; font-size: 1rem; background-color: #ebe3db;"
+            >
+                Signup
+            </a>
+
+        </form>
+    </section>
 
 </main>
 

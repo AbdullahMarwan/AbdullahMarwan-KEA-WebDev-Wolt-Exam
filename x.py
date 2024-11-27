@@ -139,6 +139,27 @@ def validate_item_image():
         filename = str(uuid.uuid4()) + file_extension
         return file, filename 
 
+##############################
+def validate_user_role():
+    error = "Invalid role selected."
+    user_role = request.form.get("user_role", "").strip().lower()
+    allowed_roles = ["admin", "customer", "restaurant", "partner"]
+    if user_role not in allowed_roles:
+        raise_custom_exception(error, 400)
+    return user_role
+
+def get_role_pk(role_name):
+    db_conn, cursor = db()
+    try:
+        q = "SELECT role_pk FROM roles WHERE role_name = %s"
+        cursor.execute(q, (role_name,))
+        row = cursor.fetchone()
+        if not row:
+            raise_custom_exception("Selected role does not exist.", 400)
+        return row["role_pk"]
+    finally:
+        cursor.close()
+        db_conn.close()
 
 ##############################
 def send_verify_email(to_email, user_verification_key):
@@ -149,15 +170,15 @@ def send_verify_email(to_email, user_verification_key):
 
 
         # Email and password of the sender's Gmail account
-        sender_email = "fullflaskdemomail@gmail.com"
-        password = "YOUR_KEY_HERE"  # If 2FA is on, use an App Password instead
+        sender_email = "spis.eksamen.2024@gmail.com"
+        password = "bstw jflj vjdg kvxk"  # If 2FA is on, use an App Password instead
 
         # Receiver email address
-        receiver_email = "fullflaskdemomail@gmail.com"
+        receiver_email = to_email
         
         # Create the email message
         message = MIMEMultipart()
-        message["From"] = "My company name"
+        message["From"] = "SPIS exam project 2024"
         message["To"] = receiver_email
         message["Subject"] = "Please verify your account"
 
@@ -179,6 +200,35 @@ def send_verify_email(to_email, user_verification_key):
     finally:
         pass
 
+################
 
+def send_deletion_info_email(to_email):
+    try:
+        sender_email = "spis.eksamen.2024@gmail.com"
+        password = "bstw jflj vjdg kvxk"  # If 2FA is on, use an App Password instead
+        if not sender_email or not password:
+            raise_custom_exception("Email configuration is missing.", 500)
 
+        receiver_email = to_email
 
+        message = MIMEMultipart()
+        message["From"] = "SPIS exam project 2024"
+        message["To"] = receiver_email
+        message["Subject"] = "Your Profile Has Been Deleted"
+
+        # Body of the email
+        body = f"""<p>Dear User,</p>
+                   <p>Your profile has been successfully deleted from our system.</p>
+                   <p>If you did not perform this action, please contact our support team immediately.</p>
+                   <p>Best regards,<br>SPIS Exam Project 2024 Team</p>"""
+        message.attach(MIMEText(body, "html"))
+
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            server.starttls()
+            server.login(sender_email, password)
+            server.sendmail(sender_email, receiver_email, message.as_string())
+        ic("Deletion informational email sent successfully!")
+
+    except Exception as ex:
+        ic(ex)
+        raise_custom_exception("Cannot send deletion informational email.", 500)

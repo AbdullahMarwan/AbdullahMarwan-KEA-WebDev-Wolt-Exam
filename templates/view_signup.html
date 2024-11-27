@@ -1,50 +1,138 @@
-
 {% include "_top.html" %}
+<head>
+    <link rel="stylesheet" href="./signup.css">
+</head>
+<div checked="headline">
+    <h1>Signup</h1>
+</div>
 
 <main class="w-full h-100vh d-flex p-items-center">
 
     <form id="frm_user_signup" class="w-25% d-flex flex-col gap-4 mx-auto">
         
-
         <div class="d-flex flex-col">
             <label for="user_name">
-                <span>name</span>
+                <span>Name</span>
             </label>
-            <input name="user_name" type="text" mix-check="{{ x.USER_NAME_REGEX }}">
+            <input name="user_name" type="text" mix-check="{{ x.USER_NAME_REGEX }}" required>
         </div>
-
 
         <div class="d-flex flex-col">
             <label for="user_last_name">
-                <span>Last name</span>
+                <span>Last Name</span>
             </label>
-            <input name="user_last_name" type="text" mix-check="{{ x.USER_LAST_NAME_REGEX }}">
+            <input name="user_last_name" type="text" mix-check="{{ x.USER_LAST_NAME_REGEX }}" required>
         </div>        
 
         <div class="d-flex flex-col">
             <label for="user_email">
-                <span>email</span>
+                <span>Email</span>
             </label>
-            <input name="user_email" type="text" mix-check="{{ x.REGEX_EMAIL }}">
+            <input name="user_email" type="email" mix-check="{{ x.REGEX_EMAIL }}" required>
         </div>
-
 
         <div class="d-flex flex-col">
             <label for="user_password" class="d-flex">
-                <span>password</span>
+                <span>Password</span>
                 <span class="ml-auto text-c-gray:+25">{{ x.USER_PASSWORD_MIN }} to {{ x.USER_PASSWORD_MAX }} chars</span>
             </label>
-            <input name="user_password" type="text" mix-check="{{ x.REGEX_USER_PASSWORD }}">
-        </div>        
+            <input name="user_password" type="password" mix-check="{{ x.REGEX_USER_PASSWORD }}" required>
+        </div> 
+     
+        <div class="d-flex flex-col">
+            <label for="user_role">
+                <span>Role</span>
+            </label>
+            <select name="user_role" class="custom-select" aria-label="Role selection" required>
+                <option selected disabled>Choose role</option>
+                <option value="admin">Admin</option>
+                <option value="customer">Customer</option>
+                <option value="restaurant">Restaurant</option>
+                <option value="partner">Partner</option>
+            </select>
+        </div>
+ 
+        <div>
+            <button mix-post="/users" mix-data="#frm_user_signup">
+                Signup
+            </button>
 
-        <button mix-post="/users" mix-data="#frm_user_signup">
-            Signup
-        </button>
-
-        <a href="{{url_for('view_login')}}" class="text-a-center">Login</a>
-
+            <a href="{{ url_for('view_login') }}" class="text-a-center">Login</a>
+        </div>
     </form>
+    <style>
+        /* Generelle stilarter */
+        body {
+            font-family: Arial, sans-serif;
+            background-color: #f5f5f5;
+        }
+    
+        #frm_user_signup label span {
+            font-weight: bold;
+            margin-bottom: 0.1rem;
+            display: block;
 
+        }
+    
+        #frm_user_signup input[type="text"],
+        #frm_user_signup input[type="password"],
+        #frm_user_signup select {
+            width: 100%;
+            padding: 0.5rem; /* Reduceret padding */
+            border: 1px solid #ccc;
+            border-radius: 4px;
+            font-size: 0.9rem; /* Mindre fontstørrelse */
+        }
+    
+        #frm_user_signup select {
+            background-color: #fff;
+        }
+    
+        #frm_user_signup button {
+            width: 100%;
+            padding: 0.1rem; /* Reduceret padding */
+            background-color: #007bff;
+            border: none;
+            border-radius: 4px;
+            color: #fff;
+            font-size: 1rem;
+            cursor: pointer;
+        }
+    
+        #frm_user_signup button:hover {
+            background-color: #0056b3;
+        }
+    
+        #frm_user_signup a.text-a-center {
+            display: block;
+            margin-top: 1rem;
+            text-align: center;
+            color: #007bff;
+            text-decoration: none;
+        }
+    
+        #frm_user_signup a.text-a-center:hover {
+            text-decoration: underline;
+        }
+    
+        /* Justering af eksisterende utility-klasser */
+        .d-flex {
+            display: flex;
+        }
+    
+        .flex-col {
+            flex-direction: column;
+        }
+    
+        .p-items-center {
+            align-items: center;
+        }
+        div[checked="headline"] h1 {
+            
+        text-align: center;
+    }
+        
+    </style>
 </main>
 
 {% include "_bottom.html" %}

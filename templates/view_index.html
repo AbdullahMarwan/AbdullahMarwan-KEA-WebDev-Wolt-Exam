@@ -1,8 +1,10 @@
 {% include "_top.html" %}
 
-<main class="w-full d-flex">
-    <div id="map" class="w-full h-100vh"></div>
-    
+<!-- <main class="w-full d-flex"> -->
+    <!-- <div id="map" class="w-full h-100vh"></div>
+    -->
+<!-- 
+
     <div id="items" class="w-full h-100vh">
         <button class="px-20 py-4 rounded-sm"
             mix-get="/items/page/1"
@@ -11,7 +13,112 @@
         </button>
     
     </div>
+</main> -->
+
+{% include "_top.html" %}
+
+<header class="header">
+    <div class="header-left">
+        <img src="wolt-logo.png" alt="Wolt Logo" class="logo">
+        <div class="location">
+            <span>København</span>
+            <span class="dropdown-arrow">▼</span>
+        </div>
+    </div>
+    <div class="header-center">
+        <input type="text" placeholder="Søg på Wolt..." class="search-bar">
+    </div>
+    <div class="header-right">
+        <button class="btn signup">Tilmeld dig</button>
+        <button class="btn login">Log ind</button>
+    </div>
+</header>
+
+<main class="w-full d-flex">
+    <div id="items" class="w-full h-100vh">
+        <button class="px-20 py-4 rounded-sm"
+            mix-get="/items/page/1"
+        >
+            More
+        </button>
+    </div>
 </main>
+
+<style>
+    .header {
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
+        padding: 10px 20px;
+        background-color: white;
+        border-bottom: 1px solid #ddd;
+        font-family: Arial, sans-serif;
+    }
+
+    .header-left {
+        display: flex;
+        align-items: center;
+    }
+
+    .logo {
+        height: 30px;
+        margin-right: 15px;
+    }
+
+    .location {
+        display: flex;
+        align-items: center;
+        font-size: 16px;
+        color: #333;
+        cursor: pointer;
+    }
+
+    .dropdown-arrow {
+        margin-left: 5px;
+        font-size: 12px;
+    }
+
+    .header-center {
+        flex-grow: 1;
+        display: flex;
+        justify-content: center;
+    }
+
+    .search-bar {
+        width: 60%;
+        padding: 8px 12px;
+        border: 1px solid #ddd;
+        border-radius: 20px;
+        font-size: 16px;
+    }
+
+    .header-right {
+        display: flex;
+        align-items: center;
+    }
+
+    .btn {
+        padding: 8px 16px;
+        border: none;
+        border-radius: 20px;
+        cursor: pointer;
+        font-size: 14px;
+        margin-left: 10px;
+    }
+
+    .signup {
+        background-color: #e6f4fc;
+        color: #007aff;
+    }
+
+    .login {
+        background-color: #007aff;
+        color: white;
+    }
+</style>
+
+{% include "_bottom.html" %}
+
 
 
 {% include "_bottom.html" %}

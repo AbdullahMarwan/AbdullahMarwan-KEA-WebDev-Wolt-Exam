@@ -1,4 +1,4 @@
-from flask import Flask, session, render_template, redirect, url_for, make_response, request
+from flask import Flask, session, render_template, redirect, url_for, make_response, request, flash
 from flask_session import Session
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
@@ -15,6 +15,10 @@ app = Flask(__name__)
 app.config['SESSION_TYPE'] = 'filesystem'  # or 'redis', etc.
 Session(app)
 
+# Context Processor to Inject 'x' into All Templates
+@app.context_processor
+def inject_x():
+    return dict(x=x)
 
 # app.secret_key = "your_secret_key"
 
@@ -105,11 +109,17 @@ def view_customer():
 def view_partner():
     if not session.get("user", ""): 
         return redirect(url_for("view_login"))
+    
     user = session.get("user")
-    if len(user.get("roles", "")) > 1:
+    
+    # Ensure the user has only the 'partner' role
+    if len(user.get("roles", [])) > 1:
         return redirect(url_for("view_choose_role"))
-    return response
-
+    if "partner" not in user.get("roles", []):
+        return redirect(url_for("view_login"))  # Optional: Redirect if user lacks 'partner' role
+    
+    # Render the partner dashboard/profile template
+    return render_template("view_partner.html", user=user)
 
 ##############################
 @app.get("/admin")
@@ -148,13 +158,8 @@ def _________POST_________(): pass
 
 @app.post("/logout")
 def logout():
-    # ic("#"*30)
-    # ic(session)
     session.pop("user", None)
-    # session.clear()
-    # session.modified = True
-    # ic("*"*30)
-    # ic(session)
+    flash("You have been logged out.", "info")
     return redirect(url_for("view_login"))
 
 
@@ -167,6 +172,7 @@ def signup():
         user_last_name = x.validate_user_last_name()
         user_email = x.validate_user_email()
         user_password = x.validate_user_password()
+        user_role = x.validate_user_role()  # Validate and retrieve the selected role
         hashed_password = generate_password_hash(user_password)
         
         user_pk = str(uuid.uuid4())
@@ -177,14 +183,26 @@ def signup():
         user_updated_at = 0
         user_verified_at = 0
         user_verification_key = str(uuid.uuid4())
-
-        db, cursor = x.db()
-        q = 'INSERT INTO users VALUES(%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)'
-        cursor.execute(q, (user_pk, user_name, user_last_name, user_email, 
-                           hashed_password, user_avatar, user_created_at, user_deleted_at, user_blocked_at, 
-                           user_updated_at, user_verified_at, user_verification_key))
+        user_selected_role = x.get_role_pk(user_role)  # Retrieve role_pk
         
-        # x.send_verify_email(user_email, user_verification_key)
+        db, cursor = x.db()
+        q = '''
+            INSERT INTO users (
+                user_pk, user_name, user_last_name, user_email, 
+                user_password, user_created_at, user_deleted_at, user_blocked_at, 
+                user_updated_at, user_avatar, user_verified_at, 
+                user_verification_key, user_selected_role
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+        '''
+        cursor.execute(q, (
+            user_pk, user_name, user_last_name, user_email, 
+            hashed_password, user_created_at, user_deleted_at, user_blocked_at, 
+            user_updated_at, user_avatar, user_verified_at, 
+            user_verification_key, user_selected_role
+        ))
+        
+        x.send_verify_email(to_email=user_email, 
+                            user_verification_key=user_verification_key)
         db.commit()
     
         return """<template mix-redirect="/login"></template>""", 201
@@ -198,14 +216,13 @@ def signup():
         if isinstance(ex, x.mysql.connector.Error):
             ic(ex)
             if "users.user_email" in str(ex): 
-                toast = render_template("___toast.html", message="email not available")
+                toast = render_template("___toast.html", message="Email not available")
                 return f"""<template mix-target="#toast" mix-bottom>{toast}</template>""", 400
-            return f"""<template mix-target="#toast" mix-bottom>System upgrating</template>""", 500        
+            return f"""<template mix-target="#toast" mix-bottom>System upgrading</template>""", 500        
         return f"""<template mix-target="#toast" mix-bottom>System under maintenance</template>""", 500    
     finally:
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
-
 
 ##############################
 @app.post("/login")
@@ -216,19 +233,21 @@ def login():
         user_password = x.validate_user_password()
 
         db, cursor = x.db()
-        q = """ SELECT * FROM users 
-                JOIN users_roles 
-                ON user_pk = user_role_user_fk 
-                JOIN roles
-                ON role_pk = user_role_role_fk
-                WHERE user_email = %s"""
+        q = """
+            SELECT * FROM users 
+            JOIN users_roles 
+            ON user_pk = user_role_user_pk
+            JOIN roles
+            ON role_pk = user_role_role_fk
+            WHERE user_email = %s AND user_deleted_at = 0 AND user_verified_at > 0
+        """
         cursor.execute(q, (user_email,))
         rows = cursor.fetchall()
         if not rows:
-            toast = render_template("___toast.html", message="user not registered")
+            toast = render_template("___toast.html", message="User not registered, deleted, or not verified.")
             return f"""<template mix-target="#toast">{toast}</template>""", 400     
         if not check_password_hash(rows[0]["user_password"], user_password):
-            toast = render_template("___toast.html", message="invalid credentials")
+            toast = render_template("___toast.html", message="Invalid credentials.")
             return f"""<template mix-target="#toast">{toast}</template>""", 401
         roles = []
         for row in rows:
@@ -253,7 +272,7 @@ def login():
             return f"""<template mix-target="#toast" mix-bottom>{toast}</template>""", ex.code    
         if isinstance(ex, x.mysql.connector.Error):
             ic(ex)
-            return "<template>System upgrating</template>", 500        
+            return "<template>System upgrading</template>", 500        
         return "<template>System under maintenance</template>", 500  
     finally:
         if "cursor" in locals(): cursor.close()
@@ -457,28 +476,204 @@ def verify_user(verification_key):
         user_verified_at = int(time.time())
 
         db, cursor = x.db()
-        q = """ UPDATE users 
-                SET user_verified_at = %s 
-                WHERE user_verification_key = %s"""
-        cursor.execute(q, (user_verified_at, verification_key))
-        if cursor.rowcount != 1: x.raise_custom_exception("cannot verify account", 400)
+        # Retrieve user details including user_selected_role
+        q_select = '''
+            SELECT user_pk, user_selected_role FROM users 
+            WHERE user_verification_key = %s AND user_verified_at = 0
+        '''
+        cursor.execute(q_select, (verification_key,))
+        user = cursor.fetchone()
+        if not user:
+            x.raise_custom_exception("Invalid or already verified verification key.", 400)
+        
+        user_pk = user["user_pk"]
+        user_selected_role = user["user_selected_role"]
+
+        # Update user_verified_at
+        q_update = '''
+            UPDATE users 
+            SET user_verified_at = %s 
+            WHERE user_pk = %s
+        '''
+        cursor.execute(q_update, (user_verified_at, user_pk))
+        if cursor.rowcount != 1:
+            x.raise_custom_exception("Cannot verify account.", 400)
+        
+        # Assign role in users_roles table
+        q_insert_role = '''
+            INSERT INTO users_roles (user_role_user_pk, user_role_role_fk)
+            VALUES (%s, %s)
+        '''
+        cursor.execute(q_insert_role, (user_pk, user_selected_role))
+        if cursor.rowcount != 1:
+            x.raise_custom_exception("Cannot assign role to user.", 400)
+        
         db.commit()
-        return redirect(url_for("view_login", message="User verified, please login"))
+        return redirect(url_for("view_login", message="User verified and role assigned. Please login."))
 
     except Exception as ex:
         ic(ex)
         if "db" in locals(): db.rollback()
-        if isinstance(ex, x.CustomException): return ex.message, ex.code    
+        if isinstance(ex, x.CustomException): 
+            return f"""<template mix-target="#toast" mix-bottom>{ex.message}</template>""", ex.code    
         if isinstance(ex, x.mysql.connector.Error):
             ic(ex)
             return "Database under maintenance", 500        
         return "System under maintenance", 500  
     finally:
         if "cursor" in locals(): cursor.close()
-        if "db" in locals(): db.close()    
+        if "db" in locals(): db.close()
+
+####################
+@app.get("/partner/edit_profile")
+@x.no_cache
+def view_edit_profile():
+    if not session.get("user"): 
+        return redirect(url_for("view_login"))
+    user = session.get("user")
+    return render_template("edit_profile.html", user=user, x=x)
+
+@app.post("/partner/edit_profile")
+@x.no_cache
+def edit_profile():
+    try:
+        if not session.get("user"):
+            return redirect(url_for("view_login"))
+        
+        user = session.get("user")
+        user_pk = user.get("user_pk")
+
+        # Validate input fields
+        user_name = x.validate_user_name()
+        user_last_name = x.validate_user_last_name()
+        user_email = x.validate_user_email()
+
+        user_updated_at = int(time.time())
+
+        db, cursor = x.db()
+        q = """
+            UPDATE users
+            SET user_name = %s, user_last_name = %s, user_email = %s, user_updated_at = %s
+            WHERE user_pk = %s
+        """
+        cursor.execute(q, (user_name, user_last_name, user_email, user_updated_at, user_pk))
+        if cursor.rowcount != 1:
+            x.raise_custom_exception("Cannot update profile.", 400)
+        
+        db.commit()
+        
+        # Update session information
+        user['user_name'] = user_name
+        user['user_last_name'] = user_last_name
+        user['user_email'] = user_email
+        session['user'] = user
+
+        flash("Profile updated successfully.", "success")
+        return redirect(url_for("view_partner"))
+
+    except Exception as ex:
+        ic(ex)
+        if "db" in locals():
+            db.rollback()
+        if isinstance(ex, x.CustomException):
+            toast = render_template("___toast.html", message=ex.message, x=x)
+            return f"""<template mix-target="#toast" mix-bottom>{toast}</template>""", ex.code
+        if isinstance(ex, x.mysql.connector.Error):
+            ic(ex)
+            if "users.user_email" in str(ex):
+                toast = render_template("___toast.html", message="Email not available.", x=x)
+                return f"""<template mix-target="#toast" mix-bottom>{toast}</template>""", 400
+            return f"""<template mix-target="#toast" mix-bottom>System upgrading.</template>""", 500        
+        return f"""<template mix-target="#toast" mix-bottom>System under maintenance.</template>""", 500    
+    finally:
+        if "cursor" in locals():
+            cursor.close()
+        if "db" in locals():
+            db.close()
 
 
+######################
+@app.get("/partner/delete_profile")
+@x.no_cache
+def view_delete_profile():
+    if not session.get("user"):
+        return redirect(url_for("view_login"))
+    user = session.get("user")
+    ic("Rendering delete_profile.html")
+    return render_template("delete_profile.html", user=user)  # 'x' is injected via context processor
 
 
+@app.post("/partner/request_delete_profile")
+@x.no_cache
+def request_delete_profile():
+    try:
+        ic("Request to delete profile received.")
+        if not session.get("user"):
+            ic("User not logged in. Redirecting to login.")
+            # Optionally, flash a message here if desired
+            flash("Please log in to delete your profile.", "warning")
+            return redirect(url_for("view_login"))
+        
+        user = session.get("user")
+        user_pk = user.get("user_pk")
+        user_email = user.get("user_email")
+        # printer user pk i terminalen
+        ic(f"User PK: {user_pk}")
 
+        # Verify password
+        db, cursor = x.db()
+        q = "SELECT user_password FROM users WHERE user_pk = %s AND user_deleted_at = 0"
+        cursor.execute(q, (user_pk,))
+        row = cursor.fetchone()
+        ic(f"Database query result: {row}")
+        if not row:
+            x.raise_custom_exception("User not found or already deleted.", 400)
+        
+        if not check_password_hash(row["user_password"], user_password):
+            x.raise_custom_exception("Invalid password.", 401)
+
+        # Perform soft delete by setting user_deleted_at
+        user_deleted_at = int(time.time())
+        q_update = """
+            UPDATE users
+            SET user_deleted_at = %s
+            WHERE user_pk = %s AND user_deleted_at = 0
+        """
+        cursor.execute(q_update, (user_deleted_at, user_pk))
+        if cursor.rowcount != 1:
+            x.raise_custom_exception("Cannot delete profile.", 400)
+        
+        db.commit()
+        ic("User profile deleted successfully.")
+
+        # Send informational email
+        x.send_deletion_info_email(to_email=user_email)
+        ic("Informational email about deletion sent.")
+
+        # Clear session
+        session.pop("user", None)
+        ic("User session cleared.")
+
+        # Return a redirect template to trigger frontend redirection
+        return f"""<template mix-redirect="{url_for("view_login")}"></template>"""
+
+    except Exception as ex:
+        ic(f"Exception occurred during profile deletion: {ex}")
+        if "db" in locals():
+            db.rollback()
+            ic("Database rolled back due to exception.")
+        if isinstance(ex, x.CustomException):
+            toast = render_template("___toast.html", message=ex.message)
+            return f"""<template mix-target="#toast">{toast}</template>""", ex.code
+        if isinstance(ex, x.mysql.connector.Error):
+            ic(ex)
+            return f"""<template mix-target="#toast" mix-bottom>Database error.</template>""", 500
+        return f"""<template mix-target="#toast" mix-bottom>System under maintenance.</template>""", 500
+    finally:
+        if "cursor" in locals():
+            cursor.close()
+            ic("Cursor closed.")
+        if "db" in locals():
+            db.close()
+            ic("Database connection closed.")
 
