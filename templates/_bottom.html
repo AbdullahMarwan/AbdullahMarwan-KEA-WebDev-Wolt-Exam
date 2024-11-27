@@ -2,19 +2,21 @@
 
 <script src="{{url_for('static', filename='app.js')}}"></script>
 <script src="{{url_for('static', filename='mixhtml.js')}}"></script>
+<script src="{{url_for('static', filename='global.css')}}"></script>
 
-<script>
-    mojo({
-        patterns : {
-           "input": {
-               idle : "border border-1 border-c-gray:+25 px-2 rounded-4 h-12 outline-none"
-           },
-           "button": {
-                idle : "border-c-black px-4 rounded-sm h-12 outline-none"
-            }           
-         },
-       })
-</script>
+
+
+
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
+    <title>Document</title>
+</head>
+<body>
+
 
 
 <script src="https://unpkg.com/leaflet/dist/leaflet.js"></script>

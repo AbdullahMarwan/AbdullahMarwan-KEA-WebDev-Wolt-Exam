@@ -163,6 +163,14 @@ def logout():
     return redirect(url_for("view_login"))
 
 
+@app.post("/profile")
+def goToProfile():
+    return redirect(url_for("profile"))
+
+
+    
+
+
 ##############################
 @app.post("/users")
 @x.no_cache

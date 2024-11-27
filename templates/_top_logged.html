@@ -3,9 +3,25 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
     <title>Document</title>
 </head>
 <body>
+
+
+        <header>
+            <div><img src="" alt=""></div>
+            <nav>
+                <ul>
+                <a href="{{ url_for('edit_profile') }}" class="btn btn-danger">Delete Profile</a>
+
+                </ul>
+            </nav>
+        </header>
+
+
+
+
     <form method="POST" action="{{url_for('logout')}}">
         <button>
             Logout
