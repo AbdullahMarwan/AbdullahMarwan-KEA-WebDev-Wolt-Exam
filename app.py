@@ -236,10 +236,10 @@ def login():
         q = """
             SELECT * FROM users 
             JOIN users_roles 
-            ON user_pk = user_role_user_pk
+            ON user_pk = user_role_user_fk
             JOIN roles
             ON role_pk = user_role_role_fk
-            WHERE user_email = %s AND user_deleted_at = 0 AND user_verified_at > 0
+            WHERE user_email = %s AND user_deleted_at = 0 AND user_verified_at != 0
         """
         cursor.execute(q, (user_email,))
         rows = cursor.fetchall()
