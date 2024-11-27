@@ -314,7 +314,7 @@ try:
             INSERT INTO items (
                 item_pk, item_user_fk, item_title, item_price, item_image)
                 VALUES (%s, %s, %s, %s, %s)
-            """, (str(uuid.uuid4()), user_pk, random.choice(dishes), round(random.uniform(50, 999), 2)), f"dish_{dish_id}.jpg")                
+            """, (str(uuid.uuid4()), user_pk, random.choice(dishes), round(random.uniform(50, 999), 2), f"dish_{dish_id}.jpg"))
 
 
 
