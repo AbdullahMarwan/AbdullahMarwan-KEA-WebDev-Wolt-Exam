@@ -192,14 +192,14 @@ def signup():
                 user_pk, user_name, user_last_name, user_email, 
                 user_password, user_created_at, user_deleted_at, user_blocked_at, 
                 user_updated_at, user_avatar, user_verified_at, 
-                user_verification_key
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                user_verification_key, user_selected_role
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         '''
         cursor.execute(q, (
             user_pk, user_name, user_last_name, user_email, 
             hashed_password, user_created_at, user_deleted_at, user_blocked_at, 
             user_updated_at, user_avatar, user_verified_at, 
-            user_verification_key
+            user_verification_key, user_selected_role
         ))
         
         x.send_verify_email(to_email=user_email, 
@@ -237,8 +237,8 @@ def login():
 
         db, cursor = x.db()
         q = """
-            SELECT * FROM users 
-            JOIN users_roles 
+            SELECT * FROM users
+            JOIN users_roles
             ON user_pk = user_role_user_fk
             JOIN roles
             ON role_pk = user_role_role_fk
@@ -477,48 +477,20 @@ def verify_user(verification_key):
         ic(verification_key)
         verification_key = x.validate_uuid4(verification_key)
         user_verified_at = int(time.time())
-
+ 
         db, cursor = x.db()
-        # Retrieve user details including user_selected_role
-        q_select = '''
-            SELECT user_pk, user_selected_role FROM users 
-            WHERE user_verification_key = %s AND user_verified_at = 0
-        '''
-        cursor.execute(q_select, (verification_key,))
-        user = cursor.fetchone()
-        if not user:
-            x.raise_custom_exception("Invalid or already verified verification key.", 400)
-        
-        user_pk = user["user_pk"]
-        user_selected_role = user["user_selected_role"]
-
-        # Update user_verified_at
-        q_update = '''
-            UPDATE users 
-            SET user_verified_at = %s 
-            WHERE user_pk = %s
-        '''
-        cursor.execute(q_update, (user_verified_at, user_pk))
-        if cursor.rowcount != 1:
-            x.raise_custom_exception("Cannot verify account.", 400)
-        
-        # Assign role in users_roles table
-        q_insert_role = '''
-            INSERT INTO users_roles (user_role_user_pk, user_role_role_fk)
-            VALUES (%s, %s)
-        '''
-        cursor.execute(q_insert_role, (user_pk, user_selected_role))
-        if cursor.rowcount != 1:
-            x.raise_custom_exception("Cannot assign role to user.", 400)
-        
+        q = """ UPDATE users
+                SET user_verified_at = %s
+                WHERE user_verification_key = %s"""
+        cursor.execute(q, (user_verified_at, verification_key))
+        if cursor.rowcount != 1: x.raise_custom_exception("cannot verify account", 400)
         db.commit()
-        return redirect(url_for("view_login", message="User verified and role assigned. Please login."))
-
+        return redirect(url_for("view_login", message="User verified, please login"))
+ 
     except Exception as ex:
         ic(ex)
         if "db" in locals(): db.rollback()
-        if isinstance(ex, x.CustomException): 
-            return f"""<template mix-target="#toast" mix-bottom>{ex.message}</template>""", ex.code    
+        if isinstance(ex, x.CustomException): return ex.message, ex.code    
         if isinstance(ex, x.mysql.connector.Error):
             ic(ex)
             return "Database under maintenance", 500        
@@ -526,6 +498,7 @@ def verify_user(verification_key):
     finally:
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
+
 
 ####################
 @app.get("/partner/edit_profile")
