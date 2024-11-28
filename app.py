@@ -161,13 +161,6 @@ def logout():
     session.pop("user", None)
     flash("You have been logged out.", "info")
     return redirect(url_for("view_login"))
-
-
-@app.post("/profile")
-def goToProfile():
-    return redirect(url_for("profile"))
-
-
     
 
 
@@ -199,14 +192,14 @@ def signup():
                 user_pk, user_name, user_last_name, user_email, 
                 user_password, user_created_at, user_deleted_at, user_blocked_at, 
                 user_updated_at, user_avatar, user_verified_at, 
-                user_verification_key, user_selected_role
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                user_verification_key
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         '''
         cursor.execute(q, (
             user_pk, user_name, user_last_name, user_email, 
             hashed_password, user_created_at, user_deleted_at, user_blocked_at, 
             user_updated_at, user_avatar, user_verified_at, 
-            user_verification_key, user_selected_role
+            user_verification_key
         ))
         
         x.send_verify_email(to_email=user_email, 
@@ -220,8 +213,10 @@ def signup():
         if "db" in locals(): db.rollback()
         if isinstance(ex, x.CustomException): 
             toast = render_template("___toast.html", message=ex.message)
+            print ("test1")
             return f"""<template mix-target="#toast" mix-bottom>{toast}</template>""", ex.code    
         if isinstance(ex, x.mysql.connector.Error):
+            print ("test2")
             ic(ex)
             if "users.user_email" in str(ex): 
                 toast = render_template("___toast.html", message="Email not available")
