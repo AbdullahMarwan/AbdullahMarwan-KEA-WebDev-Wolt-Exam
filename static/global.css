@@ -1,5 +1,114 @@
-.hello {
-    height: 50px;
-    width: 50px;
-    background-color: blue;
+/* General Reset */
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+header {
+    display: flex;
+    flex-wrap: wrap; /* Allows wrapping for smaller screens */
+    align-items: center;
+    justify-content: space-between;
+    background-color: #f8f9fa; /* Light background for contrast */
+    padding: 10px 20px;
+    border-bottom: 1px solid #ddd;
+}
+
+.header-logo-ctn h1 {
+    font-size: 3.25rem;
+    color: #333; /* Dark text for logo */
+}
+
+.header-nav {
+    display: flex;
+    align-items: center;
+    flex: 1; /* Fills available space */
+    justify-content: flex-end;
+    gap: 20px; /* Adds spacing between elements */
+}
+
+.header-nav nav ul {
+    list-style-type: none;
+    display: flex;
+    gap: 15px;
+}
+
+.header-nav nav ul li a {
+    font-family: 'arial';
+    text-decoration: none;
+    color: #0056b3;
+    background-color: #fff; /* Bootstrap danger color */
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    transition: background-color 0.3s ease;
+    border: 1px solid #0056b3;
+}
+
+.header-nav nav ul li a:hover {
+    background-color: #c82333; /* Darker danger color on hover */
+}
+
+.header-btn button {
+    background-color: #007bff; /* Bootstrap primary color */
+    color: #fff;
+    border: none;
+    padding: 8px 12px;
+    border-radius: 5px;
+    font-size: 0.9rem;
+    cursor: pointer;
+    transition: background-color 0.3s ease;
+}
+
+.header-btn button:hover {
+    background-color: #0056b3; /* Darker primary color */
+}
+
+.input-field {
+    border: 1px solid #ddd;
+    padding: 8px 10px;
+    border-radius: 5px;
+    flex: 0 0 250px; /* Fixed width, reduces for smaller screens */
+    font-size: 1rem;
+}
+
+/* Mobile Responsiveness */
+@media (max-width: 768px) {
+    header {
+        flex-direction: column;
+        align-items: stretch;
+    }
+
+    .header-logo-ctn {
+        text-align: center;
+        margin-bottom: 10px;
+    }
+
+    .header-nav {
+        justify-content: center;
+        flex-wrap: wrap; /* Ensures content wraps */
+        gap: 10px;
+        width: 100%;
+
+        nav {
+            display: flex;
+
+            ul {
+                list-style-type: none;
+                display: flex;
+                gap: 15px;
+                align-items: center;
+            }
+        }
+    }
+
+    .header-btn button {
+        width: 100%; /* Takes up full width on small screens */
+    }
+
+    .input-field {
+        flex: 1; /* Expands to full width */
+        margin-top: 10px;
+    }
 }
