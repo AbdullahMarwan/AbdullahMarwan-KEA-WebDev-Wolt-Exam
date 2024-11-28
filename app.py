@@ -187,20 +187,27 @@ def signup():
         user_selected_role = x.get_role_pk(user_role)  # Retrieve role_pk
         
         db, cursor = x.db()
+
         q = '''
             INSERT INTO users (
                 user_pk, user_name, user_last_name, user_email, 
                 user_password, user_created_at, user_deleted_at, user_blocked_at, 
                 user_updated_at, user_avatar, user_verified_at, 
-                user_verification_key, user_selected_role
-            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+                user_verification_key
+            ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
         '''
         cursor.execute(q, (
             user_pk, user_name, user_last_name, user_email, 
             hashed_password, user_created_at, user_deleted_at, user_blocked_at, 
             user_updated_at, user_avatar, user_verified_at, 
-            user_verification_key, user_selected_role
+            user_verification_key
         ))
+
+        q_add_role = """
+            INSERT INTO users_roles (user_role_user_fk, user_role_role_fk) 
+            VALUES (%s, %s)
+        """
+        cursor.execute(q_add_role, (user_pk, user_selected_role))
         
         x.send_verify_email(to_email=user_email, 
                             user_verification_key=user_verification_key)
