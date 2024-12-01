@@ -72,6 +72,22 @@ def view_signup():
             return redirect(url_for("view_partner"))         
     return render_template("view_signup.html", x=x, title="Signup")
 
+##############################
+@app.get("/forgot_password")
+@x.no_cache
+def view_forgot_password():  
+    # ic(session)
+    # if session.get("user"):
+    #     if len(session.get("user").get("roles")) > 1:
+    #         return redirect(url_for("view_choose_role")) 
+    #     if "admin" in session.get("user").get("roles"):
+    #         return redirect(url_for("view_admin"))
+    #     if "customer" in session.get("user").get("roles"):
+    #         return redirect(url_for("view_customer")) 
+    #     if "partner" in session.get("user").get("roles"):
+    #         return redirect(url_for("view_partner"))         
+    return render_template("view_forgot_password.html", x=x, title="ForgotPassword")
+
 
 ##############################
 @app.get("/login")
@@ -233,6 +249,76 @@ def signup():
     finally:
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
+
+# ##############################
+# @app.post("/password")
+# @x.no_cache
+# def forgot_password():
+#     try:
+#         user_name = x.validate_user_name()
+#         user_last_name = x.validate_user_last_name()
+#         user_email = x.validate_user_email()
+#         user_password = x.validate_user_password()
+#         user_role = x.validate_user_role()  # Validate and retrieve the selected role
+#         hashed_password = generate_password_hash(user_password)
+        
+#         user_pk = str(uuid.uuid4())
+#         user_avatar = ""
+#         user_created_at = int(time.time())
+#         user_deleted_at = 0
+#         user_blocked_at = 0
+#         user_updated_at = 0
+#         user_verified_at = 0
+#         user_verification_key = str(uuid.uuid4())
+#         user_selected_role = x.get_role_pk(user_role)  # Retrieve role_pk
+        
+#         db, cursor = x.db()
+
+#         q = '''
+#             INSERT INTO users (
+#                 user_pk, user_name, user_last_name, user_email, 
+#                 user_password, user_created_at, user_deleted_at, user_blocked_at, 
+#                 user_updated_at, user_avatar, user_verified_at, 
+#                 user_verification_key
+#             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
+#         '''
+#         cursor.execute(q, (
+#             user_pk, user_name, user_last_name, user_email, 
+#             hashed_password, user_created_at, user_deleted_at, user_blocked_at, 
+#             user_updated_at, user_avatar, user_verified_at, 
+#             user_verification_key
+#         ))
+
+#         q_add_role = """
+#             INSERT INTO users_roles (user_role_user_fk, user_role_role_fk) 
+#             VALUES (%s, %s)
+#         """
+#         cursor.execute(q_add_role, (user_pk, user_selected_role))
+        
+#         x.send_verify_email(to_email=user_email, 
+#                             user_verification_key=user_verification_key)
+#         db.commit()
+    
+#         return """<template mix-redirect="/login"></template>""", 201
+    
+#     except Exception as ex:
+#         ic(ex)
+#         if "db" in locals(): db.rollback()
+#         if isinstance(ex, x.CustomException): 
+#             toast = render_template("___toast.html", message=ex.message)
+#             print ("test1")
+#             return f"""<template mix-target="#toast" mix-bottom>{toast}</template>""", ex.code    
+#         if isinstance(ex, x.mysql.connector.Error):
+#             print ("test2")
+#             ic(ex)
+#             if "users.user_email" in str(ex): 
+#                 toast = render_template("___toast.html", message="Email not available")
+#                 return f"""<template mix-target="#toast" mix-bottom>{toast}</template>""", 400
+#             return f"""<template mix-target="#toast" mix-bottom>System upgrading</template>""", 500        
+#         return f"""<template mix-target="#toast" mix-bottom>System under maintenance</template>""", 500    
+#     finally:
+#         if "cursor" in locals(): cursor.close()
+#         if "db" in locals(): db.close()
 
 ##############################
 @app.post("/login")
@@ -660,3 +746,80 @@ def request_delete_profile():
             db.close()
             ic("Database connection closed.")
 
+
+@app.get("/change_password/<verification_key>")
+@x.no_cache
+def change_password(verification_key):
+    try:
+        ic(verification_key)
+        verification_key = x.validate_uuid4(verification_key)
+        user_password = x.validate_user_password()
+ 
+        db, cursor = x.db()
+        q = """ UPDATE users
+                SET user_password = %s
+                WHERE user_verification_key = %s"""
+        cursor.execute(q, (user_password, verification_key))
+        if cursor.rowcount != 1: x.raise_custom_exception("cannot update password", 400)
+        db.commit()
+        
+        return redirect(url_for("view_login", message="Password updated, please login"))
+ 
+    except Exception as ex:
+        ic(ex)
+        if "db" in locals(): db.rollback()
+        if isinstance(ex, x.CustomException): return ex.message, ex.code    
+        if isinstance(ex, x.mysql.connector.Error):
+            ic(ex)
+            return "Database under maintenance", 500        
+        return "System under maintenance", 500  
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
+
+
+@app.post("/request_forgot_password")
+@x.no_cache
+def request_forgot_password():
+    try:
+        ic("Request to change password received.")
+        
+        # Verify email
+        user_email = x.validate_user_email()
+
+        db, cursor = x.db()
+        q = "SELECT user_verification_key FROM users WHERE user_email = %s AND user_deleted_at = 0"
+
+        cursor.execute(q, (user_email,))
+        result = cursor.fetchone()  # Fetch one result
+        if result:
+            user_verification_key = result['user_verification_key']  # Assuming `fetchone()` returns a dictionary
+        else:
+            x.raise_custom_exception("Email does not exist", 400)
+
+        # Send change password email
+        x.send_forgot_password_email(to_email=user_email, user_verification_key=user_verification_key)
+        ic("Informational email about changing password sent.")
+
+        # Return a redirect template to trigger frontend redirection
+        return f"""<template mix-redirect="{url_for("view_login")}"></template>"""
+
+    except Exception as ex:
+        ic(f"Exception occurred during password change request: {ex}")
+        if "db" in locals():
+            db.rollback()
+            ic("Database rolled back due to exception.")
+        if isinstance(ex, x.CustomException):
+            toast = render_template("___toast.html", message=ex.message)
+            return f"""<template mix-target="#toast">{toast}</template>""", ex.code
+        if isinstance(ex, x.mysql.connector.Error):
+            ic(ex)
+            return f"""<template mix-target="#toast" mix-bottom>Database error.</template>""", 500
+        return f"""<template mix-target="#toast" mix-bottom>System under maintenance.</template>""", 500
+    finally:
+        if "cursor" in locals():
+            cursor.close()
+            ic("Cursor closed.")
+        if "db" in locals():
+            db.close()
+            ic("Database connection closed.")
