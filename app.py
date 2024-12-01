@@ -747,37 +747,43 @@ def request_delete_profile():
             ic("Database connection closed.")
 
 
-@app.get("/change_password/<verification_key>")
+@app.route("/change_password/<verification_key>", methods=["GET", "POST"])
 @x.no_cache
 def change_password(verification_key):
+    if request.method == "GET":
+        return render_template("view_change_password.html", verification_key=verification_key)
+
+    # POST: Update password
     try:
-        ic(verification_key)
+        ic("Updating password with verification key:", verification_key)
         verification_key = x.validate_uuid4(verification_key)
         user_password = x.validate_user_password()
- 
-        db, cursor = x.db()
-        q = """ UPDATE users
-                SET user_password = %s
-                WHERE user_verification_key = %s"""
-        cursor.execute(q, (user_password, verification_key))
-        if cursor.rowcount != 1: x.raise_custom_exception("cannot update password", 400)
-        db.commit()
+        hashed_password = generate_password_hash(user_password)
         
-        return redirect(url_for("view_login", message="Password updated, please login"))
- 
+        db, cursor = x.db()
+        try:
+            q = """UPDATE users
+                   SET user_password = %s
+                   WHERE user_verification_key = %s"""
+            cursor.execute(q, (hashed_password, verification_key))
+            if cursor.rowcount != 1:
+                x.raise_custom_exception("Cannot update password", 400)
+            db.commit()
+        finally:
+            cursor.close()
+            db.close()
+
+        flash("Password updated successfully. Please log in.", "success")
+        return redirect(url_for("view_login"))
+
     except Exception as ex:
-        ic(ex)
-        if "db" in locals(): db.rollback()
-        if isinstance(ex, x.CustomException): return ex.message, ex.code    
+        ic(f"Error during password update: {ex}")
+        if isinstance(ex, x.CustomException):
+            return render_template("view_change_password.html", error=ex.message, verification_key=verification_key)
         if isinstance(ex, x.mysql.connector.Error):
-            ic(ex)
-            return "Database under maintenance", 500        
-        return "System under maintenance", 500  
-    finally:
-        if "cursor" in locals(): cursor.close()
-        if "db" in locals(): db.close()
-
-
+            return "Database under maintenance", 500
+      
+      
 @app.post("/request_forgot_password")
 @x.no_cache
 def request_forgot_password():
