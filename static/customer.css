@@ -1,0 +1,181 @@
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+
+.welcome{
+    text-align: center;
+    padding-top: 50px;
+
+}
+
+
+.restauranter {
+    
+    padding-left: 250px;
+    margin: 20px 0; /* Lidt luft omkring overskriften */
+}
+
+.restauranter h1 {
+    font-size: 2.5rem; /* Standard størrelse til store skærme */
+    font-weight: bold;
+    color: #333; /* Mørk grå farve */
+    margin: 10px 0;
+}
+  /* Card CSS */
+  .card-container {
+    display: flex;
+    flex-wrap: wrap;
+    justify-content: center;
+    gap: 30px;
+    margin: 50px auto;
+    max-width: 1200px; /* Begrænsning af bredde */
+   /
+}
+
+.card {
+    flex: 1 1 calc(100% - 40px); /* Skalerer med 100% bredde minus margener */
+    max-width: 350px; /* Begrænsning af max-bredde */
+    background-color: #efefef;
+    border-radius: 8px;
+    overflow: hidden;
+    box-shadow: 0px 2px 4px rgba(0, 0, 0, 0.2);
+    border: 1px solid #007bff;
+}
+
+.card img {
+    width: 100%; /* Tilpasser til card'ets bredde */
+    height: auto;
+}
+
+.card-content {
+    padding: 16px;
+}
+
+.card-content h3 {
+    font-size: 20px;
+    margin-bottom: 8px;
+}
+
+h4{
+    color: #505052;
+    padding-bottom: 10px;
+
+}
+.card-content p {
+    color: #000000;
+    font-size: 14px;
+    line-height: 1.3;
+    padding-top: 3px;
+    padding-bottom: 10px;
+}
+
+.card-content .btn {
+    display: inline-block;
+    padding: 8px 16px;
+    background-color: #007bff;
+    text-decoration: none;
+    border-radius: 4px;
+    margin-top: 16px;
+    color: #efefef;
+}
+
+
+.card-footer {
+    display: flex;
+    justify-content: space-between; /* Placerer pris til venstre og knap til højre */
+    align-items: center; /* Vertikal justering af elementerne */
+    margin-top: auto; /* Skubber footer til bunden af card-content */
+}
+
+.price {
+    margin-top: 20px;
+    font-size: 1.2em;
+    font-weight: bold;
+    /* Eventuelt yderligere styling */
+}
+
+.btn {
+    padding: 0.5em 1em;
+    background-color: #007bff; /* Eksempel på knapfarve */
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+    /* Eventuelt yderligere styling */
+}
+
+
+.price-and-stars {
+    display: flex;
+    align-items: center;
+}
+/* Stjerner styling */
+.stars {
+    padding-top: 10px;
+    margin-left: 10px;
+    color: #FFD700; /* Guld farve til stjerner */
+    font-size: 15px;
+}
+
+.stars i {
+    margin-right: 2px;
+    color: #FFD700;
+}
+
+
+
+  /* Responsiv justering */
+@media (max-width: 768px) {
+
+    .restauranter h1 {
+        text-align: center; /* Centrerer teksten for mobil */
+        padding-left: 0;
+    }
+    .card-container {
+        justify-content: center; /* Center kortene horisontalt */
+        padding: 0 10px; /* Tilføj lidt padding til containeren */
+    }
+
+    .card {
+        flex: 1 1 90%; /* Sæt kortets bredde til 90% af containerens bredde */
+        max-width: 400px; /* Maksimal bredde for kortene */
+        margin: 10px; /* Margin omkring kortene for luft */
+    }
+  
+}
+
+/* card css  slut*/
+
+.partner-actions{
+    text-align: center;
+    padding-top: 50px;
+
+    .btn {
+background-color: #ffffff00; /* Bootstrap primary color */
+color: #817f7f;
+border: none;
+padding: 8px 12px;
+border-radius: 3px;
+font-size: 0.9rem;
+cursor: pointer;
+transition: background-color 0.3s ease;
+font-size: 15px;
+text-decoration: underline none;
+}
+
+
+
+a {
+text-decoration: none;
+}
+
+
+.btn.active {
+border: 2px solid #007bff; /* Blå ramme til aktiv knap */
+color: #007bff;
+background-color: #f0f8ff; /* Lys baggrund */
+}
+}
