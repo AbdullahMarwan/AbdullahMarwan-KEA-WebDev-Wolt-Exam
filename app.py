@@ -576,7 +576,7 @@ def edit_profile():
 
 
 ######################
-@app.get("/partner/delete_profile")
+@app.get("/delete_profile")
 @x.no_cache
 def view_delete_profile():
     if not session.get("user"):
@@ -586,10 +586,17 @@ def view_delete_profile():
     return render_template("delete_profile.html", user=user)  # 'x' is injected via context processor
 
 
+######################
 @app.post("/partner/request_delete_profile")
 @x.no_cache
 def request_delete_profile():
     try:
+        ic(f"####################################")
+        user = session.get("user")
+        user_pk = user.get("user_pk")
+        user_email = user.get("user_email")
+        # printer user pk i terminalen
+        ic(f"User PK: {user_pk}")
         ic("Request to delete profile received.")
         if not session.get("user"):
             ic("User not logged in. Redirecting to login.")
@@ -597,13 +604,11 @@ def request_delete_profile():
             flash("Please log in to delete your profile.", "warning")
             return redirect(url_for("view_login"))
         
-        user = session.get("user")
-        user_pk = user.get("user_pk")
-        user_email = user.get("user_email")
-        # printer user pk i terminalen
-        ic(f"User PK: {user_pk}")
+
 
         # Verify password
+        user_password = request.form.get("user_password")
+        ic(user_password)
         db, cursor = x.db()
         q = "SELECT user_password FROM users WHERE user_pk = %s AND user_deleted_at = 0"
         cursor.execute(q, (user_pk,))
