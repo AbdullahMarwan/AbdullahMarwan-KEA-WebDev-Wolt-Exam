@@ -1,14 +1,15 @@
-{% include "_top.html" %}
+
 <head>
-  <link rel="stylesheet" href="./signup.css" />
+  <link rel="stylesheet" href="{{ url_for('static', filename='/css/signup.css') }}">
 </head>
+
 <div checked="headline">
   <h1>Signup</h1>
 </div>
 
-<main class="w-full h-100vh d-flex p-items-center">
-  <form id="frm_user_signup" class="w-25% d-flex flex-col gap-4 mx-auto">
-    <div class="d-flex flex-col">
+<main class="">
+  <form id="frm_user_signup" class="">
+    <div class="">
       <label for="user_name">
         <span>Name</span>
       </label>
@@ -47,7 +48,7 @@
     <div class="d-flex flex-col">
       <label for="user_password" class="d-flex">
         <span>Password</span>
-        <span class="ml-auto text-c-gray:+25"
+        <span class=""
           >{{ x.USER_PASSWORD_MIN }} to {{ x.USER_PASSWORD_MAX }} chars</span
         >
       </label>
@@ -83,76 +84,7 @@
       <a href="{{ url_for('view_login') }}" class="text-a-center">Login</a>
     </div>
   </form>
-  <style>
-    /* Generelle stilarter */
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
-    }
 
-    #frm_user_signup label span {
-      font-weight: bold;
-      margin-bottom: 0.1rem;
-      display: block;
-    }
-
-    #frm_user_signup input[type="text"],
-    #frm_user_signup input[type="password"],
-    #frm_user_signup select {
-      width: 100%;
-      padding: 0.5rem; /* Reduceret padding */
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 0.9rem; /* Mindre fontstørrelse */
-    }
-
-    #frm_user_signup select {
-      background-color: #fff;
-    }
-
-    #frm_user_signup button {
-      width: 100%;
-      padding: 0.1rem; /* Reduceret padding */
-      background-color: #007bff;
-      border: none;
-      border-radius: 4px;
-      color: #fff;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-
-    #frm_user_signup button:hover {
-      background-color: #0056b3;
-    }
-
-    #frm_user_signup a.text-a-center {
-      display: block;
-      margin-top: 1rem;
-      text-align: center;
-      color: #007bff;
-      text-decoration: none;
-    }
-
-    #frm_user_signup a.text-a-center:hover {
-      text-decoration: underline;
-    }
-
-    /* Justering af eksisterende utility-klasser */
-    .d-flex {
-      display: flex;
-    }
-
-    .flex-col {
-      flex-direction: column;
-    }
-
-    .p-items-center {
-      align-items: center;
-    }
-    div[checked="headline"] h1 {
-      text-align: center;
-    }
-  </style>
 </main>
 
 {% include "_bottom.html" %}

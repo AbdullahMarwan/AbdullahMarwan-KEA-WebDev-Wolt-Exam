@@ -1,5 +1,3 @@
-{% include "_top.html" %}
-
 <!DOCTYPE html>
 <html lang="en">
   <head>
@@ -7,21 +5,21 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link
       rel="stylesheet"
-      href="{{ url_for('static', filename='login.css') }}"
+      href="{{ url_for('static', filename='/css/login.css') }}"
     />
     <title>Document</title>
   </head>
   <body>
-    <main class="w-full h-100vh d-flex p-items-center">
-      <section class="bg-c-blue p-4 border-rounded shadow mx-auto w-30%">
+    <main class="">
+      <section class="">
         <!-- Brugercirkel -->
         <div>
           <h1>Login på din konto</h1>
           <!-- Brugersymbol -->
         </div>
 
-        <form id="frm_user_login" class="w-full d-flex flex-col gap-4">
-          <div class="text-c-green text-200">{{ message }}</div>
+        <form id="frm_user_login" class="">
+          <div class="">{{ message }}</div>
 
           <div class="d-flex flex-col">
             <label for="user_email">
@@ -37,7 +35,7 @@
           <div class="d-flex flex-col">
             <label for="user_password" class="d-flex">
               <span>password</span>
-              <span class="ml-auto text-c-gray:+25"
+              <span class=""
                 >{{ x.USER_PASSWORD_MIN }} to {{ x.USER_PASSWORD_MAX }}
                 chars</span
               >
@@ -51,11 +49,11 @@
 
           <button mix-post="/login" mix-data="#frm_user_login">Login</button>
 
-          <a href="{{url_for('view_forgot_password')}}" class="text-a-center">
+          <a href="{{url_for('view_forgot_password')}}" class="">
             Forgot Password?
           </a>
 
-          <a href="{{url_for('view_signup')}}" class="text-a-center">
+          <a href="{{url_for('view_signup')}}" class="">
             Signup
           </a>
         </form>
