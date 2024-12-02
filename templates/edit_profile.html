@@ -1,6 +1,7 @@
 {% include "_top.html" %}
 <head>
     <link rel="stylesheet" href="{{ url_for('static', filename='edit_profile.css') }}">
+    
 </head>
 <div checked="headline">
     <h1>Edit Profile</h1>
@@ -31,14 +32,15 @@
             <input name="user_email" type="email" mix-check="{{ x.REGEX_EMAIL }}" value="{{ user.user_email }}" required>
         </div>
 
-        <div>
+        <div class="button-ctn">
             <button type="submit" class="btn btn-primary">
                 Save Changes
             </button>
-
             <a href="{{ url_for('view_partner') }}" class="btn btn-secondary">Cancel</a>
+            <a href="{{ url_for('view_delete_profile') }}" class="btn btn-danger">Delete Profile</a>
         </div>
     </form>
+
     
     <style>
         /* Styles similar to signup form */

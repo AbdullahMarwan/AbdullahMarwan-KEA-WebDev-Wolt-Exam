@@ -4,30 +4,28 @@
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='global.css') }}">
+    <script src="{{ url_for('static', filename='burgerMenu.js') }}"></script>
     <title>Document</title>
 </head>
 <body>
-
-        <header>
-            <div class="header-logo-ctn"><h1>Wolt</h1></div>
-
-
-            <div class="header-nav">
-                <nav>
-                    <ul>
-                        <li><a href="{{ url_for('edit_profile') }}" class="btn btn-danger">Edit profile</a></li>
-                        <li><a href="{{ url_for('edit_profile') }}" class="btn btn-danger">Browse</a></li>
-                        <form class="header-btn" method="POST" action="{{url_for('logout')}}">
-                            <button class="">
-                                Logout
-                            </button>
-                        </form>
-                    </ul>
-                </nav>
-            </div>
-            <input class="input-field" type="text" placeholder="Search">
-
-        </header>
-
+    <header>
+        <div class="header-logo-ctn">
+            <h1>Wolt</h1>
+        </div>
+        <input class="search-input" type="text" placeholder="Search">
+        <button class="burger-menu-btn" aria-label="Toggle Menu">☰</button>
+        <nav class="menu">
+            <ul>
+                <li><a href="{{ url_for('edit_profile') }}" class="btn">Edit Profile</a></li>
+                <li><a href="{{ url_for('edit_profile') }}" class="btn">Browse</a></li>
+                <li>
+                    <form method="POST" action="{{ url_for('logout') }}">
+                        <button type="submit" class="btn">Logout</button>
+                    </form>
+                </li>
+            </ul>
+        </nav>
+    </header>
+    
 
 
