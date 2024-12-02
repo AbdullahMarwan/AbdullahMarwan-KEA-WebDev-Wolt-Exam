@@ -3,13 +3,24 @@
 <head>
     <meta charset="UTF-8">
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='mixhtml.css') }}">
-    
-    <link rel="stylesheet" href="https://unpkg.com/leaflet/dist/leaflet.css" />
-    <title>
-        {{ title or "Company" }}
-    </title>
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/global.css') }}">
+    <script src="{{ url_for('static', filename='header.js') }}"></script>
+    <title>Document</title>
 </head>
-<body class="w-full h-100vh text-c-gray:-16">
-
-    <div id="toast" class="d-flex flex-col j-content-center p-fixed w-full top-4 z-10"></div>
+<body>
+    <header class="header">
+        <div class="header-left">
+            <img src="Spis-logo.png" alt="Spis Logo" class="logo">
+            <div class="location">
+                <span>København</span>
+                <span class="dropdown-arrow">▼</span>
+            </div>
+        </div>
+        <div class="header-center">
+            <input type="text" placeholder="Søg på Wolt..." class="search-bar">
+        </div>
+        <div class="header-right">
+            <button id="signupButton" class="btn signup">Tilmeld dig</button>
+            <button id="loginButton" class="btn login">Log ind</button>
+        </div>
+    </header>
