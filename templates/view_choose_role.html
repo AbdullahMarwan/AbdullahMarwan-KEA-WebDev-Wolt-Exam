@@ -2,178 +2,149 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-   
-    
-  
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+
     <style>
-        /* Generel baggrund */
-        .bg-light-gradient {
-            background:  #ebe3db;
-            height: 100vh;
-            width: 100%;
-        }
-    
-        /* Header-styling */
-        .site-name {
-            font-family: 'Arial', sans-serif;
-            font-size: 4rem;
-            font-weight: bold;
-            color: #333;
-            margin-bottom: 2rem;
-            padding-bottom: 8rem;
-        }
-    
-        /* Container styling */
-        .role-container {
-            width: 300px;
-            background: #fff;
-            border-radius: 12px;
-            padding: 30px;
-            box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
-            text-align: center;
-         
-            
-        }
+      /* Generel baggrund */
+      .bg-light-gradient {
+        background: #ebe3db;
+        height: 100vh;
+        width: 100%;
+      }
 
-        .container1{
-            padding-bottom: 200px;  
-        }
+      /* Header-styling */
+      .site-name {
+        font-family: "Arial", sans-serif;
+        font-size: 4rem;
+        font-weight: bold;
+        color: #333;
+        margin-bottom: 2rem;
+        padding-bottom: 8rem;
+      }
 
-        .Container2{
+      /* Container styling */
+      .role-container {
+        width: 300px;
+        background: #fff;
+        border-radius: 12px;
+        padding: 30px;
+        box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1);
+        text-align: center;
+      }
 
-           padding-bottom: 200px;
-        }
+      .container1 {
+        padding-bottom: 200px;
+      }
 
-    
-    
-        /* Ændret her: farven er nu rød */
-        .role-title {
-            font-size: 1.8rem;
-            font-weight: bold;
-            margin-bottom: 1rem;
-            color: #333;
-        }
-    
-        .role-description {
-            font-size: 1rem;
-            color: #666;
-            margin-bottom: 1.5rem;
-            line-height: 1.5;
-        }
-    
-        /* Knap styling */
-        .role-btn {
-            color: #fff;
-            text-align: center;
-            font-size: 1.2rem;
-            font-weight: bold;
-            padding: 10px 20px;
-            border-radius: 8px;
-            text-decoration: none;
-            transition: all 0.3s ease;
-        }
-    
-        .admin-container .role-btn {
-            background-color:#a1876e;
-        }
-    
-        .consumer-container .role-btn {
-            background-color: #a1876e; 
-        }
-    
-        .role-btn:hover {
-            transform: translateY(-2px);
-            box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
-        }
+      .Container2 {
+        padding-bottom: 200px;
+      }
 
-      .title{
+      /* Ændret her: farven er nu rød */
+      .role-title {
+        font-size: 1.8rem;
+        font-weight: bold;
+        margin-bottom: 1rem;
+        color: #333;
+      }
 
+      .role-description {
+        font-size: 1rem;
+        color: #666;
+        margin-bottom: 1.5rem;
+        line-height: 1.5;
+      }
+
+      /* Knap styling */
+      .role-btn {
+        color: #fff;
+        text-align: center;
+        font-size: 1.2rem;
+        font-weight: bold;
+        padding: 10px 20px;
+        border-radius: 8px;
+        text-decoration: none;
+        transition: all 0.3s ease;
+      }
+
+      .admin-container .role-btn {
+        background-color: #a1876e;
+      }
+
+      .consumer-container .role-btn {
+        background-color: #a1876e;
+      }
+
+      .role-btn:hover {
+        transform: translateY(-2px);
+        box-shadow: 0px 6px 10px rgba(0, 0, 0, 0.15);
+      }
+
+      .title {
         padding-top: 30px;
       }
-    
-        /* Responsiv styling */
-        @media (max-width: 768px) {
-            .d-flex.flex-row {
-                flex-direction: column;
-                gap: 20px;
-            }
+
+      /* Responsiv styling */
+      @media (max-width: 768px) {
+        .d-flex.flex-row {
+          flex-direction: column;
+          gap: 20px;
         }
+      }
     </style>
-</head>
-<body>
-    <main class="w-full h-100vh d-flex flex-col p-items-center bg-light-gradient">
-        <div class="header text-center">
-            <div class="title">
-                
-          
-            <h1 class="site-name">SPIS</h1>
+  </head>
+  <body>
+    <main
+      class="w-full h-100vh d-flex flex-col p-items-center bg-light-gradient"
+    >
+      <div class="header text-center">
+        <div class="title">
+          <h1 class="site-name">SPIS</h1>
         </div>
-        </div>
-        
-        <div class="d-flex flex-row gap-8 my-auto p-items-center">
-            <!-- Admin Container -->
-            <div class="container1">
-            <div class="role-container admin-container d-flex flex-col p-6 rounded shadow">
-                <h2 class="role-title text-c-green">Admin</h2>
-                <p class="role-description text-gray">
-                    Administrér hjemmesiden, tilføj produkter, og overvåg brugeraktivitet.
-                </p>
-                <a href="/admin" class="role-btn d-flex a-items-center j-content-center">
-                    Vælg Admin
-                </a>
-            </div>
+      </div>
+
+      <div class="d-flex flex-row gap-8 my-auto p-items-center">
+        <!-- Admin Container -->
+        <div class="container1">
+          <div
+            class="role-container admin-container d-flex flex-col p-6 rounded shadow"
+          >
+            <h2 class="role-title text-c-green">Admin</h2>
+            <p class="role-description text-gray">
+              Administrér hjemmesiden, tilføj produkter, og overvåg
+              brugeraktivitet.
+            </p>
+            <a
+              href="/admin"
+              class="role-btn d-flex a-items-center j-content-center"
+            >
+              Vælg Admin
+            </a>
+          </div>
         </div>
 
-      
-
-            <!-- Consumer Container -->
-            <div class="Container2">
-            <div class="role-container consumer-container d-flex flex-col p-6 rounded shadow">
-                <h2 class="role-title text-c-blue">Consumer</h2>
-                <p class="role-description text-gray">
-                    Udforsk og køb lækker mad direkte fra vores menu.
-                </p>
-                <a href="/consumer" class="role-btn d-flex a-items-center j-content-center">
-                    Vælg Consumer
-                </a>
-            </div>
+        <!-- Consumer Container -->
+        <div class="Container2">
+          <div
+            class="role-container consumer-container d-flex flex-col p-6 rounded shadow"
+          >
+            <h2 class="role-title text-c-blue">Consumer</h2>
+            <p class="role-description text-gray">
+              Udforsk og køb lækker mad direkte fra vores menu.
+            </p>
+            <a
+              href="/consumer"
+              class="role-btn d-flex a-items-center j-content-center"
+            >
+              Vælg Consumer
+            </a>
+          </div>
         </div>
-        </div>
+      </div>
     </main>
-</body>
+  </body>
 </html>
 
 {% include "_bottom.html" %}
-
-
-
-
-
-
-
-
-
-
-
-<!-- 
-{% include "_top.html" %}
-
-<main class="w-full h-100vh d-flex flex-col p-items-center">
-    <div class="sideName"><h1>SPIS</h1></div>
-    <div class="d-flex flex-col gap-4 my-auto p-items-center">
-       
-        {% for role in user.get("roles"): %}
-        <a href="/{{role}}" 
-        class="d-flex a-items-center j-content-center h-12 w-100% px-10 rounded-4
-        border border-1 bg-c-green text-c-white"
-        >
-            {{ role }}
-        </a>
-        {% endfor %}
-    </div>
-</main>
-
-{% include "_bottom.html" %} -->

@@ -2,132 +2,134 @@
 <!-- <link rel="stylesheet" href="{{ url_for('static', filename='customer.css') }}"> -->
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='customer.css') }}">
-    <link rel="stylesheet" href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css" integrity="sha512-..." crossorigin="anonymous" referrerpolicy="no-referrer" />
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='customer.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-..."
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
     <title>Document</title>
-</head>
-<body>
+  </head>
+  <body>
     <div class="welcome">
-        <h1>Welcome, {{ user.user_name }}!</h1>
-        <!-- Partner-specific content -->
-        </div>
-    
-    <main class="customer-main">
-        
-        <div class="partner-actions">
-            <a href="#" class="btn btn-primary active" >Shops</a>
-            <a href="#" class="btn btn-danger">Restaurants</a>
-            <a href="#" class="btn btn-danger">Explore</a>
-        </div>
-
-        <div class="restauranter">
-        <h1>Alle restauranter:</h1>
+      <h1>Welcome, {{ user.user_name }}!</h1>
+      <!-- Partner-specific content -->
     </div>
-        <div class="card-container">
-            <div class="card">
-                <img src="{{ url_for('static', filename='images/image_15.jpg') }}" alt="Card1">
-            <div class="card-content">
-                <h3>McDonald's</h3>
-                <h4 class="ret">Cheeseburger</h4>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus numquam dolore illo exercitationem vero aliquam.</p>
-                
-                <hr>
-                <div class="card-footer">
-                    <div class="price-and-stars">
-                        <p class="price">120 kr</p>
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
-                        </div>
-                    </div>
-                    <a href="#" class="btn">Buy</a>
+
+    <main class="customer-main">
+      <div class="partner-actions">
+        <a href="#" class="btn btn-primary active">Shops</a>
+        <a href="#" class="btn btn-danger">Restaurants</a>
+        <a href="#" class="btn btn-danger">Explore</a>
+      </div>
+
+      <div class="restauranter">
+        <h1>Alle restauranter:</h1>
+      </div>
+      <div class="card-container">
+        <div class="card">
+          <img
+            src="{{ url_for('static', filename='images/image_15.jpg') }}"
+            alt="Card1"
+          />
+          <div class="card-content">
+            <h3>McDonald's</h3>
+            <h4 class="ret">Cheeseburger</h4>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus
+              numquam dolore illo exercitationem vero aliquam.
+            </p>
+
+            <hr />
+            <div class="card-footer">
+              <div class="price-and-stars">
+                <p class="price">120 kr</p>
+                <div class="stars">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="far fa-star"></i>
                 </div>
-        </div>
+              </div>
+              <a href="#" class="btn">Buy</a>
             </div>
+          </div>
+        </div>
 
-            <div class="card">
-                <img src="{{ url_for('static', filename='images/image_15.jpg') }}" alt="Card1">
-            <div class="card-content">
-                <h3>McDonald's</h3>
-                <h4 class="ret">Cheeseburger</h4>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus numquam dolore illo exercitationem vero aliquam.</p>
-                
-                <hr>
-                <div class="card-footer">
-                    <div class="price-and-stars">
-                        <p class="price">120 kr</p>
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
-                        </div>
-                    </div>
-                    <a href="#" class="btn">Buy</a>
+        <div class="card">
+          <img
+            src="{{ url_for('static', filename='images/image_15.jpg') }}"
+            alt="Card1"
+          />
+          <div class="card-content">
+            <h3>McDonald's</h3>
+            <h4 class="ret">Cheeseburger</h4>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus
+              numquam dolore illo exercitationem vero aliquam.
+            </p>
+
+            <hr />
+            <div class="card-footer">
+              <div class="price-and-stars">
+                <p class="price">120 kr</p>
+                <div class="stars">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="far fa-star"></i>
                 </div>
-        </div>
+              </div>
+              <a href="#" class="btn">Buy</a>
             </div>
+          </div>
+        </div>
 
-            <div class="card">
-                <img src="{{ url_for('static', filename='images/image_15.jpg') }}" alt="Card1">
-            <div class="card-content">
-                <h3>McDonald's</h3>
-                <h4 class="ret">Cheeseburger</h4>
-                <p>Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus numquam dolore illo exercitationem vero aliquam.</p>
-                
-                <hr>
-                <div class="card-footer">
-                    <div class="price-and-stars">
-                        <p class="price">120 kr</p>
-                        <div class="stars">
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="fas fa-star"></i>
-                            <i class="far fa-star"></i>
-                        </div>
-                    </div>
-                    <a href="#" class="btn">Buy</a>
+        <div class="card">
+          <img
+            src="{{ url_for('static', filename='images/image_15.jpg') }}"
+            alt="Card1"
+          />
+          <div class="card-content">
+            <h3>McDonald's</h3>
+            <h4 class="ret">Cheeseburger</h4>
+            <p>
+              Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus
+              numquam dolore illo exercitationem vero aliquam.
+            </p>
+
+            <hr />
+            <div class="card-footer">
+              <div class="price-and-stars">
+                <p class="price">120 kr</p>
+                <div class="stars">
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="fas fa-star"></i>
+                  <i class="far fa-star"></i>
                 </div>
-        </div>
+              </div>
+              <a href="#" class="btn">Buy</a>
             </div>
-            
-
+          </div>
         </div>
-
-
-
-
-
-
-
-
-
-
-
-
-
-
+      </div>
     </main>
 
-
-
-
-
-
-
-    
     {% include "_bottom.html" %}
-</body>
+  </body>
 </html>
-
 
 <!-- <script>
     // Vælg alle knapper
