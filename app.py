@@ -75,17 +75,7 @@ def view_signup():
 ##############################
 @app.get("/forgot_password")
 @x.no_cache
-def view_forgot_password():  
-    # ic(session)
-    # if session.get("user"):
-    #     if len(session.get("user").get("roles")) > 1:
-    #         return redirect(url_for("view_choose_role")) 
-    #     if "admin" in session.get("user").get("roles"):
-    #         return redirect(url_for("view_admin"))
-    #     if "customer" in session.get("user").get("roles"):
-    #         return redirect(url_for("view_customer")) 
-    #     if "partner" in session.get("user").get("roles"):
-    #         return redirect(url_for("view_partner"))         
+def view_forgot_password():     
     return render_template("view_forgot_password.html", x=x, title="ForgotPassword")
 
 
@@ -178,8 +168,6 @@ def logout():
     flash("You have been logged out.", "info")
     return redirect(url_for("view_login"))
     
-
-
 ##############################
 @app.post("/users")
 @x.no_cache
@@ -249,76 +237,6 @@ def signup():
     finally:
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
-
-# ##############################
-# @app.post("/password")
-# @x.no_cache
-# def forgot_password():
-#     try:
-#         user_name = x.validate_user_name()
-#         user_last_name = x.validate_user_last_name()
-#         user_email = x.validate_user_email()
-#         user_password = x.validate_user_password()
-#         user_role = x.validate_user_role()  # Validate and retrieve the selected role
-#         hashed_password = generate_password_hash(user_password)
-        
-#         user_pk = str(uuid.uuid4())
-#         user_avatar = ""
-#         user_created_at = int(time.time())
-#         user_deleted_at = 0
-#         user_blocked_at = 0
-#         user_updated_at = 0
-#         user_verified_at = 0
-#         user_verification_key = str(uuid.uuid4())
-#         user_selected_role = x.get_role_pk(user_role)  # Retrieve role_pk
-        
-#         db, cursor = x.db()
-
-#         q = '''
-#             INSERT INTO users (
-#                 user_pk, user_name, user_last_name, user_email, 
-#                 user_password, user_created_at, user_deleted_at, user_blocked_at, 
-#                 user_updated_at, user_avatar, user_verified_at, 
-#                 user_verification_key
-#             ) VALUES (%s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s, %s)
-#         '''
-#         cursor.execute(q, (
-#             user_pk, user_name, user_last_name, user_email, 
-#             hashed_password, user_created_at, user_deleted_at, user_blocked_at, 
-#             user_updated_at, user_avatar, user_verified_at, 
-#             user_verification_key
-#         ))
-
-#         q_add_role = """
-#             INSERT INTO users_roles (user_role_user_fk, user_role_role_fk) 
-#             VALUES (%s, %s)
-#         """
-#         cursor.execute(q_add_role, (user_pk, user_selected_role))
-        
-#         x.send_verify_email(to_email=user_email, 
-#                             user_verification_key=user_verification_key)
-#         db.commit()
-    
-#         return """<template mix-redirect="/login"></template>""", 201
-    
-#     except Exception as ex:
-#         ic(ex)
-#         if "db" in locals(): db.rollback()
-#         if isinstance(ex, x.CustomException): 
-#             toast = render_template("___toast.html", message=ex.message)
-#             print ("test1")
-#             return f"""<template mix-target="#toast" mix-bottom>{toast}</template>""", ex.code    
-#         if isinstance(ex, x.mysql.connector.Error):
-#             print ("test2")
-#             ic(ex)
-#             if "users.user_email" in str(ex): 
-#                 toast = render_template("___toast.html", message="Email not available")
-#                 return f"""<template mix-target="#toast" mix-bottom>{toast}</template>""", 400
-#             return f"""<template mix-target="#toast" mix-bottom>System upgrading</template>""", 500        
-#         return f"""<template mix-target="#toast" mix-bottom>System under maintenance</template>""", 500    
-#     finally:
-#         if "cursor" in locals(): cursor.close()
-#         if "db" in locals(): db.close()
 
 ##############################
 @app.post("/login")

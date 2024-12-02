@@ -2,79 +2,65 @@
 
 <!DOCTYPE html>
 <html lang="en">
-<head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='login.css') }}">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='login.css') }}"
+    />
     <title>Document</title>
-</head>
-<body>
-    
-<main 
-    class="w-full h-100vh d-flex p-items-center"
->
-    <section 
-        class="bg-c-blue p-4 border-rounded shadow mx-auto w-30%"
-    >
+  </head>
+  <body>
+    <main class="w-full h-100vh d-flex p-items-center">
+      <section class="bg-c-blue p-4 border-rounded shadow mx-auto w-30%">
         <!-- Brugercirkel -->
         <div>
-           <h1>Login på din konto</h1> <!-- Brugersymbol -->
+          <h1>Login på din konto</h1>
+          <!-- Brugersymbol -->
         </div>
 
         <form id="frm_user_login" class="w-full d-flex flex-col gap-4">
-            
-            <div class="text-c-green text-200">
-                {{ message }}
-            </div>
-            
-            <div class="d-flex flex-col">
-                <label for="user_email">
-                    <span>email</span>
-                </label>
-                <input 
-                    name="user_email" 
-                    type="text" 
-                    mix-check="{{ x.REGEX_EMAIL }}"
-                >
-            </div>
+          <div class="text-c-green text-200">{{ message }}</div>
 
-            <div class="d-flex flex-col">
-                <label for="user_password" class="d-flex">
-                    <span>password</span>
-                    <span class="ml-auto text-c-gray:+25">{{ x.USER_PASSWORD_MIN }} to {{ x.USER_PASSWORD_MAX }} chars</span>
-                </label>
-                <input 
-                    name="user_password" 
-                    type="text" 
-                    mix-check="{{ x.REGEX_USER_PASSWORD }}"
-                >
-            </div>
+          <div class="d-flex flex-col">
+            <label for="user_email">
+              <span>email</span>
+            </label>
+            <input
+              name="user_email"
+              type="text"
+              mix-check="{{ x.REGEX_EMAIL }}"
+            />
+          </div>
 
-            <button 
-                mix-post="/login" 
-                mix-data="#frm_user_login"
-            >
-                Login
-            </button>
+          <div class="d-flex flex-col">
+            <label for="user_password" class="d-flex">
+              <span>password</span>
+              <span class="ml-auto text-c-gray:+25"
+                >{{ x.USER_PASSWORD_MIN }} to {{ x.USER_PASSWORD_MAX }}
+                chars</span
+              >
+            </label>
+            <input
+              name="user_password"
+              type="text"
+              mix-check="{{ x.REGEX_USER_PASSWORD }}"
+            />
+          </div>
 
+          <button mix-post="/login" mix-data="#frm_user_login">Login</button>
 
-            <a
-            href="{{url_for('view_forgot_password')}}"
-            class="text-a-center">
+          <a href="{{url_for('view_forgot_password')}}" class="text-a-center">
             Forgot Password?
-            </a>
+          </a>
 
-            <a 
-                href="{{url_for('view_signup')}}" 
-                class="text-a-center"
-            >
-                Signup
-            </a>
-
+          <a href="{{url_for('view_signup')}}" class="text-a-center">
+            Signup
+          </a>
         </form>
-    </section>
-
-</main>
-</body>
+      </section>
+    </main>
+  </body>
 </html>
 {% include "_bottom.html" %}
