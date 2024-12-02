@@ -200,6 +200,46 @@ def send_verify_email(to_email, user_verification_key):
     finally:
         pass
 
+
+##############################
+def send_forgot_password_email(to_email, user_verification_key):
+    try:
+        # Create a gmail fullflaskdemomail
+        # Enable (turn on) 2 step verification/factor in the google account manager
+        # Visit: https://myaccount.google.com/apppasswords
+
+
+        # Email and password of the sender's Gmail account
+        sender_email = "spis.eksamen.2024@gmail.com"
+        password = "bstw jflj vjdg kvxk"  # If 2FA is on, use an App Password instead
+
+        # Receiver email address
+        receiver_email = to_email
+        
+        # Create the email message
+        message = MIMEMultipart()
+        message["From"] = "SPIS exam project 2024"
+        message["To"] = receiver_email
+        message["Subject"] = "Reset your password here"
+
+        # Body of the email
+        body = f"""To reset your password, please <a href="http://127.0.0.1/change_password/{user_verification_key}">click here</a>"""
+        message.attach(MIMEText(body, "html"))
+
+        # Connect to Gmail's SMTP server and send the email
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            server.starttls()  # Upgrade the connection to secure
+            server.login(sender_email, password)
+            server.sendmail(sender_email, receiver_email, message.as_string())
+        print("Email sent successfully!")
+
+        return "email sent"
+    
+    except Exception as ex:
+        raise_custom_exception("cannot send email", 500)
+    finally:
+        pass
+
 ################
 
 def send_deletion_info_email(to_email):
