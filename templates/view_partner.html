@@ -9,21 +9,21 @@
         
         <div class="d-flex flex-col">
             <label for="user_name">
-                <span>Name</span>
+                <p>Name</p>
             </label>
             <input name="user_name" type="text" mix-check="{{ x.USER_NAME_REGEX }}" value="{{ user.user_name }}" required>
         </div>
 
         <div class="d-flex flex-col">
             <label for="user_last_name">
-                <span>Last Name</span>
+                <p>Last Name</p>
             </label>
             <input name="user_last_name" type="text" mix-check="{{ x.USER_LAST_NAME_REGEX }}" value="{{ user.user_last_name }}" required>
         </div>        
 
         <div class="d-flex flex-col">
             <label for="user_email">
-                <span>Email</span>
+                <p>Email</p>
             </label>
             <input name="user_email" type="email" mix-check="{{ x.REGEX_EMAIL }}" value="{{ user.user_email }}" required>
         </div>
@@ -36,7 +36,13 @@
             <a href="{{ url_for('view_partner') }}" class="btn btn-secondary">Cancel</a>
         </div>
     </form>
+
+
+    {% include "_bottom.html" %}
     
+</main>
+
+
     <style>
         /* Styles similar to signup form */
         body {
@@ -44,7 +50,7 @@
             background-color: #f5f5f5;
         }
     
-        #frm_edit_profile label span {
+        #frm_edit_profile label p {
             font-weight: bold;
             margin-bottom: 0.1rem;
             display: block;
@@ -62,6 +68,7 @@
     
         #frm_edit_profile button {
             width: 100%;
+            max-width: 300px;
             padding: 0.5rem;
             background-color: #007bff;
             border: none;
@@ -89,6 +96,7 @@
         .btn{
             max-width: 66%;
             margin: auto;
+            
         }
     
         #frm_edit_profile a.btn-secondary:hover {
@@ -115,10 +123,33 @@
             padding: 2em;
             max-width: 90%;
         }
-    </style>
-</main>
 
-{% include "_bottom.html" %}
+
+        h1{
+            font-size: 6em;
+        }
+
+        p{
+            font-size: 3em;
+        }
+
+
+
+        @media (min-width: 1000px) {
+  /* Your styles for screens 1000px and wider */
+  h1 {
+    font-size: 3em;
+  }
+
+  p{
+    font-size: 3em;
+  }
+}
+
+    </style>
+
+
+
 
 
 

@@ -80,7 +80,6 @@
     margin: 2em auto;
     padding: 2em;
     max-width: 90%;
-    width: 400px; /* Optional: Adjust the form width */
 }
 
 form {
@@ -119,6 +118,8 @@ form label {
     }
     a{
         width: 100%;
+        max-width: 400px;
+        font-size: 1em;
     }
 }
 
@@ -132,6 +133,7 @@ form input {
 }
 
 form button {
+    max-width: 420px;
     padding: 0.75rem;
     background-color: #dbe1eb;
     border: none;
@@ -162,6 +164,27 @@ form a:hover {
     background-color: #d6d1cb; /* Slightly darker for hover effect */
 }
 
+
+h1{
+            font-size: 3em;
+        }
+
+        p{
+            font-size: 1em;
+        }
+
+
+
+        @media (min-width: 1000px) {
+  /* Your styles for screens 1000px and wider */
+  h1 {
+    font-size: 3em;
+  }
+
+  p{
+    font-size: 1em;
+  }
+}
 
 </style>
 
