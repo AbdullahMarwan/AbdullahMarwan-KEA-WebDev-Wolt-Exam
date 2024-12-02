@@ -1,86 +1,180 @@
 {% include "_top.html" %}
 
-<main 
-    class="w-full h-100vh d-flex p-items-center"
-    style="background-color: #ebe3db;" <!-- Baggrundsfarve -->
->
-    <section 
-        class="bg-c-blue p-4 border-rounded shadow mx-auto w-30%"
-        style="
-            background-color: #fdfdfd;
-            padding: 2rem;
-            border-radius: 0.5rem;
-            box-shadow: 0 4px 6px rgba(0, 0, 0, 0.357);
-            display: flex;
-            flex-direction: column;
-            align-items: center;
-        "
-    >
-        <!-- Brugercirkel -->
-        <div >
-         
-           <h1>Login på din konto</h1> <!-- Brugersymbol -->
+<main class="main-login">
 
+    <section>
+        <div >
+           <h1>Login to your account</h1> <!-- Brugersymbol -->
         </div>
 
         <form id="frm_user_login" class="w-full d-flex flex-col gap-4">
             
-            <div class="text-c-green text-200">
+            <!-- TODO: Make message work! -->
+            <div id="login-message" class="text-c-green text-200"> 
                 {{ message }}
             </div>
             
             <div class="d-flex flex-col">
                 <label for="user_email">
-                    <span>email</span>
+                    <span>Enter your E-mail</span>
                 </label>
                 <input 
                     name="user_email" 
                     type="text" 
-                    mix-check="{{ x.REGEX_EMAIL }}" 
-                    style="padding: 0.5rem; border: 1px solid #ccc; border-radius: 0.25rem;"
-                >
+                    mix-check="{{ x.REGEX_EMAIL }}"                 >
             </div>
 
             <div class="d-flex flex-col">
                 <label for="user_password" class="d-flex">
-                    <span>password</span>
-                    <span class="ml-auto text-c-gray:+25">{{ x.USER_PASSWORD_MIN }} to {{ x.USER_PASSWORD_MAX }} chars</span>
+                    <span>Enter your password</span>
+                    
+                    <span>{{ x.USER_PASSWORD_MIN }} to {{ x.USER_PASSWORD_MAX }} chars</span>
                 </label>
                 <input 
                     name="user_password" 
                     type="text" 
-                    mix-check="{{ x.REGEX_USER_PASSWORD }}" 
-                    style="padding: 0.5rem; border: 1px solid #ccc; border-radius: 0.25rem;"
-                >
+                    mix-check="{{ x.REGEX_USER_PASSWORD }}"                 >
             </div>
 
             <button 
                 mix-post="/login" 
-                mix-data="#frm_user_login" 
-                style="padding: 0.75rem; background-color: #ebe3db; border: none; border-radius: 0.25rem; cursor: pointer; font-size: 1rem; margin-top: 1rem;"
-            >
+                mix-data="#frm_user_login"             >
                 Login
             </button>
 
-            <a 
-            href="{{url_for('view_forgot_password')}}" 
-            class="text-a-center" 
-            style="padding: 0.75rem; color: rgb(0, 0, 0); text-decoration: none; margin-top: 0.5rem; font-size: 1rem; background-color: #ebe3db;"
-        >
+            <a
+            href="{{url_for('view_forgot_password')}}"
+            class="text-a-center">
             Forgot Password?
-        </a>
-
-            <a 
-                href="{{url_for('view_signup')}}" 
-                class="text-a-center" 
-                style="padding: 0.75rem; color: rgb(0, 0, 0); text-decoration: none; margin-top: 0.5rem; font-size: 1rem; background-color: #ebe3db;"
-            >
-                Signup
             </a>
+
+            <div class="signup-container">
+                
+                <p>don't have an account?
+
+                    <a 
+                        href="{{url_for('view_signup')}}" 
+                        class="text-a-center"             >
+                        Signup
+                    </a>
+                </p>
+            </div>
 
         </form>
     </section>
 
 </main>
 
+
+
 {% include "_bottom.html" %}
+
+<style>
+  .display-hidden {
+    display: none !important;
+  }
+
+  .main-login {
+    margin: 2em 0em 2em 0em;
+    margin: auto;
+    padding: 2em;
+    max-width: 90%;
+  }
+
+  .main-login {
+    margin: 2em auto;
+    padding: 2em;
+    max-width: 90%;
+    width: 400px; /* Optional: Adjust the form width */
+  }
+
+  form {
+    display: flex;
+    flex-direction: column;
+    gap: 1rem; /* Space between input groups */
+  }
+
+  #frm_user_login {
+    margin: 2em 0em 0em 0em;
+
+    div {
+      margin-bottom: 1em;
+    }
+  }
+
+  form .d-flex {
+    display: flex;
+    flex-direction: column;
+  }
+
+  form label {
+    margin-bottom: 0.5rem;
+    font-size: 1rem;
+    font-weight: bold; /* Optional for emphasis */
+  }
+
+  .signup-container {
+    display: block;
+    align-items: center;
+    justify-content: left;
+    width: 100%;
+
+    p {
+      padding: 1em 0em 0em 0em;
+    }
+    a {
+      width: 100%;
+    }
+  }
+
+  form input {
+    padding: 0.5rem;
+    border: 1px solid #ccc;
+    border-radius: 0.25rem;
+    font-size: 1rem;
+    width: 100%; /* Ensures inputs are the same width */
+    box-sizing: border-box; /* Includes padding in width calculation */
+  }
+
+  form button {
+    padding: 0.75rem;
+    background-color: #dbe1eb;
+    border: none;
+    border-radius: 0.25rem;
+    cursor: pointer;
+    font-size: 1rem;
+    text-align: center;
+    transition: background-color 0.3s ease;
+  }
+
+  form button:hover {
+    background-color: #d6d1cb; /* Slightly darker for hover effect */
+  }
+
+  form a {
+    text-align: center;
+    display: block;
+    margin-top: 0.5rem;
+    color: black;
+    text-decoration: none;
+    background-color: #dbe1eb;
+    padding: 0.75rem;
+    border-radius: 0.25rem;
+    transition: background-color 0.3s ease;
+  }
+
+  form a:hover {
+    background-color: #d6d1cb; /* Slightly darker for hover effect */
+  }
+</style>
+
+<script>
+  document.addEventListener("DOMContentLoaded", function () {
+    const loginMessage = document.getElementById("login-message");
+    const messageContent = loginMessage.textContent.trim();
+
+    if (!messageContent || messageContent.length === 0) {
+      loginMessage.classList.add("display-hidden");
+    }
+  });
+</script>
