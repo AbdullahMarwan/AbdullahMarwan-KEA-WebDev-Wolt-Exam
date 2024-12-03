@@ -1,0 +1,18 @@
+<div class="edit-item-form">
+  <h2>Edit Item</h2>
+  <form action="{{ url_for('restaurant_edit_item', item_id=item['item_pk']) }}" method="POST" enctype="multipart/form-data">
+    <div class="form-group">
+      <label for="item_title">Item Title:</label>
+      <input type="text" id="item_title" name="item_title" value="{{ item['item_title'] }}" required>
+    </div>
+    <div class="form-group">
+      <label for="item_price">Item Price:</label>
+      <input type="text" id="item_price" name="item_price" value="{{ item['item_price'] }}" required>
+    </div>
+    <div class="form-group">
+      <label for="item_image">Item Image:</label>
+      <input type="file" id="item_image" name="item_image">
+    </div>
+    <button type="submit" class="btn btn-primary">Save Changes</button>
+  </form>
+</div>

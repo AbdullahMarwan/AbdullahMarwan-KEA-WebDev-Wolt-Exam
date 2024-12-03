@@ -1,0 +1,59 @@
+{% include "_top_logged.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='/css/admin.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='/css/customer.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-..."
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <title>Your Restaurant</title>
+  </head>
+  <body>
+    <div class="welcome">
+      <h1>Welcome, {{ user.user_name }}!</h1>
+    </div>
+
+    <main class="customer-main">
+      <div class="partner-actions">
+        <a
+          href="/restaurant/items/{{ user.user_pk }}"
+          class="btn btn-primary {% if view == 'items' %} active {% endif %}"
+          >Items</a
+        >
+        <a
+          href="/restaurant/add_item"
+          class="btn btn-danger {% if view == 'add_item' %} active {% endif %}"
+          >Add new item</a
+        >
+      </div>
+
+      <!-- Include the item list only if the view is 'items' -->
+      {% if view == 'items' %} {% include "_restaurant_show_items.html" %} {%
+      endif %}
+
+      <!-- Include the form for adding an item only if the view is 'add_item' -->
+      {% if view == 'add_item' %} {% include "_restaurant_add_item.html" %} {%
+      endif %}
+
+
+      <!-- Include the form for editing an item only if the view is 'edit_item' -->
+      {% if view == 'edit_item' %} {% include "_restaurant_edit_item.html" %} {%
+        endif %}
+    </main>
+
+    {% include "_bottom.html" %}
+  </body>
+</html>
