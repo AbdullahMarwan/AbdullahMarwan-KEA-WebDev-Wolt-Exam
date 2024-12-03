@@ -7,6 +7,26 @@
     />
 </head>
 
+
+ <section class="users-list">
+    <!-- Debugging: Print the entire users object -->
+    
+    {% if users %}
+        {% for user in users %}
+            <!-- Accessing the individual user fields correctly -->
+            <h1>{{ user['user_pk'] }}</h1>
+            <p>{{ user['user_name'] }}</p>
+        {% endfor %}
+    {% else %}
+        <p>No users found</p>
+    {% endif %}
+</section>
+   
+ 
+ 
+ 
+<!-- <div> {{ user_list }} </div> -->
+
 <section class="item-list">
     <h1>Item List</h1>
     {% if items %}

@@ -32,7 +32,7 @@ def _________GET_________(): pass
 def showItemList():
     try:
         db, cursor = x.db()
-        q = "SELECT `item_title`, `item_price`, `item_image` FROM `items`"
+        q = "SELECT `item_title`, `item_price`, `item_image` FROM `items` LIMIT 20"
         cursor.execute(q)
         items = cursor.fetchall()
         print("Items fetched from database:", items)  # Debugging: Check the raw data
@@ -154,16 +154,34 @@ def view_partner():
 @app.get("/admin")
 @x.no_cache
 def view_admin():
-    if not session.get("user", ""): 
-        return redirect(url_for("view_login"))
-    user = session.get("user")
-    if not "admin" in user.get("roles", ""):
-        return redirect(url_for("view_login"))
+    try:
+        if not session.get("user", ""): 
+            return redirect(url_for("view_login"))
+        user = session.get("user")
+        if not "admin" in user.get("roles", ""):
+            return redirect(url_for("view_login"))
 
-    # Fetch items using the helper function
-    items = showItemList()
-    return render_template("view_admin.html", items=items)
 
+        db, cursor = x.db()  # Use x.db() for consistent DB connection and cursor
+        q = "SELECT `user_pk`, `user_name` FROM `users`"
+        cursor.execute(q)
+        users = cursor.fetchall()  # Fetch the result as a dictionary or tuple, depending on the cursor setup
+
+
+        # Fetch items using the helper function
+        items = showItemList()
+        return render_template("view_admin.html", items=items, users=users)
+
+ 
+    except Exception as ex:
+        if isinstance(ex, x.mysql.connector.Error):
+            return f"""<template mix-target="#toast" mix-bottom>Database error occurred.</template>""", 500
+           
+        return f"""<template mix-target="#toast" mix-bottom>System under maintenance.</template>""", 500
+           
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
 
 ##############################
 @app.get("/choose-role")
