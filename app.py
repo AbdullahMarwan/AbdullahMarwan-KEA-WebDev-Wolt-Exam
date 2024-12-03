@@ -243,7 +243,7 @@ def restaurant_add_item():
         ) VALUES (%s, %s, %s, %s, %s)
         '''
         cursor.execute(q, (
-            item_pk, item_user_fk, item_title, item_price, image_path
+            item_pk, item_user_fk, item_title, item_price, filename
         ))
         
         db.commit()  # Commit changes to the database
