@@ -18,18 +18,23 @@
                 <li><strong>Deleted At:</strong> {{ user['user_deleted_at'] }}</li>
                 <li><strong>Blocked At:</strong> {{ user['user_blocked_at'] }}</li>
                 <li><strong>Verified At:</strong> {{ user['user_verified_at'] }}</li>
-            {% if user["user_blocked_at"] == 0 %}
-                {% include "___btn_block_user.html" %}
-            {% else %}
-                {% include "___btn_unblock_user.html" %}
-            {% endif %}
+                <form action="/admin/user-list/block" method="post">
+                    <input type="hidden" name="user_pk" value="{{ user['user_pk'] }}">
+                    {% if user['user_blocked_at'] == 0 %}
+                        <input type="hidden" name="action" value="block">
+                        <button type="submit">Block</button>
+                    {% else %}
+                        <input type="hidden" name="action" value="unblock">
+                        <button type="submit">Unblock</button>
+                    {% endif %}
+                </form>
             </ul>
-
         {% endfor %}
     {% else %}
         <p>No users found</p>
     {% endif %}
 </section>
+
 
 
 <section class="item-list">
