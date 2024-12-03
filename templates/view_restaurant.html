@@ -28,13 +28,11 @@
 
     <main class="customer-main">
       <div class="partner-actions">
-        <!-- Items button links to the restaurant's items page -->
         <a
           href="/restaurant/items/{{ user.user_pk }}"
           class="btn btn-primary {% if view == 'items' %} active {% endif %}"
           >Items</a
         >
-        <!-- Add new item button -->
         <a
           href="/restaurant/add_item"
           class="btn btn-danger {% if view == 'add_item' %} active {% endif %}"
@@ -42,8 +40,16 @@
         >
       </div>
 
+      <div class="restauranter">
+        <h1>Your restaurant items:</h1>
+      </div>
+
       <!-- Include the item list only if the view is 'items' -->
       {% if view == 'items' %} {% include "_restaurant_show_items.html" %} {%
+      endif %}
+
+      <!-- Include the form for adding an item only if the view is 'add_item' -->
+      {% if view == 'add_item' %} {% include "_restaurant_add_item.html" %} {%
       endif %}
     </main>
 

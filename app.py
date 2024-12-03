@@ -186,8 +186,7 @@ def restaurant_items(restaurant_id):
     items = showItemListByRestaurant(restaurant_id)  # Fetch items based on restaurant_id
     return render_template('view_restaurant.html', view='items', items=items, user=user)
 
-# Route for adding a new item (form page)
-@app.route('/restaurant/add_item')
+@app.route('/restaurant/add_item', methods=['GET', 'POST'])
 def restaurant_add_item():
     if not session.get("user", ""):
         return redirect(url_for("view_login"))
@@ -196,7 +195,22 @@ def restaurant_add_item():
     if "restaurant" not in user.get("roles", {}):
         return redirect(url_for("view_login"))
     
+    if request.method == 'POST':
+        # Get form data (title, price, image)
+        item_title = request.form.get('item_title')
+        item_price = request.form.get('item_price')
+        item_image = request.files.get('item_image')
+
+        # Process the data, e.g., store in the database
+        # (assuming a function to add the item exists in your app)
+        # Add the item to the database and handle the image upload
+        # You can then redirect to a confirmation or another page like 'items'
+        
+        # Assuming showItemListByRestaurant() fetches the latest items
+        return redirect(url_for('restaurant_items', restaurant_id=user.get('user_pk')))
+    
     return render_template('view_restaurant.html', view='add_item', user=user)
+
 
 ##############################
 @app.get("/partner")
