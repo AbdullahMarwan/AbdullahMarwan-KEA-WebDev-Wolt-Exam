@@ -47,6 +47,11 @@
       <!-- Include the form for adding an item only if the view is 'add_item' -->
       {% if view == 'add_item' %} {% include "_restaurant_add_item.html" %} {%
       endif %}
+
+
+      <!-- Include the form for editing an item only if the view is 'edit_item' -->
+      {% if view == 'edit_item' %} {% include "_restaurant_edit_item.html" %} {%
+        endif %}
     </main>
 
     {% include "_bottom.html" %}

@@ -253,6 +253,52 @@ def restaurant_add_item():
     
     return render_template('view_restaurant.html', view='add_item', user=user)
 
+@app.route('/restaurant/edit_item/<item_id>', methods=['GET', 'POST'])
+def restaurant_edit_item(item_id):
+    if not session.get("user", ""):
+        return redirect(url_for("view_login"))
+
+    user = session.get("user")
+    if "restaurant" not in user.get("roles", {}):
+        return redirect(url_for("view_login"))
+    
+    db, cursor = x.db()
+
+    # Fetch the item from the database by its item_id
+    cursor.execute("SELECT * FROM items WHERE item_pk = %s AND item_user_fk = %s", (item_id, user.get("user_pk")))
+    item = cursor.fetchone()
+
+    if not item:
+        return redirect(url_for('restaurant_items', restaurant_id=user.get('user_pk')))  # Redirect if item not found
+    
+    if request.method == 'POST':
+        # Handle form submission (updating item details)
+        item_title = request.form.get('item_title')
+        item_price = request.form.get('item_price')
+        item_image = request.files.get('item_image')
+
+        # Optional: process image upload if a new image is provided
+        if item_image and allowed_file(item_image.filename):
+            filename = secure_filename(item_image.filename)
+            image_path = os.path.join('dishes', filename)
+            item_image.save(image_path)
+        else:
+            image_path = item['item_image']  # Use existing image if no new image is provided
+
+        # Update item details in the database
+        cursor.execute('''
+            UPDATE items 
+            SET item_title = %s, item_price = %s, item_image = %s
+            WHERE item_pk = %s
+        ''', (item_title, item_price, image_path, item_id))
+        db.commit()
+
+        return redirect(url_for('restaurant_items', restaurant_id=user.get('user_pk')))
+
+    # Render the edit item form
+    return render_template('view_restaurant.html', view='edit_item', item=item, user=user)
+
+
 ##############################
 @app.get("/partner")
 @x.no_cache

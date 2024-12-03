@@ -14,14 +14,16 @@
       <div class="card-content">
         <!-- Display the item title -->
         <h3 class="card-title">
-          {{ item['item_title'] if item['item_title'] else 'No title available'
-          }}
+          {{ item['item_title'] if item['item_title'] else 'No title available' }}
         </h3>
 
         <!-- Display the item price -->
         <p class="card-price">
           {{ item['item_price'] if item['item_price'] else 'N/A' }} kr.
         </p>
+
+        <!-- Edit Button -->
+        <a href="{{ url_for('restaurant_edit_item', item_id=item['item_pk']) }}" class="btn btn-warning">Edit</a>
       </div>
     </article>
     {% endfor %}
