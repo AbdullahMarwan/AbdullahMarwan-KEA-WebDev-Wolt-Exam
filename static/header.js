@@ -14,17 +14,3 @@
 });
 
 
-
-// redirects button links in header
-document.getElementById("signupButton").addEventListener("click", function() {
-    navigateTo("{{ url_for('edit_profile') }}");
-});
-
-document.getElementById("loginButton").addEventListener("click", function() {
-    navigateTo("{{ url_for('edit_profile') }}");
-    console.log("hello")
-});
-
-function navigateTo(path) {
-    window.location.href = path; // Navigates to the provided path
-}

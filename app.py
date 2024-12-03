@@ -29,6 +29,29 @@ def inject_x():
 def _________GET_________(): pass
 
 ##############################
+def showItemList():
+    try:
+        db, cursor = x.db()
+        q = "SELECT `item_title`, `item_price`, `item_image` FROM `items`"
+        cursor.execute(q)
+        items = cursor.fetchall()
+        print("Items fetched from database:", items)  # Debugging: Check the raw data
+        return items
+    except Exception as ex:
+        print(f"Error fetching items: {ex}")
+        return []  # Return empty list in case of error
+    finally:
+        if "cursor" in locals():
+            cursor.close()
+        if "db" in locals():
+            db.close()
+
+
+
+
+
+
+
 ##############################
 
 ##############################
@@ -136,8 +159,10 @@ def view_admin():
     user = session.get("user")
     if not "admin" in user.get("roles", ""):
         return redirect(url_for("view_login"))
-    return render_template("view_admin.html")
 
+    # Fetch items using the helper function
+    items = showItemList()
+    return render_template("view_admin.html", items=items)
 
 
 ##############################
