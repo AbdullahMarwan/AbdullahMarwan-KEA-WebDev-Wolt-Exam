@@ -1,0 +1,32 @@
+<section class="item-list">
+  <h1>Item List</h1>
+  {% if items %}
+  <div class="item-list">
+    {% for item in items %}
+    <article class="item-card">
+      <!-- Display the image if available, otherwise a default image -->
+      <img
+        src="{{ item['item_image'] if item['item_image'] else './images/image_15.jpg' }}"
+        alt="{{ item['item_title'] }}"
+        class="card-img"
+      />
+
+      <div class="card-content">
+        <!-- Display the item title -->
+        <h3 class="card-title">
+          {{ item['item_title'] if item['item_title'] else 'No title available'
+          }}
+        </h3>
+
+        <!-- Display the item price -->
+        <p class="card-price">
+          {{ item['item_price'] if item['item_price'] else 'N/A' }} kr.
+        </p>
+      </div>
+    </article>
+    {% endfor %}
+  </div>
+  {% else %}
+  <p>No items found.</p>
+  {% endif %}
+</section>

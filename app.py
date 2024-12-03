@@ -46,12 +46,12 @@ def showItemList():
         if "db" in locals():
             db.close()
 
-##############################
+# Function to fetch items based on restaurant ID
 def showItemListByRestaurant(restaurant_id):
     try:
         db, cursor = x.db()
         q = "SELECT * FROM `items` WHERE `item_user_fk` = %s"
-        cursor.execute(q, (restaurant_id,)) 
+        cursor.execute(q, (restaurant_id,))
         items = cursor.fetchall()
         print("Items fetched from database:", items)
         return items
@@ -63,6 +63,7 @@ def showItemListByRestaurant(restaurant_id):
             cursor.close()
         if "db" in locals():
             db.close()
+
 
 
 
@@ -154,11 +155,13 @@ def view_customer():
         return redirect(url_for("view_choose_role"))
     return render_template("view_customer.html", user=user)
 
+# Route for viewing the restaurant (without items)
 @app.get("/restaurant")
 @x.no_cache
 def view_restaurant():
-    if not session.get("user", ""): 
+    if not session.get("user", ""):
         return redirect(url_for("view_login"))
+    
     user = session.get("user")
     if "restaurant" not in user.get("roles", {}):
         return redirect(url_for("view_login"))
@@ -167,11 +170,33 @@ def view_restaurant():
     if not restaurant_id:
         return redirect(url_for("view_login"))
     
-    # Fetch items using the helper function
-    items = showItemListByRestaurant(restaurant_id)
-    return render_template("view_restaurant.html", user=user, items=items)
+    # Render the restaurant page without items (initial state)
+    return render_template("view_restaurant.html", user=user)
 
+# Route for viewing the restaurant items (when the button is clicked)
+@app.route('/restaurant/items/<restaurant_id>')
+def restaurant_items(restaurant_id):
+    if not session.get("user", ""):
+        return redirect(url_for("view_login"))
+
+    user = session.get("user")
+    if "restaurant" not in user.get("roles", {}):
+        return redirect(url_for("view_login"))
+
+    items = showItemListByRestaurant(restaurant_id)  # Fetch items based on restaurant_id
+    return render_template('view_restaurant.html', view='items', items=items, user=user)
+
+# Route for adding a new item (form page)
+@app.route('/restaurant/add_item')
+def restaurant_add_item():
+    if not session.get("user", ""):
+        return redirect(url_for("view_login"))
+
+    user = session.get("user")
+    if "restaurant" not in user.get("roles", {}):
+        return redirect(url_for("view_login"))
     
+    return render_template('view_restaurant.html', view='add_item', user=user)
 
 ##############################
 @app.get("/partner")
