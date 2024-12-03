@@ -46,6 +46,24 @@ def showItemList():
         if "db" in locals():
             db.close()
 
+##############################
+def showItemListByRestaurant(restaurant_id):
+    try:
+        db, cursor = x.db()
+        q = "SELECT * FROM `items` WHERE `item_user_fk` = %s"
+        cursor.execute(q, (restaurant_id,)) 
+        items = cursor.fetchall()
+        print("Items fetched from database:", items)
+        return items
+    except Exception as ex:
+        print(f"Error fetching items: {ex}")
+        return []  # Return empty list in case of error
+    finally:
+        if "cursor" in locals():
+            cursor.close()
+        if "db" in locals():
+            db.close()
+
 
 
 
@@ -93,6 +111,8 @@ def view_signup():
             return redirect(url_for("view_customer")) 
         if "partner" in session.get("user").get("roles"):
             return redirect(url_for("view_partner"))         
+        if "restaurant" in session.get("user").get("roles"):
+            return redirect(url_for("view_restaurant"))         
     return render_template("view_signup.html", x=x, title="Signup")
 
 ##############################
@@ -117,7 +137,9 @@ def view_login():
         if "customer" in session.get("user").get("roles"):
             return redirect(url_for("view_customer")) 
         if "partner" in session.get("user").get("roles"):
-            return redirect(url_for("view_partner"))         
+            return redirect(url_for("view_partner"))     
+        if "restaurant" in session.get("user").get("roles"):
+            return redirect(url_for("view_restaurant"))    
     return render_template("view_login.html", x=x, title="Login", message=request.args.get("message", ""))
 
 
@@ -131,6 +153,25 @@ def view_customer():
     if len(user.get("roles", "")) > 1:
         return redirect(url_for("view_choose_role"))
     return render_template("view_customer.html", user=user)
+
+@app.get("/restaurant")
+@x.no_cache
+def view_restaurant():
+    if not session.get("user", ""): 
+        return redirect(url_for("view_login"))
+    user = session.get("user")
+    if "restaurant" not in user.get("roles", {}):
+        return redirect(url_for("view_login"))
+    
+    restaurant_id = user.get("user_pk")
+    if not restaurant_id:
+        return redirect(url_for("view_login"))
+    
+    # Fetch items using the helper function
+    items = showItemListByRestaurant(restaurant_id)
+    return render_template("view_restaurant.html", user=user, items=items)
+
+    
 
 ##############################
 @app.get("/partner")

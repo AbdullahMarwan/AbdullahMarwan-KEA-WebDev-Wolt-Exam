@@ -1,0 +1,74 @@
+{% include "_top_logged.html" %}
+<!DOCTYPE html>
+<html lang="en">
+  <head>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link
+    rel="stylesheet"
+    href="{{ url_for('static', filename='/css/admin.css') }}"
+  />
+    <link
+      rel="stylesheet"
+      href="{{ url_for('static', filename='/css/customer.css') }}"
+    />
+    <link
+      rel="stylesheet"
+      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
+      integrity="sha512-..."
+      crossorigin="anonymous"
+      referrerpolicy="no-referrer"
+    />
+    <title>Your Restaurant</title>
+  </head>
+  <body>
+    <div class="welcome">
+      <h1>Welcome, {{ user.user_name }}!</h1>
+    </div>
+
+    <main class="customer-main">
+      <div class="partner-actions">
+        <a href="#" class="btn btn-primary active">Items</a>
+        <a href="#" class="btn btn-danger">Add new item</a>
+      </div>
+
+      <div class="restauranter">
+        <h1>Your restaurant items:</h1>
+      </div>
+
+      <section class="item-list">
+        <h1>Item List</h1>
+        {% if items %}
+        <div class="item-list">
+          {% for item in items %}
+          <article class="item-card">
+            <!-- Access the image -->
+            <img
+              src="{{ item['item_image'] if item['item_image'] else './images/image_15.jpg' }}"
+              alt="{{ item['item_title'] }}"
+              class="card-img"
+            />
+
+            <div class="card-content">
+              <!-- Access the title -->
+              <h3 class="card-title">
+                {{ item['item_title'] if item['item_title'] else 'No title
+                available' }}
+              </h3>
+
+              <!-- Access the price -->
+              <p class="card-price">
+                {{ item['item_price'] if item['item_price'] else 'N/A' }} kr.
+              </p>
+            </div>
+          </article>
+          {% endfor %}
+        </div>
+        {% else %}
+        <p>No items found.</p>
+        {% endif %}
+      </section>
+    </main>
+    {% include "_bottom.html" %}
+  </body>
+</html>
