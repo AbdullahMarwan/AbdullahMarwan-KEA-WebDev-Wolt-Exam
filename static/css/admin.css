@@ -1,0 +1,96 @@
+/* General Styling */
+body {
+    font-family: Arial, sans-serif;
+    margin: 0;
+    padding: 0;
+    background-color: #f9f9f9;
+    color: #333;
+}
+
+h1 {
+    text-align: center;
+    font-size: 1.8rem;
+    margin: 20px 0;
+}
+
+/* Item List Container */
+.item-list {
+    display: flex;
+    flex-direction: column; /* Default for mobile: stack items vertically */
+    gap: 15px;
+    padding: 10px;
+    margin: 0;
+}
+
+/* Individual Card */
+.item-card {
+    display: flex; /* Layout for image and content side by side */
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.item-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Card Image */
+.card-img {
+    width: 50%;
+    height: auto;
+    object-fit: cover; /* Maintain aspect ratio and crop if needed */
+}
+
+/* Card Content */
+.card-content {
+    width: 50%;
+    padding: 1em;
+}
+
+.card-title {
+    font-size: 1rem;
+    margin: 0 0 10px 0;
+    color: #202125;
+}
+
+.card-price {
+    font-size: 1rem;
+    color: #009de0;
+    font-weight: bold;
+}
+
+/* Media Queries for Responsive Design */
+
+/* Tablets and Larger Screens */
+@media (min-width: 600px) {
+    .item-list {
+        flex-direction: row; /* Align items horizontally for larger screens */
+        flex-wrap: wrap; /* Allow wrapping to the next row */
+        justify-content: space-between; /* Space out cards evenly */
+        gap: 20px; /* Increase gap for larger screens */
+    }
+
+    .item-card {
+        flex: 0 1 calc(50% - 20px); /* Two cards per row on tablet */
+        flex-direction: row; /* Image and content side by side */
+    }
+
+    .card-img {
+        height: 100%;
+    }
+
+    .card-content {
+        width: 50%;
+        padding: 1em;
+    }
+}
+
+/* Desktops and Larger Screens */
+@media (min-width: 900px) {
+    .item-card {
+        flex: 0 1 calc(33.333% - 20px); /* Three cards per row on desktop */
+    }
+}
