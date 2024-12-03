@@ -1,4 +1,4 @@
-from flask import Flask, session, render_template, redirect, url_for, make_response, request, flash
+from flask import Flask, session, render_template, redirect, url_for, make_response, request, flash, jsonify
 from flask_session import Session
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
@@ -36,7 +36,6 @@ def showItemList():
         q = "SELECT `item_title`, `item_price`, `item_image` FROM `items` LIMIT 20"
         cursor.execute(q)
         items = cursor.fetchall()
-        print("Items fetched from database:", items)  # Debugging: Check the raw data
         return items
     except Exception as ex:
         print(f"Error fetching items: {ex}")
@@ -330,25 +329,69 @@ def view_admin():
 
 
         db, cursor = x.db()  # Use x.db() for consistent DB connection and cursor
-        q = "SELECT `user_pk`, `user_name` FROM `users`"
+        q = "SELECT `user_pk`, `user_name`, `user_last_name`, `user_email`, `user_deleted_at`, `user_blocked_at`, `user_verified_at` FROM `users`"
         cursor.execute(q)
         users = cursor.fetchall()  # Fetch the result as a dictionary or tuple, depending on the cursor setup
+        ic(users)
 
 
         # Fetch items using the helper function
         items = showItemList()
         return render_template("view_admin.html", items=items, users=users)
 
- 
     except Exception as ex:
         if isinstance(ex, x.mysql.connector.Error):
             return f"""<template mix-target="#toast" mix-bottom>Database error occurred.</template>""", 500
-           
+    
         return f"""<template mix-target="#toast" mix-bottom>System under maintenance.</template>""", 500
-           
+        
     finally:
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
+
+##############################
+
+import time  # For epoch time
+
+@app.post("/admin/user-list/block")
+def block_or_unblock_user():
+    try:
+        if not session.get("user", ""):
+            return redirect(url_for("view_login"))
+        user = session.get("user")
+        if not "admin" in user.get("roles", ""):
+            return redirect(url_for("view_login"))
+        
+        # Get user_pk and action from the form
+        user_pk = request.form.get("user_pk")
+        action = request.form.get("action")
+
+        if not user_pk or action not in ["block", "unblock"]:
+            return redirect(url_for("view_admin"))
+        
+        db, cursor = x.db()
+        
+        if action == "block":
+            epoch_time = int(time.time())
+            query = "UPDATE `users` SET `user_blocked_at` = %s WHERE `user_pk` = %s"
+            cursor.execute(query, (epoch_time, user_pk))
+        elif action == "unblock":
+            query = "UPDATE `users` SET `user_blocked_at` = 0 WHERE `user_pk` = %s"
+            cursor.execute(query, (user_pk,))
+        
+        db.commit()
+        return redirect(url_for("view_admin"))
+
+    except Exception as ex:
+        if isinstance(ex, x.mysql.connector.Error):
+            return f"Database error occurred: {str(ex)}", 500
+        return f"An error occurred: {str(ex)}", 500
+    
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
+
+
 
 ##############################
 @app.get("/choose-role")

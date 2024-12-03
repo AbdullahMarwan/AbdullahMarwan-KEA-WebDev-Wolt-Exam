@@ -7,28 +7,38 @@
     />
 </head>
 
-
- <section class="users-list">
-    <!-- Debugging: Print the entire users object -->
-    
+<section class="users-list">
+    <h1>All users</h1>
     {% if users %}
         {% for user in users %}
-            <!-- Accessing the individual user fields correctly -->
-            <h1>{{ user['user_pk'] }}</h1>
-            <p>{{ user['user_name'] }}</p>
+            <ul class="individual-user">
+                <li><strong>Name:</strong> {{ user['user_name'] }}</li>
+                <li><strong>Last Name:</strong> {{ user['user_last_name'] }}</li>
+                <li><strong>Email:</strong> {{ user['user_email'] }}</li>
+                <li><strong>Deleted At:</strong> {{ user['user_deleted_at'] }}</li>
+                <li><strong>Blocked At:</strong> {{ user['user_blocked_at'] }}</li>
+                <li><strong>Verified At:</strong> {{ user['user_verified_at'] }}</li>
+                <form action="/admin/user-list/block" method="post">
+                    <input type="hidden" name="user_pk" value="{{ user['user_pk'] }}">
+                    {% if user['user_blocked_at'] == 0 %}
+                        <input type="hidden" name="action" value="block">
+                        <button type="submit">Block</button>
+                    {% else %}
+                        <input type="hidden" name="action" value="unblock">
+                        <button type="submit">Unblock</button>
+                    {% endif %}
+                </form>
+            </ul>
         {% endfor %}
     {% else %}
         <p>No users found</p>
     {% endif %}
 </section>
-   
- 
- 
- 
-<!-- <div> {{ user_list }} </div> -->
+
+
 
 <section class="item-list">
-    <h1>Item List</h1>
+    <h1>All items</h1>
     {% if items %}
     <div class="item-list">
     {% for item in items %}
