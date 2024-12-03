@@ -7,20 +7,22 @@
     <script src="{{ url_for('static', filename='header.js') }}"></script>
     <title>Document</title>
 </head>
+
 <body>
-    <header class="header">
-        <div class="header-left">
-            <img src="Spis-logo.png" alt="Spis Logo" class="logo">
-            <div class="location">
-                <span>København</span>
-                <span class="dropdown-arrow">▼</span>
-            </div>
+    <header>
+        <div class="header-logo-ctn">
+            <h1>Wolt</h1>
         </div>
-        <div class="header-center">
-            <input type="text" placeholder="Søg på Wolt..." class="search-bar">
-        </div>
-        <div class="header-right">
-            <button id="signupButton" class="btn signup">Tilmeld dig</button>
-            <button id="loginButton" class="btn login">Log ind</button>
-        </div>
+        <input class="search-input" type="text" placeholder="Search">
+        <button class="burger-menu-btn" aria-label="Toggle Menu">☰</button>
+        <nav class="menu">
+            <ul>
+                <li>
+                    <a href="{{ url_for('view_signup') }}" id="signupButton" class="btn signup">Tilmeld dig</a>
+                </li>
+                <li>
+                    <a href="{{ url_for('view_login') }}" id="loginButton" class="btn login">Log ind </a>
+                </li>
+            </ul>
+        </nav>
     </header>
