@@ -3,6 +3,7 @@ from flask_session import Session
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 import x
+from werkzeug.utils import secure_filename
 import uuid 
 import time
 import redis
@@ -45,6 +46,25 @@ def showItemList():
             cursor.close()
         if "db" in locals():
             db.close()
+
+# Function to fetch items based on restaurant ID
+def showItemListByRestaurant(restaurant_id):
+    try:
+        db, cursor = x.db()
+        q = "SELECT * FROM `items` WHERE `item_user_fk` = %s"
+        cursor.execute(q, (restaurant_id,))
+        items = cursor.fetchall()
+        print("Items fetched from database:", items)
+        return items
+    except Exception as ex:
+        print(f"Error fetching items: {ex}")
+        return []  # Return empty list in case of error
+    finally:
+        if "cursor" in locals():
+            cursor.close()
+        if "db" in locals():
+            db.close()
+
 
 
 
@@ -93,6 +113,8 @@ def view_signup():
             return redirect(url_for("view_customer")) 
         if "partner" in session.get("user").get("roles"):
             return redirect(url_for("view_partner"))         
+        if "restaurant" in session.get("user").get("roles"):
+            return redirect(url_for("view_restaurant"))         
     return render_template("view_signup.html", x=x, title="Signup")
 
 ##############################
@@ -117,7 +139,9 @@ def view_login():
         if "customer" in session.get("user").get("roles"):
             return redirect(url_for("view_customer")) 
         if "partner" in session.get("user").get("roles"):
-            return redirect(url_for("view_partner"))         
+            return redirect(url_for("view_partner"))     
+        if "restaurant" in session.get("user").get("roles"):
+            return redirect(url_for("view_restaurant"))    
     return render_template("view_login.html", x=x, title="Login", message=request.args.get("message", ""))
 
 
@@ -131,6 +155,149 @@ def view_customer():
     if len(user.get("roles", "")) > 1:
         return redirect(url_for("view_choose_role"))
     return render_template("view_customer.html", user=user)
+
+# Route for viewing the restaurant (without items)
+@app.get("/restaurant")
+@x.no_cache
+def view_restaurant():
+    if not session.get("user", ""):
+        return redirect(url_for("view_login"))
+    
+    user = session.get("user")
+    if "restaurant" not in user.get("roles", {}):
+        return redirect(url_for("view_login"))
+    
+    restaurant_id = user.get("user_pk")
+    if not restaurant_id:
+        return redirect(url_for("view_login"))
+    
+    # Render the restaurant page without items (initial state)
+    return render_template("view_restaurant.html", user=user)
+
+# Route for viewing the restaurant items (when the button is clicked)
+@app.route('/restaurant/items/<restaurant_id>')
+def restaurant_items(restaurant_id):
+    if not session.get("user", ""):
+        return redirect(url_for("view_login"))
+
+    user = session.get("user")
+    if "restaurant" not in user.get("roles", {}):
+        return redirect(url_for("view_login"))
+
+    items = showItemListByRestaurant(restaurant_id)  # Fetch items based on restaurant_id
+    return render_template('view_restaurant.html', view='items', items=items, user=user)
+
+import os
+import uuid
+from werkzeug.utils import secure_filename
+
+import os
+import uuid
+from werkzeug.utils import secure_filename
+
+@app.route('/restaurant/add_item', methods=['GET', 'POST'])
+def restaurant_add_item():
+    # Allowed image extensions (you can expand this if needed)
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+    # Function to check allowed file extension
+    def allowed_file(filename):
+        return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+    if not session.get("user", ""):
+        return redirect(url_for("view_login"))
+
+    user = session.get("user")
+    if "restaurant" not in user.get("roles", {}):
+        return redirect(url_for("view_login"))
+    
+    if request.method == 'POST':
+        # Get form data (title, price, image)
+        item_pk = str(uuid.uuid4())  # Generate unique item primary key
+        item_user_fk = user.get("user_pk")
+        item_title = request.form.get('item_title')
+        item_price = request.form.get('item_price')
+        item_image = request.files.get('item_image')
+
+        # Check if the image exists and is allowed
+        if item_image and allowed_file(item_image.filename):
+            filename = secure_filename(item_image.filename)  # Secure the filename
+            image_path = os.path.join('dishes', filename)  # Save inside the 'dishes' folder
+            
+            # Make sure the 'dishes' directory exists in the root
+            if not os.path.exists('dishes'):
+                os.makedirs('dishes')  # Create 'dishes' directory if it doesn't exist
+            
+            # Save the file to the 'dishes' folder in the root directory
+            item_image.save(os.path.join('dishes', filename))  # Save in 'dishes' folder directly under the root
+            
+        else:
+            image_path = None  # Handle case where image is not provided or not allowed
+
+        # Now insert item details into the database
+        db, cursor = x.db()
+
+        q = '''
+        INSERT INTO `items`(
+            `item_pk`, `item_user_fk`, `item_title`, `item_price`, `item_image`
+        ) VALUES (%s, %s, %s, %s, %s)
+        '''
+        cursor.execute(q, (
+            item_pk, item_user_fk, item_title, item_price, filename
+        ))
+        
+        db.commit()  # Commit changes to the database
+        
+        # After inserting, redirect to the items page to view all items
+        return redirect(url_for('restaurant_items', restaurant_id=user.get('user_pk')))
+    
+    return render_template('view_restaurant.html', view='add_item', user=user)
+
+@app.route('/restaurant/edit_item/<item_id>', methods=['GET', 'POST'])
+def restaurant_edit_item(item_id):
+    if not session.get("user", ""):
+        return redirect(url_for("view_login"))
+
+    user = session.get("user")
+    if "restaurant" not in user.get("roles", {}):
+        return redirect(url_for("view_login"))
+    
+    db, cursor = x.db()
+
+    # Fetch the item from the database by its item_id
+    cursor.execute("SELECT * FROM items WHERE item_pk = %s AND item_user_fk = %s", (item_id, user.get("user_pk")))
+    item = cursor.fetchone()
+
+    if not item:
+        return redirect(url_for('restaurant_items', restaurant_id=user.get('user_pk')))  # Redirect if item not found
+    
+    if request.method == 'POST':
+        # Handle form submission (updating item details)
+        item_title = request.form.get('item_title')
+        item_price = request.form.get('item_price')
+        item_image = request.files.get('item_image')
+
+        # Optional: process image upload if a new image is provided
+        if item_image and allowed_file(item_image.filename):
+            filename = secure_filename(item_image.filename)
+            image_path = os.path.join('dishes', filename)
+            item_image.save(image_path)
+        else:
+            image_path = item['item_image']  # Use existing image if no new image is provided
+
+        # Update item details in the database
+        cursor.execute('''
+            UPDATE items 
+            SET item_title = %s, item_price = %s, item_image = %s
+            WHERE item_pk = %s
+        ''', (item_title, item_price, image_path, item_id))
+        db.commit()
+
+        return redirect(url_for('restaurant_items', restaurant_id=user.get('user_pk')))
+
+    # Render the edit item form
+    return render_template('view_restaurant.html', view='edit_item', item=item, user=user)
+
 
 ##############################
 @app.get("/partner")

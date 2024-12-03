@@ -1,0 +1,25 @@
+<section class="add-item-form">
+  <h1>Add New Item</h1>
+  <form
+    action="{{ url_for('restaurant_add_item') }}"
+    method="POST"
+    enctype="multipart/form-data"
+  >
+    <div class="form-group">
+      <label for="item_title">Item Title</label>
+      <input type="text" name="item_title" id="item_title" required />
+    </div>
+
+    <div class="form-group">
+      <label for="item_price">Price</label>
+      <input type="number" name="item_price" id="item_price" required />
+    </div>
+
+    <div class="form-group">
+      <label for="item_image">Image</label>
+      <input type="file" name="item_image" id="item_image" />
+    </div>
+
+    <button type="submit" class="btn btn-primary">Add Item</button>
+  </form>
+</section>
