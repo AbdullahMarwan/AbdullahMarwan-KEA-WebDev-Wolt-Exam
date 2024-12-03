@@ -62,6 +62,54 @@ h1 {
     font-weight: bold;
 }
 
+.users-list {
+    padding: 1rem;
+    max-width: 600px;
+    margin: 0 auto;
+    background-color: #ffffff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    border-radius: 8px;
+}
+
+.individual-user {
+    list-style: none;
+    padding: 1rem;
+    margin: 1rem 0;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #fefefe;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+}
+
+.individual-user li {
+    margin-bottom: 0.5rem;
+    font-size: 0.9rem;
+    color: #333;
+}
+
+.individual-user li strong {
+    font-weight: bold;
+    color: #555;
+}
+
+p {
+    font-size: 1rem;
+    text-align: center;
+    color: #666;
+}
+
+#unblock-- {
+    background-color: black;
+}
+
+#block-- {
+    background-color: red;
+    color: #fefefe;
+    border: none;
+    padding: 1em 1em;
+}
+
+
 /* Media Queries for Responsive Design */
 
 /* Tablets and Larger Screens */
@@ -86,11 +134,37 @@ h1 {
         width: 50%;
         padding: 1em;
     }
+
+    .users-list {
+        max-width: 800px;
+    }
+
+    .individual-user {
+        display: grid;
+        grid-template-columns: 1fr 1fr;
+        gap: 1rem;
+    }
+
+    .individual-user li {
+        font-size: 1rem;
+        margin-bottom: 0;
+    }
 }
 
 /* Desktops and Larger Screens */
 @media (min-width: 900px) {
     .item-card {
         flex: 0 1 calc(33.333% - 20px); /* Three cards per row on desktop */
+    }
+}
+/* Larger Screens (Desktop) */
+
+@media (min-width: 1024px) {
+    .users-list {
+        max-width: 1200px;
+    }
+
+    .individual-user {
+        grid-template-columns: repeat(3, 1fr);
     }
 }

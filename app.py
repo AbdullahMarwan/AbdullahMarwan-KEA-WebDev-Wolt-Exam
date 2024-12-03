@@ -35,7 +35,6 @@ def showItemList():
         q = "SELECT `item_title`, `item_price`, `item_image` FROM `items` LIMIT 20"
         cursor.execute(q)
         items = cursor.fetchall()
-        print("Items fetched from database:", items)  # Debugging: Check the raw data
         return items
     except Exception as ex:
         print(f"Error fetching items: {ex}")
@@ -163,25 +162,30 @@ def view_admin():
 
 
         db, cursor = x.db()  # Use x.db() for consistent DB connection and cursor
-        q = "SELECT `user_pk`, `user_name` FROM `users`"
+        q = "SELECT `user_pk`, `user_name`, `user_last_name`, `user_email`, `user_deleted_at`, `user_blocked_at`, `user_verified_at` FROM `users`"
         cursor.execute(q)
         users = cursor.fetchall()  # Fetch the result as a dictionary or tuple, depending on the cursor setup
+        ic(users)
 
 
         # Fetch items using the helper function
         items = showItemList()
         return render_template("view_admin.html", items=items, users=users)
 
- 
     except Exception as ex:
         if isinstance(ex, x.mysql.connector.Error):
             return f"""<template mix-target="#toast" mix-bottom>Database error occurred.</template>""", 500
-           
+    
         return f"""<template mix-target="#toast" mix-bottom>System under maintenance.</template>""", 500
-           
+        
     finally:
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
+
+##############################
+
+
+
 
 ##############################
 @app.get("/choose-role")
