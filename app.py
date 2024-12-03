@@ -3,6 +3,7 @@ from flask_session import Session
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 import x
+from werkzeug.utils import secure_filename
 import uuid 
 import time
 import redis
@@ -186,8 +187,23 @@ def restaurant_items(restaurant_id):
     items = showItemListByRestaurant(restaurant_id)  # Fetch items based on restaurant_id
     return render_template('view_restaurant.html', view='items', items=items, user=user)
 
+import os
+import uuid
+from werkzeug.utils import secure_filename
+
+import os
+import uuid
+from werkzeug.utils import secure_filename
+
 @app.route('/restaurant/add_item', methods=['GET', 'POST'])
 def restaurant_add_item():
+    # Allowed image extensions (you can expand this if needed)
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+    # Function to check allowed file extension
+    def allowed_file(filename):
+        return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
     if not session.get("user", ""):
         return redirect(url_for("view_login"))
 
@@ -197,20 +213,45 @@ def restaurant_add_item():
     
     if request.method == 'POST':
         # Get form data (title, price, image)
+        item_pk = str(uuid.uuid4())  # Generate unique item primary key
+        item_user_fk = user.get("user_pk")
         item_title = request.form.get('item_title')
         item_price = request.form.get('item_price')
         item_image = request.files.get('item_image')
 
-        # Process the data, e.g., store in the database
-        # (assuming a function to add the item exists in your app)
-        # Add the item to the database and handle the image upload
-        # You can then redirect to a confirmation or another page like 'items'
+        # Check if the image exists and is allowed
+        if item_image and allowed_file(item_image.filename):
+            filename = secure_filename(item_image.filename)  # Secure the filename
+            image_path = os.path.join('dishes', filename)  # Save inside the 'dishes' folder
+            
+            # Make sure the 'dishes' directory exists in the root
+            if not os.path.exists('dishes'):
+                os.makedirs('dishes')  # Create 'dishes' directory if it doesn't exist
+            
+            # Save the file to the 'dishes' folder in the root directory
+            item_image.save(os.path.join('dishes', filename))  # Save in 'dishes' folder directly under the root
+            
+        else:
+            image_path = None  # Handle case where image is not provided or not allowed
+
+        # Now insert item details into the database
+        db, cursor = x.db()
+
+        q = '''
+        INSERT INTO `items`(
+            `item_pk`, `item_user_fk`, `item_title`, `item_price`, `item_image`
+        ) VALUES (%s, %s, %s, %s, %s)
+        '''
+        cursor.execute(q, (
+            item_pk, item_user_fk, item_title, item_price, image_path
+        ))
         
-        # Assuming showItemListByRestaurant() fetches the latest items
+        db.commit()  # Commit changes to the database
+        
+        # After inserting, redirect to the items page to view all items
         return redirect(url_for('restaurant_items', restaurant_id=user.get('user_pk')))
     
     return render_template('view_restaurant.html', view='add_item', user=user)
-
 
 ##############################
 @app.get("/partner")
