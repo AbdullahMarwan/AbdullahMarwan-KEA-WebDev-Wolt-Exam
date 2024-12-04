@@ -168,10 +168,9 @@ def view_customer():
         if not session.get("user", ""): 
             return redirect(url_for("view_login"))
         user = session.get("user")
-        if not "customer" in user.get("roles", ""):
-            return redirect(url_for("view_login"))
+        if len(user.get("roles", "")) > 1:
+            return redirect(url_for("view_choose_role"))
         
-        db, cursor = x.db()
         # Fetch items using the helper function
         items = showItemList()
         return render_template("view_customer.html", items=items, user=user)
@@ -183,8 +182,10 @@ def view_customer():
         return f"""<template mix-target="#toast" mix-bottom>System under maintenance.</template>""", 500
         
     finally:
-        if "cursor" in locals(): cursor.close()
-        if "db" in locals(): db.close()
+        pass
+    
+##############################
+
 
 
 ##############################
