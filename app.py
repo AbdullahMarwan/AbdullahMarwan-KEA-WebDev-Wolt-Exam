@@ -64,15 +64,6 @@ def showItemListByRestaurant(restaurant_id):
         if "db" in locals():
             db.close()
 
-
-
-
-
-
-
-
-##############################
-
 ##############################
 @app.get("/test-set-redis")
 def view_test_set_redis():
@@ -144,16 +135,59 @@ def view_login():
     return render_template("view_login.html", x=x, title="Login", message=request.args.get("message", ""))
 
 
-##############################
+# ##############################
+# @app.get("/customer")
+# @x.no_cache
+# def view_customer():
+#     try:
+#         if not session.get("user", ""): 
+#             return redirect(url_for("view_login"))
+#         user = session.get("user")
+#         if len(user.get("roles", "")) > 1:
+#             return redirect(url_for("view_choose_role"))
+#         # Fetch items using the helper function
+#         items = showItemList()
+#         return render_template("view_customer.html", items=items, user=user)
+
+#     except Exception as ex:
+#         if isinstance(ex, x.mysql.connector.Error):
+#             return f"""<template mix-target="#toast" mix-bottom>Database error occurred.</template>""", 500
+    
+#         return f"""<template mix-target="#toast" mix-bottom>System under maintenance.</template>""", 500
+        
+#     finally:
+#         if "cursor" in locals(): cursor.close()
+#         if "db" in locals(): db.close()
+
+# ############################## Rewrote the view customer route
+        
 @app.get("/customer")
 @x.no_cache
 def view_customer():
-    if not session.get("user", ""): 
-        return redirect(url_for("view_login"))
-    user = session.get("user")
-    if len(user.get("roles", "")) > 1:
-        return redirect(url_for("view_choose_role"))
-    return render_template("view_customer.html", user=user)
+    try:
+        if not session.get("user", ""): 
+            return redirect(url_for("view_login"))
+        user = session.get("user")
+        if not "customer" in user.get("roles", ""):
+            return redirect(url_for("view_login"))
+        
+        db, cursor = x.db()
+        # Fetch items using the helper function
+        items = showItemList()
+        return render_template("view_customer.html", items=items, user=user)
+
+    except Exception as ex:
+        if isinstance(ex, x.mysql.connector.Error):
+            return f"""<template mix-target="#toast" mix-bottom>Database error occurred.</template>""", 500
+    
+        return f"""<template mix-target="#toast" mix-bottom>System under maintenance.</template>""", 500
+        
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
+
+
+##############################
 
 # Route for viewing the restaurant (without items)
 @app.get("/restaurant")

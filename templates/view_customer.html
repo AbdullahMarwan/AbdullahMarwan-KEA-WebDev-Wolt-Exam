@@ -1,148 +1,152 @@
-{% include "_top_logged.html" %}
-<!-- <link rel="stylesheet" href="{{ url_for('static', filename='customer.css') }}"> -->
 <!DOCTYPE html>
 <html lang="en">
-  <head>
-    <meta charset="UTF-8" />
-    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='/css/customer.css') }}"
-    />
-    <link
-      rel="stylesheet"
-      href="https://cdnjs.cloudflare.com/ajax/libs/font-awesome/6.4.0/css/all.min.css"
-      integrity="sha512-..."
-      crossorigin="anonymous"
-      referrerpolicy="no-referrer"
-    />
-    <title>Document</title>
-  </head>
-  <body>
-    <div class="welcome">
-      <h1>Welcome, {{ user.user_name }}!</h1>
-      <!-- Partner-specific content -->
-    </div>
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/customer.css') }}">
+    <script src="{{ url_for('static', filename='header.js') }}"></script>
+    <title>Your dashboard</title>
+</head>
+<body>
+{% include "_header_logged-in.html" %}
+<!-- CLICKING RESTAURANT - SEE A MAP WITH RESTUARANTS AND A MAP OF ALL RESTAURANTS-->
+<main class="customer-main">
+      <section class="map-of-restaurants-customer" id="restaurant-list">
+        <div class="map" id="map"></div>
+      </section>
+      <section class="list-of-restaurants-customer">
+        <h2>All restaurants</h2>
+      </section>
 
-    <main class="customer-main">
-      <div class="partner-actions">
-        <a href="#" class="btn btn-primary active">Shops</a>
-        <a href="#" class="btn btn-danger">Restaurants</a>
-        <a href="#" class="btn btn-danger">Explore</a>
-      </div>
 
-      <div class="restauranter">
-        <h1>Alle restauranter:</h1>
-      </div>
-      <div class="card-container">
-        <div class="card">
-          <img
-            src="{{ url_for('static', filename='images/image_15.jpg') }}"
-            alt="Card1"
-          />
-          <div class="card-content">
-            <h3>McDonald's</h3>
-            <h4 class="ret">Cheeseburger</h4>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus
-              numquam dolore illo exercitationem vero aliquam.
-            </p>
+<!-- AFTER CLICKING EXPLORE (SEE ALL ITEMS)-->
 
-            <hr />
-            <div class="card-footer">
-              <div class="price-and-stars">
-                <p class="price">120 kr</p>
-                <div class="stars">
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="far fa-star"></i>
-                </div>
-              </div>
-              <a href="#" class="btn">Buy</a>
-            </div>
+        <section class="item-list list-of-items-customer" id="items-list-customer">
+          <h1>All items</h1>
+          {% if items %}
+          <div class="item-list">
+          {% for item in items %}
+              <article class="item-card">
+                  <!-- Access the image -->
+              <img src="../static/dishes/{{ item['item_image'] if item['item_image'] else './images/image_15.jpg' }}" alt="{{ item['item_title'] }}" class="card-img">
+                  
+      
+      
+                  <div class="card-content">
+                      <!-- Access the title -->
+                      <h3 class="card-title">{{ item['item_title'] if item['item_title'] else 'No title available' }}</h3>
+                      
+                      <!-- Access the price -->
+                      <p class="card-price">{{ item['item_price'] if item['item_price'] else 'N/A' }} kr.</p>
+                  </div>
+              </article>
+          {% endfor %}
           </div>
-        </div>
-
-        <div class="card">
-          <img
-            src="{{ url_for('static', filename='images/image_15.jpg') }}"
-            alt="Card1"
-          />
-          <div class="card-content">
-            <h3>McDonald's</h3>
-            <h4 class="ret">Cheeseburger</h4>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus
-              numquam dolore illo exercitationem vero aliquam.
-            </p>
-
-            <hr />
-            <div class="card-footer">
-              <div class="price-and-stars">
-                <p class="price">120 kr</p>
-                <div class="stars">
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="far fa-star"></i>
-                </div>
-              </div>
-              <a href="#" class="btn">Buy</a>
-            </div>
-          </div>
-        </div>
-
-        <div class="card">
-          <img
-            src="{{ url_for('static', filename='images/image_15.jpg') }}"
-            alt="Card1"
-          />
-          <div class="card-content">
-            <h3>McDonald's</h3>
-            <h4 class="ret">Cheeseburger</h4>
-            <p>
-              Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus
-              numquam dolore illo exercitationem vero aliquam.
-            </p>
-
-            <hr />
-            <div class="card-footer">
-              <div class="price-and-stars">
-                <p class="price">120 kr</p>
-                <div class="stars">
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="fas fa-star"></i>
-                  <i class="far fa-star"></i>
-                </div>
-              </div>
-              <a href="#" class="btn">Buy</a>
-            </div>
-          </div>
-        </div>
-      </div>
+      {% else %}
+          <p>No items found.</p>
+      {% endif %}
+      </section>
     </main>
 
     {% include "_bottom.html" %}
-  </body>
-</html>
 
-<!-- <script>
-    // Vælg alle knapper
-    const buttons = document.querySelectorAll('.partner-actions .btn');
+<!-- <div class="">
+  <a href="#" class="btn">Restaurants</a>
+  <a href="#" class="btn">Explore</a>
+</div>
 
-    // Tilføj click-handler
-    buttons.forEach((button) => {
-        button.addEventListener('click', function () {
-            // Fjern 'active' fra alle knapper
-            buttons.forEach((btn) => btn.classList.remove('active'));
+<div class="restauranter">
+  <h1>Alle restauranter:</h1>
+</div>
+<div class="card-container">
+  <div class="card">
+    <img
+      src="{{ url_for('static', filename='images/image_15.jpg') }}"
+      alt="Card1"
+    />
+    <div class="card-content">
+      <h3>McDonald's</h3>
+      <h4 class="ret">Cheeseburger</h4>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus
+        numquam dolore illo exercitationem vero aliquam.
+      </p>
 
-            // Tilføj 'active' til den klikkede knap
-            this.classList.add('active');
-        });
-    });
-</script> -->
+      <hr />
+      <div class="card-footer">
+        <div class="price-and-stars">
+          <p class="price">120 kr</p>
+          <div class="stars">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="far fa-star"></i>
+          </div>
+        </div>
+        <a href="#" class="btn">Buy</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <img
+      src="{{ url_for('static', filename='images/image_15.jpg') }}"
+      alt="Card1"
+    />
+    <div class="card-content">
+      <h3>McDonald's</h3>
+      <h4 class="ret">Cheeseburger</h4>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus
+        numquam dolore illo exercitationem vero aliquam.
+      </p>
+
+      <hr />
+      <div class="card-footer">
+        <div class="price-and-stars">
+          <p class="price">120 kr</p>
+          <div class="stars">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="far fa-star"></i>
+          </div>
+        </div>
+        <a href="#" class="btn">Buy</a>
+      </div>
+    </div>
+  </div>
+
+  <div class="card">
+    <img
+      src="{{ url_for('static', filename='images/image_15.jpg') }}"
+      alt="Card1"
+    />
+    <div class="card-content">
+      <h3>McDonald's</h3>
+      <h4 class="ret">Cheeseburger</h4>
+      <p>
+        Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus
+        numquam dolore illo exercitationem vero aliquam.
+      </p>
+
+      <hr />
+      <div class="card-footer">
+        <div class="price-and-stars">
+          <p class="price">120 kr</p>
+          <div class="stars">
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="fas fa-star"></i>
+            <i class="far fa-star"></i>
+          </div>
+        </div>
+        <a href="#" class="btn">Buy</a>
+      </div>
+    </div>
+  </div>
+</div> -->
