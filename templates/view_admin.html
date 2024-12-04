@@ -17,20 +17,22 @@
     {% if users %}
         {% for user in users %}
             <ul class="individual-user">
+                <li><strong></strong> <img id="avatar-img" src="../static/avatars/{{ user['user_avatar'] }}" alt="avatar">  </li>
                 <li><strong>Name:</strong> {{ user['user_name'] }}</li>
                 <li><strong>Last Name:</strong> {{ user['user_last_name'] }}</li>
                 <li><strong>Email:</strong> {{ user['user_email'] }}</li>
                 <li><strong>Deleted At:</strong> {{ user['user_deleted_at'] }}</li>
                 <li><strong>Blocked At:</strong> {{ user['user_blocked_at'] }}</li>
                 <li><strong>Verified At:</strong> {{ user['user_verified_at'] }}</li>
+
                 <form action="/admin/user-list/block" method="post">
                     <input type="hidden" name="user_pk" value="{{ user['user_pk'] }}">
                     {% if user['user_blocked_at'] == 0 %}
                         <input type="hidden" name="action" value="block">
-                        <button type="submit">Block</button>
+                        <button id="unblock-block-btn" type="submit">Block</button>
                     {% else %}
                         <input type="hidden" name="action" value="unblock">
-                        <button type="submit">Unblock</button>
+                        <button id="unblock-block-btn" type="submit">Unblock</button>
                     {% endif %}
                 </form>
             </ul>
@@ -41,6 +43,10 @@
 </section>
 
 
+
+
+
+
 <section class="item-list">
     <h1>All items</h1>
     {% if items %}
@@ -48,7 +54,7 @@
     {% for item in items %}
         <article class="item-card">
             <!-- Access the image -->
-        <img src="../static/dishes/{{ item['item_image'] if item['item_image'] else './images/image_15.jpg' }}" alt="{{ item['item_title'] }}" class="card-img">
+        <img src="../static/dishes/{{ item['item_image'] if item['item_image'] else '../static/images/image_15.jpg' }}" alt="{{ item['item_title'] }}" class="card-img">
             
 
 

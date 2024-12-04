@@ -363,7 +363,7 @@ def view_admin():
 
 
         db, cursor = x.db()  # Use x.db() for consistent DB connection and cursor
-        q = "SELECT `user_pk`, `user_name`, `user_last_name`, `user_email`, `user_deleted_at`, `user_blocked_at`, `user_verified_at` FROM `users`"
+        q = "SELECT `user_pk`, `user_name`, `user_last_name`, `user_avatar`,  `user_email`, `user_deleted_at`, `user_blocked_at`, `user_verified_at` FROM `users`"
         cursor.execute(q)
         users = cursor.fetchall()  # Fetch the result as a dictionary or tuple, depending on the cursor setup
         ic(users)
