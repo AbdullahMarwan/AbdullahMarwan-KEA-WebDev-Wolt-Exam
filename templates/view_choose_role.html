@@ -1,11 +1,11 @@
-{% include "_top.html" %}
 
 <!DOCTYPE html>
 <html lang="en">
   <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/global.css') }}">
+    <script src="{{ url_for('static', filename='header.js') }}"></script>
     <style>
       /* Generel baggrund */
       .bg-light-gradient {
@@ -96,6 +96,9 @@
     </style>
   </head>
   <body>
+
+
+{% include "_header-logged-out.html" %}
     <main
       class="w-full h-100vh d-flex flex-col p-items-center bg-light-gradient"
     >

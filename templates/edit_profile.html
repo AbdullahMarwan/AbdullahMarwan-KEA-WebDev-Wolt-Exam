@@ -1,5 +1,14 @@
-
-{% include "_top_logged.html" %}
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/global.css') }}">
+    <script src="{{ url_for('static', filename='header.js') }}"></script>
+    <title>Edit profile</title>
+</head>
+<body>
+{% include "_header_logged-in.html" %}
 
 <head>
   <link

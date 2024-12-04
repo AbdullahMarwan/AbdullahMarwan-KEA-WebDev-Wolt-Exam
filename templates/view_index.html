@@ -1,11 +1,15 @@
-{% include "_top.html" %}
-
-    <head>
-        <link rel="stylesheet" href="{{ url_for('static', filename='/css/index.css') }}">
-    </head>
-
-
-
+<!DOCTYPE html>
+<html lang="en">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/index.css') }}">
+    <script src="{{ url_for('static', filename='header.js') }}"></script>
+    <title>Forgot password</title>
+</head>
+<body>
+{% include "_header-logged-out.html" %}
     <main class="w-full d-flex">
         <div id="items" class="w-full h-100vh">
             <button class="px-20 py-4 rounded-sm"
@@ -15,7 +19,5 @@
             </button>
         </div>
     </main>
-
-</body>
 
 {% include "_bottom.html" %}
