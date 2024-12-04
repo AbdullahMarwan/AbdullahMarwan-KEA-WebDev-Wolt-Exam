@@ -5,7 +5,102 @@
     box-sizing: border-box;
 }
 
+h1, h2{
+    text-align: center;
+}
 
+section{
+    margin:1em;
+}
+
+
+
+.btn {
+    padding: 0.5em 1em;
+    background-color: #007bff; 
+    color: #fff;
+    text-decoration: none;
+    border-radius: 4px;
+}
+
+.btn.active {
+    border: 2px solid #007bff; 
+    color: #007bff;
+    background-color: #f0f8ff; 
+    }
+
+    .map{
+        max-width:100%;
+        overflow: hidden;
+    }
+/*  THE CARDS WITH THE ITEMS*/
+/* Item List Container */
+.item-list {
+    display: flex;
+    flex-direction: column; /* Default for mobile: stack items vertically */
+    gap: 15px;
+    padding: 10px;
+    margin: 0;
+    grid-column-start: 1;
+    grid-column-end: 3;
+}
+
+/* Individual Card */
+.item-card {
+    display: flex; /* Layout for image and content side by side */
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.item-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+/* Card Image */
+.card-img {
+    width: 50%;
+    height: auto;
+    object-fit: cover; /* Maintain aspect ratio and crop if needed */
+}
+
+/* Card Content */
+.card-content {
+    width: 50%;
+    padding: 1em;
+}
+
+.card-title {
+    font-size: 1rem;
+    margin: 0 0 10px 0;
+    color: #202125;
+}
+
+.card-price {
+    font-size: 1rem;
+    color: #009de0;
+    font-weight: bold;
+}
+
+
+
+
+
+@media (max-width: 768px) {
+    .customer-main{
+        display:grid;
+        grid-template-columns: 1fr 1fr;
+    }
+}
+
+
+
+
+
+/* 
 .welcome{
     text-align: center;
     padding-top: 50px;
@@ -16,29 +111,29 @@
 .restauranter {
     
     padding-left: 250px;
-    margin: 20px 0; /* Lidt luft omkring overskriften */
+    margin: 20px 0; 
 }
 
 .restauranter h1 {
-    font-size: 2.5rem; /* Standard størrelse til store skærme */
+    font-size: 2.5rem; 
     font-weight: bold;
-    color: #333; /* Mørk grå farve */
+    color: #333; 
     margin: 10px 0;
 }
-  /* Card CSS */
+ 
   .card-container {
     display: flex;
     flex-wrap: wrap;
     justify-content: center;
     gap: 30px;
     margin: 50px auto;
-    max-width: 1200px; /* Begrænsning af bredde */
+    max-width: 1200px; 
    /
 }
 
 .card {
-    flex: 1 1 calc(100% - 40px); /* Skalerer med 100% bredde minus margener */
-    max-width: 350px; /* Begrænsning af max-bredde */
+    flex: 1 1 calc(100% - 40px); 
+    max-width: 350px; 
     background-color: #efefef;
     border-radius: 8px;
     overflow: hidden;
@@ -47,7 +142,7 @@
 }
 
 .card img {
-    width: 100%; /* Tilpasser til card'ets bredde */
+    width: 100%; 
     height: auto;
 }
 
@@ -86,25 +181,24 @@ h4{
 
 .card-footer {
     display: flex;
-    justify-content: space-between; /* Placerer pris til venstre og knap til højre */
-    align-items: center; /* Vertikal justering af elementerne */
-    margin-top: auto; /* Skubber footer til bunden af card-content */
+    justify-content: space-between; 
+    align-items: center;
+    margin-top: auto;
 }
 
 .price {
     margin-top: 20px;
     font-size: 1.2em;
     font-weight: bold;
-    /* Eventuelt yderligere styling */
+
 }
 
 .btn {
     padding: 0.5em 1em;
-    background-color: #007bff; /* Eksempel på knapfarve */
+    background-color: #007bff; 
     color: #fff;
     text-decoration: none;
     border-radius: 4px;
-    /* Eventuelt yderligere styling */
 }
 
 
@@ -112,11 +206,11 @@ h4{
     display: flex;
     align-items: center;
 }
-/* Stjerner styling */
+
 .stars {
     padding-top: 10px;
     margin-left: 10px;
-    color: #FFD700; /* Guld farve til stjerner */
+    color: #FFD700; 
     font-size: 15px;
 }
 
@@ -127,34 +221,33 @@ h4{
 
 
 
-  /* Responsiv justering */
+
 @media (max-width: 768px) {
 
     .restauranter h1 {
-        text-align: center; /* Centrerer teksten for mobil */
+        text-align: center; 
         padding-left: 0;
     }
     .card-container {
-        justify-content: center; /* Center kortene horisontalt */
-        padding: 0 10px; /* Tilføj lidt padding til containeren */
+        justify-content: center; 
+        padding: 0 10px; 
     }
 
     .card {
-        flex: 1 1 90%; /* Sæt kortets bredde til 90% af containerens bredde */
-        max-width: 400px; /* Maksimal bredde for kortene */
-        margin: 10px; /* Margin omkring kortene for luft */
+        flex: 1 1 90%; 
+        max-width: 400px; 
+        margin: 10px; 
     }
   
 }
 
-/* card css  slut*/
 
 .partner-actions{
     text-align: center;
     padding-top: 50px;
 
     .btn {
-background-color: #ffffff00; /* Bootstrap primary color */
+background-color: #ffffff00; 
 color: #817f7f;
 border: none;
 padding: 8px 12px;
@@ -174,8 +267,8 @@ text-decoration: none;
 
 
 .btn.active {
-border: 2px solid #007bff; /* Blå ramme til aktiv knap */
+border: 2px solid #007bff; 
 color: #007bff;
-background-color: #f0f8ff; /* Lys baggrund */
+background-color: #f0f8ff; 
 }
-}
+} */

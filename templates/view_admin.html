@@ -1,11 +1,16 @@
-{% include "_top_logged.html" %}
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='/css/admin.css') }}"
-    />
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/global.css') }}">
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/admin.css') }}"/>
+    <script src="{{ url_for('static', filename='header.js') }}"></script>
+    <title>Admin dashboard</title>
 </head>
+<body>
+
+{% include "_header_logged-in.html" %}
 
 <section class="users-list">
     <h1>All users</h1>
@@ -36,7 +41,6 @@
 </section>
 
 
-
 <section class="item-list">
     <h1>All items</h1>
     {% if items %}
@@ -44,8 +48,10 @@
     {% for item in items %}
         <article class="item-card">
             <!-- Access the image -->
-            <img src="{{ item['item_image'] if item['item_image'] else './images/image_15.jpg' }}" alt="{{ item['item_title'] }}" class="card-img">
+        <img src="../static/dishes/{{ item['item_image'] if item['item_image'] else './images/image_15.jpg' }}" alt="{{ item['item_title'] }}" class="card-img">
             
+
+
             <div class="card-content">
                 <!-- Access the title -->
                 <h3 class="card-title">{{ item['item_title'] if item['item_title'] else 'No title available' }}</h3>

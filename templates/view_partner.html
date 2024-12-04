@@ -1,10 +1,15 @@
-<!-- templates/view_partner.html -->
-
-{% include "_top_logged.html" %}
-
+<!DOCTYPE html>
+<html lang="en">
 <head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/global.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='/css/partner.css') }}">
+    <script src="{{ url_for('static', filename='header.js') }}"></script>
+    <title>Forgot password</title>
 </head>
+<body>
+{% include "_header-logged-in.html" %}
 <div checked="headline">
     <h1>Partner Dashboard</h1>
 </div>
