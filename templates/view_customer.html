@@ -5,8 +5,15 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <link rel="stylesheet" href="{{ url_for('static', filename='/css/global.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='/css/customer.css') }}">
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
+    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
+    crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
+    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
+    crossorigin=""></script>
     <script src="{{ url_for('static', filename='header.js') }}"></script>
-    <title>Your dashboard</title>
+    <script src="{{ url_for('static', filename='map.js') }}" defer></script>
+    <title>Explore</title>
 </head>
 <body>
 {% include "_header_logged-in.html" %}
@@ -48,105 +55,4 @@
       {% endif %}
       </section>
     </main>
-
     {% include "_bottom.html" %}
-
-<!-- <div class="">
-  <a href="#" class="btn">Restaurants</a>
-  <a href="#" class="btn">Explore</a>
-</div>
-
-<div class="restauranter">
-  <h1>Alle restauranter:</h1>
-</div>
-<div class="card-container">
-  <div class="card">
-    <img
-      src="{{ url_for('static', filename='images/image_15.jpg') }}"
-      alt="Card1"
-    />
-    <div class="card-content">
-      <h3>McDonald's</h3>
-      <h4 class="ret">Cheeseburger</h4>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus
-        numquam dolore illo exercitationem vero aliquam.
-      </p>
-
-      <hr />
-      <div class="card-footer">
-        <div class="price-and-stars">
-          <p class="price">120 kr</p>
-          <div class="stars">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-          </div>
-        </div>
-        <a href="#" class="btn">Buy</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <img
-      src="{{ url_for('static', filename='images/image_15.jpg') }}"
-      alt="Card1"
-    />
-    <div class="card-content">
-      <h3>McDonald's</h3>
-      <h4 class="ret">Cheeseburger</h4>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus
-        numquam dolore illo exercitationem vero aliquam.
-      </p>
-
-      <hr />
-      <div class="card-footer">
-        <div class="price-and-stars">
-          <p class="price">120 kr</p>
-          <div class="stars">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-          </div>
-        </div>
-        <a href="#" class="btn">Buy</a>
-      </div>
-    </div>
-  </div>
-
-  <div class="card">
-    <img
-      src="{{ url_for('static', filename='images/image_15.jpg') }}"
-      alt="Card1"
-    />
-    <div class="card-content">
-      <h3>McDonald's</h3>
-      <h4 class="ret">Cheeseburger</h4>
-      <p>
-        Lorem ipsum dolor sit amet consectetur adipisicing elit. Natus
-        numquam dolore illo exercitationem vero aliquam.
-      </p>
-
-      <hr />
-      <div class="card-footer">
-        <div class="price-and-stars">
-          <p class="price">120 kr</p>
-          <div class="stars">
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="fas fa-star"></i>
-            <i class="far fa-star"></i>
-          </div>
-        </div>
-        <a href="#" class="btn">Buy</a>
-      </div>
-    </div>
-  </div>
-</div> -->

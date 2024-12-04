@@ -29,10 +29,7 @@ section{
     background-color: #f0f8ff; 
     }
 
-    .map{
-        max-width:100%;
-        overflow: hidden;
-    }
+    #map { height: 500px; }
 /*  THE CARDS WITH THE ITEMS*/
 /* Item List Container */
 .item-list {
