@@ -279,7 +279,18 @@ try:
     # Create 50 restaurants
     dishes = ["Spaghetti Carbonara","Chicken Alfredo","Beef Wellington","Sushi","Pizza Margherita","Tacos","Caesar Salad","Fish and Chips","Pad Thai","Dim Sum","Croissant","Ramen","Lasagna","Burrito","Chicken Parmesan","Tom Yum Soup","Shawarma","Paella","Hamburger","Pho","Chicken Tikka Masala","Moussaka","Goulash","Bangers and Mash","Peking Duck","Falafel","Ceviche","Chili Con Carne","Ratatouille","Beef Stroganoff","Fajitas","Samosas","Lobster Roll","Arancini","Tiramisu","Beef Empanadas","Poutine","Biryani","Hummus","Schnitzel","Meatloaf","Quiche","Paella Valenciana","Clam Chowder","Sweet and Sour Pork","Enchiladas","Crepes","Masala Dosa","Gnocchi","Jambalaya","Pork Ribs","Tandoori Chicken","Nasi Goreng","Kimchi","Roti","Lamb Tagine","Risotto","Croque Monsieur","Beef Burritos","Baked Ziti","Yakitori","Fettuccine Alfredo","Peking Duck Pancakes","Empanadas","Ahi Poke","Cacciatore","Pappardelle","Cannelloni","Empanadas de Pollo","Gado-Gado","Carne Asada","Chicken Katsu","Falafel Wrap","Maki Rolls","Stuffed Bell Peppers","Souvlaki","Bibimbap","Tofu Stir Fry","Chilaquiles","Mango Sticky Rice","Ragu","Beef Brisket","Tortilla Española","Panzanella","Chicken Shawarma","Pesto Pasta","Bulgogi","Maki Sushi","Cordon Bleu","Blini with Caviar","Clafoutis","Salmon Teriyaki","Shrimp Scampi","Frittata","Chateaubriand","Crab Cakes","Chicken Fried Rice","Hot Pot","Mole Poblano","Tofu Scramble"]
 
+    # Predefined lists for generating restaurant names
+    prefixes = ['Golden', 'Blue', 'Silver', 'Royal', 'Epic', 'Happy', 'Urban', 'Cozy', 'Mellow', 'Mystic']
+    suffixes = ['Grill', 'Café', 'Bistro', 'Bar', 'Restaurant', 'Lounge', 'Diner', 'Steakhouse', 'Tavern', 'Pizzeria']
+    types_of_cuisine = ['Italian', 'Mexican', 'Indian', 'Chinese', 'French', 'Japanese', 'Mediterranean', 'American', 'Vietnamese', 'Thai']
 
+    # Generate a fake restaurant name
+    def generate_restaurant_name():
+        prefix = prefixes[fake.random_int(0, len(prefixes) - 1)]
+        suffix = suffixes[fake.random_int(0, len(suffixes) - 1)]
+        cuisine = types_of_cuisine[fake.random_int(0, len(types_of_cuisine) - 1)]
+        
+        return f"{prefix} {fake.word().capitalize()} {suffix} - {cuisine}"
 
     user_password = hashed_password = generate_password_hash("password")
     for _ in range(50):
@@ -287,7 +298,7 @@ try:
         user_verified_at = random.choice([0,int(time.time())])
         user = {
             "user_pk" : user_pk,
-            "user_name" : fake.first_name(),
+            "user_name" : generate_restaurant_name()[:20],  # Generate fake restaurant name for user_name
             "user_last_name" : "",
             "user_email" : fake.unique.email(),
             "user_password" : user_password,
