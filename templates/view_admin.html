@@ -14,6 +14,17 @@
 
 <section class="users-list">
     <h1>All users</h1>
+    <p>Currently on Page: {{ page_id }}</p>
+
+    <!-- Form for navigating to the next page -->
+    <form action="{{ url_for('admin_or_pagination', page_id=page_id - 1) }}" method="get">
+        <button action="" type="submit">Previous Page</button>
+    </form>
+
+    <form action="{{ url_for('admin_or_pagination', page_id=page_id + 1) }}" method="get">
+        <button action="" type="submit">Next Page</button>
+    </form>
+    
     {% if users %}
         {% for user in users %}
             <ul class="individual-user">
