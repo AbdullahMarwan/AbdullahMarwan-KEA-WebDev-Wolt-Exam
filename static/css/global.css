@@ -354,6 +354,18 @@ header {
         display:flex;
         flex-direction: column;
         padding:1em;
+
+        label{
+            font-family: var(--font);
+        }
+
+        input{
+            padding:0.5em;
+        }
+    }
+
+    a{
+        font-family: var(--font);
     }
     
     .save-btn {
@@ -365,6 +377,7 @@ header {
         color: #fff;
         cursor: pointer;
         margin:1em;
+        font-family: var(--font);
     }
     .save-btn:hover {
         background-color: #0056b3;
@@ -388,64 +401,3 @@ header {
     }
 
 }
-
-
-
-/*
-#frm_edit_profile label span {
-  font-weight: bold;
-  margin-bottom: 0.1rem;
-  display: block;
-}
-
-#frm_edit_profile input[type="text"],
-#frm_edit_profile input[type="email"] {
-  width: 100%;
-  padding: 0.5rem;
-  border: 1px solid #ccc;
-  border-radius: 4px;
-  font-size: 0.9rem;
-}
-
-#frm_edit_profile button {
-  width: 100%;
-  padding: 0.5rem;
-  background-color: #007bff;
-  border: none;
-  border-radius: 4px;
-  color: #fff;
-  font-size: 1rem;
-  cursor: pointer;
-}
-
-#frm_edit_profile button:hover {
-  background-color: #0056b3;
-}
-
-#frm_edit_profile a.btn-secondary {
-  display: inline-block;
-  margin-top: 1rem;
-  text-align: center;
-  color: #6c757d;
-  text-decoration: none;
-  padding: 0.5rem;
-  background-color: #e2e6ea;
-  border-radius: 4px;
-}
-
-#frm_edit_profile a.btn-secondary:hover {
-  background-color: #dae0e5;
-}
-
-.d-flex {
-    display: flex;
-  }
-  
-  .flex-col {
-    flex-direction: column;
-  }
-  
-  .p-items-center {
-    align-items: center;
-  }
-*/
