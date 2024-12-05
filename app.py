@@ -185,34 +185,51 @@ def view_customer():
         pass
     
 ############################## SEARCH FOR ITEM
-@app.route("/api/search", methods=["GET"])
-def api_search():
+@app.route("/api/search-items", methods=["GET"])
+def api_search_items():
     try:
-        # Get the query string
         query = request.args.get("q", "").strip()
         if not query:
-            return {"items": []}  # Return an empty result if no query is provided
+            return {"items": []}
 
-        # Connect to the database
         db, cursor = x.db()
-
-        # Parameterized query to search by item_title
         q = "SELECT `item_title`, `item_price` FROM `items` WHERE `item_title` LIKE %s"
         cursor.execute(q, (f"%{query}%",))
-        items = cursor.fetchall()  # Fetch all matching results
+        items = cursor.fetchall()
 
-        # Return items as JSON
         return {"items": items}
-
     except Exception as ex:
         if isinstance(ex, x.mysql.connector.Error):
-            # Handle MySQL-specific errors
             return {"error": "Database error occurred."}, 500
-        # Handle other exceptions
         return {"error": "System under maintenance."}, 500
-
     finally:
-        # Close cursor and database connections
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
+
+############################## SEARCH FOR RESTAURANT
+@app.route("/api/search-restaurants", methods=["GET"])
+def api_search_restaurants():
+    try:
+        query = request.args.get("q", "").strip()
+        if not query:
+            return {"restaurants": []}
+
+        db, cursor = x.db()
+        q = """
+            SELECT u.user_name 
+            FROM users u
+            JOIN users_roles ur ON u.user_pk = ur.user_role_user_fk
+            WHERE ur.user_role_role_fk = %s AND u.user_name LIKE %s
+        """
+        cursor.execute(q, ("9f8c8d22-5a67-4b6c-89d7-58f8b8cb4e15", f"%{query}%"))
+        restaurants = cursor.fetchall()
+
+        return {"restaurants": restaurants}
+    except Exception as ex:
+        if isinstance(ex, x.mysql.connector.Error):
+            return {"error": "Database error occurred."}, 500
+        return {"error": "System under maintenance."}, 500
+    finally:
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
 

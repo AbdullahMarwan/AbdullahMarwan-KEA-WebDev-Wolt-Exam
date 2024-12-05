@@ -41,7 +41,7 @@ h4{
     font-weight: 500;
 }
 
-p{
+p, li{
     font-family: var(--font);
     font-size: 0.875em;
     font-weight: 400;
@@ -381,63 +381,3 @@ header {
 
 }
 
-/*------------------------------- SEARCH ----------------------------------*/
-/* Parent container for the search form */
-form#search-form {
-    position: relative; /* Ensures the dropdown positions relative to the form */
-}
-
-/* Search input styling */
-input.search-input {
-    width: 100%; /* Make the input field take up the full width */
-    padding: 10px;
-    font-size: 16px;
-    border: 2px solid #ccc;
-    border-radius: 5px;
-    outline: none;
-    transition: border-color 0.3s ease;
-}
-
-input.search-input:focus {
-    border-color: #007BFF;
-}
-
-/* Search results dropdown styling */
-#search-results {
-    display: none; /* Hidden by default, will be shown with JavaScript */
-    background-color: #f9f9f9;
-    border: 1px solid #ddd;
-    border-radius: 5px;
-    padding: 10px;
-    max-height: 50vh; /* Limits the dropdown to 50% of the screen height */
-    overflow-y: auto; /* Enables scrolling if there are too many results */
-    position: absolute;
-    top: 100%; /* Positions it directly below the search input */
-    left: 0;
-    right: 0; /* Ensure it stretches to match the width of the input */
-    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1);
-    z-index: 10000; /* Ensures the dropdown appears on top of other content */
-}
-
-/* Individual search result item */
-.search-result-item {
-    padding: 10px;
-    border-bottom: 1px solid #eee;
-    font-size: 16px;
-    line-height: 1.5;
-}
-
-.search-result-item:last-child {
-    border-bottom: none;
-}
-
-.search-result-item:hover {
-    background-color: #f1f1f1;
-    cursor: pointer;
-}
-
-/* No results message */
-#search-results p {
-    font-style: italic;
-    color: #666;
-}

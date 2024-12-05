@@ -22,6 +22,8 @@
             </section>
             <section class="list-of-restaurants-customer">
                 <h2>All restaurants</h2>
+                    <input type="text" id="search-restaurants" placeholder="Search for restaurants">
+                    <div id="restaurant-results" class="search-results"></div>
             </section>
         </div>
 
@@ -29,6 +31,10 @@
 
         <section class="list-of-items-customer" id="items-list-customer">
             <h2>All items</h2>
+                <div class="items-search">
+                    <input type="text" id="search-items" placeholder="Search for items">
+                    <div id="item-results" class="search-results"></div>
+                </div>
             {% if items %}
             <div class="item-list">
             {% for item in items %}

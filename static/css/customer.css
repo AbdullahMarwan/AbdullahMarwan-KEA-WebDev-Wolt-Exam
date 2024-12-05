@@ -117,3 +117,69 @@ section{
         grid-template-columns: repeat(3, 1fr);
     }
 }
+
+/*------------------------------- SEARCH ----------------------------------*/
+/* Style for the search input fields */
+input[type="text"] {
+    display:block;
+    width: 100%;
+    padding: 12px 20px;
+    margin: 0 auto;
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    font-size: 16px;
+    box-sizing: border-box; /* Ensures padding does not affect total width */
+    transition: all 0.3s ease;
+    margin-top:1em;
+}
+
+/* Focus effect for search input */
+input[type="text"]:focus {
+    border-color: #007BFF; /* Highlight the border on focus */
+    outline: none; /* Remove default outline */
+}
+.search-results {
+    position:absolute;
+    display: none;
+    background-color: white;
+    border: 1px solid #ccc;
+    max-height: 50vh;
+    overflow-y: auto;
+    max-width: 100%;
+    margin:auto;
+    z-index: 10000;
+} 
+
+#item-results, #restaurant-results {
+    display: none; /* Hidden by default */
+    width: 250px; /* Match the width of the input */
+    padding: 10px;
+    margin-top: 5px; /* Space between the input and the dropdown */
+    border: 2px solid #ccc;
+    border-radius: 5px;
+    background-color: white;
+    box-sizing: border-box; /* Ensure padding does not affect total width */
+    box-shadow: 0px 4px 6px rgba(0, 0, 0, 0.1); /* Optional: Shadow for better visibility */
+    max-height: 200px; /* Limit the height of the results */
+    overflow-y: auto; /* Add scrolling if content overflows */
+    position: absolute; /* Position it below the input */
+    z-index: 1000; /* Ensure it's in front of other elements */
+}
+
+
+.search-result-item {
+    padding: 10px;
+    cursor: pointer;
+    font-family: var(--font);
+}
+
+.search-result-item:hover {
+    background-color: #f0f0f0;
+}
+
+@media (min-width: 1024px) {
+    .items-search{
+        max-width:25%;
+        margin:auto;
+    }
+}
