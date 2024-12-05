@@ -1,3 +1,7 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+
 /* General Reset */
 * {
     margin: 0;
@@ -5,6 +9,75 @@
     box-sizing: border-box;
 }
 
+
+/* ------------------------------------ VARIABLES AND FONTS ------------------------------------   */
+
+
+:root{
+--font:'Roboto', sans-serif;
+}
+
+h1 {
+    font-family: var(--font);
+    font-size: 2.25em;
+    font-weight: 800;
+}
+h2{
+    font-family: var(--font);
+    font-size: 1.88;
+    font-weight: 700;
+}
+h3{
+    font-family: var(--font);
+    font-size: 1.5em;
+    font-weight: 600;
+}
+h4{
+    font-family: var(--font);
+    font-size: 1.125em;
+    font-weight: 500;
+}
+
+p{
+    font-family: var(--font);
+    font-size: 0.875em;
+    font-weight: 400;
+}
+
+@media only screen and (min-width: 768px) {
+    .herosectionH1{
+        font-family: var(--font);
+        font-size: 4.5em;
+        font-weight: 900;
+    }
+
+    h1{
+        font-family: var(--font);
+        font-size: 3em;
+        font-weight: 800;
+    }
+    h2{
+        font-family: var(--font);
+        font-size: 2.25em;
+        font-weight: 700;
+    }
+    h3{
+        font-family: var(--font);
+        font-size: 1.75em;
+        font-weight: 600;
+    }
+    h4{
+        font-family: var(--font);
+        font-size: 1.375em;
+        font-weight: 500;
+    }
+
+    p{
+        font-family: var(--font);
+        font-size: 1em;
+        font-weight: 400;
+    }
+}
 
 
 .header {
