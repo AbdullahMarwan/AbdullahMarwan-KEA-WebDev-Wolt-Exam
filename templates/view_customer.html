@@ -1,58 +1,62 @@
 <!DOCTYPE html>
 <html lang="en">
 <head>
-    <meta charset="UTF-8">
-    <meta name="viewport" content="width=device-width, initial-scale=1.0">
-    <link rel="stylesheet" href="{{ url_for('static', filename='/css/global.css') }}">
-    <link rel="stylesheet" href="{{ url_for('static', filename='/css/customer.css') }}">
-    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css"
-    integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY="
-    crossorigin=""/>
-    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js"
-    integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo="
-    crossorigin=""></script>
+    <meta charset="UTF-8" />
+    <meta name="viewport" content="width=device-width, initial-scale=1.0" />
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/global.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/customer.css') }}"/>
+    <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
+    <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="{{ url_for('static', filename='header.js') }}"></script>
     <script src="{{ url_for('static', filename='map.js') }}" defer></script>
     <title>Explore</title>
 </head>
 <body>
-{% include "_header_logged-in.html" %}
-<!-- CLICKING RESTAURANT - SEE A MAP WITH RESTUARANTS AND A MAP OF ALL RESTAURANTS-->
-<main class="customer-main">
-      <section class="map-of-restaurants-customer" id="restaurant-list">
-        <div class="map" id="map"></div>
-      </section>
-      <section class="list-of-restaurants-customer">
-        <h2>All restaurants</h2>
-      </section>
+    {% include "_header_logged-in.html" %}
+<!---------------------------------------------------- A MAP and SEE ALL RESTAURANTS IN A LIST ------------------------------------------------->
+    <main class="customer-main">
+        <div class="map-and-list">
+            <section class="map-of-restaurants-customer" id="restaurant-list">
+                <div class="map" id="map"></div>
+            </section>
+            <section class="list-of-restaurants-customer">
+                <h2>All restaurants</h2>
+            </section>
+        </div>
 
+<!------------------------------------------------------ SEE ALL ITEMS ------------------------------------------------------>
 
-<!-- AFTER CLICKING EXPLORE (SEE ALL ITEMS)-->
+        <section class="list-of-items-customer" id="items-list-customer">
+            <h2>All items</h2>
+            {% if items %}
+            <div class="item-list">
+            {% for item in items %}
+                <article class="item-card">
+                    <!-- Access the image from db -->
+                    <img src="../static/dishes/{{ item['item_image'] if item['item_image'] else './images/image_15.jpg' }}" alt="{{ item['item_title'] }}" class="card-img"/>
 
-        <section class="item-list list-of-items-customer" id="items-list-customer">
-          <h1>All items</h1>
-          {% if items %}
-          <div class="item-list">
-          {% for item in items %}
-              <article class="item-card">
-                  <!-- Access the image -->
-              <img src="../static/dishes/{{ item['item_image'] if item['item_image'] else './images/image_15.jpg' }}" alt="{{ item['item_title'] }}" class="card-img">
-                  
-      
-      
-                  <div class="card-content">
-                      <!-- Access the title -->
-                      <h3 class="card-title">{{ item['item_title'] if item['item_title'] else 'No title available' }}</h3>
-                      
-                      <!-- Access the price -->
-                      <p class="card-price">{{ item['item_price'] if item['item_price'] else 'N/A' }} kr.</p>
-                  </div>
-              </article>
-          {% endfor %}
-          </div>
-      {% else %}
-          <p>No items found.</p>
-      {% endif %}
-      </section>
+                    <div class="card-content">
+                        <!-- Access the title from db -->
+                        <div>
+                            <h3 class="card-title">
+                                {{ item['item_title'] if item['item_title'] else 'No title
+                                available' }}
+                            </h3>
+                            <!-- Access the price -->
+                            <p class="card-price">
+                                {{ item['item_price'] if item['item_price'] else 'N/A' }} kr.
+                            </p>
+                        </div>
+                        <button type="submit" class="buy">Buy this dish</button>
+                    </div>
+                </article>
+            {% endfor %}
+            </div>
+        {% else %}
+            <p>No items found.</p>
+        {% endif %}
+        </section>
     </main>
     {% include "_bottom.html" %}
+</body>
+</html>
