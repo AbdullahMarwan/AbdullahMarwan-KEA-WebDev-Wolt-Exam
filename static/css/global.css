@@ -230,6 +230,10 @@ header {
         flex-basis: auto; /* Adjust to fit content */
         margin: 0; /* Remove extra margin */
     }
+
+    .logo{
+        height:50px;
+    }
 }
 
 /* For mobile screens (up to 768px), keep the burger menu */
@@ -311,6 +315,8 @@ header {
     }
 
 }
+
+
 
 /*
 #frm_edit_profile label span {
