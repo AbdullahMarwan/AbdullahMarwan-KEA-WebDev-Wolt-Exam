@@ -184,8 +184,37 @@ def view_customer():
     finally:
         pass
     
-##############################
+############################## SEARCH FOR ITEM
+@app.route("/api/search", methods=["GET"])
+def api_search():
+    try:
+        # Get the query string
+        query = request.args.get("q", "").strip()
+        if not query:
+            return {"items": []}  # Return an empty result if no query is provided
 
+        # Connect to the database
+        db, cursor = x.db()
+
+        # Parameterized query to search by item_title
+        q = "SELECT `item_title`, `item_price` FROM `items` WHERE `item_title` LIKE %s"
+        cursor.execute(q, (f"%{query}%",))
+        items = cursor.fetchall()  # Fetch all matching results
+
+        # Return items as JSON
+        return {"items": items}
+
+    except Exception as ex:
+        if isinstance(ex, x.mysql.connector.Error):
+            # Handle MySQL-specific errors
+            return {"error": "Database error occurred."}, 500
+        # Handle other exceptions
+        return {"error": "System under maintenance."}, 500
+
+    finally:
+        # Close cursor and database connections
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
 
 
 ##############################

@@ -2,7 +2,12 @@
         <div class="header-logo-ctn">
             <img src="../static/images/SPIS.svg" class="logo">
         </div>
-        <input class="search-input" type="text" placeholder="Search">
+        <form id="search-form">
+            <input id="search-query" type="text" class="search-input" placeholder="Search for items...">
+            <div id="search-results" class="search-results-dropdown"></div>
+        </form>
+        
+        
         <button class="burger-menu-btn" aria-label="Toggle Menu">☰</button>
         <nav class="menu">
             <ul>
