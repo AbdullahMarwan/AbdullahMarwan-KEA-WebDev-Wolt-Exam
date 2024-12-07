@@ -1,3 +1,29 @@
+document.addEventListener("DOMContentLoaded", function () {
+  // Initialize the map
+  var map = L.map("map").setView([55.6845, 12.5641], 15);
+
+  // Add OpenStreetMap tile layer
+  L.tileLayer("https://{s}.tile.openstreetmap.org/{z}/{x}/{y}.png", {
+      maxZoom: 20,
+      attribution: '&copy; <a href="https://www.openstreetmap.org/copyright">OpenStreetMap</a> contributors',
+  }).addTo(map);
+
+  // Fetch restaurant data from Flask API
+  fetch("/api/restaurants")
+      .then((response) => response.json())
+      .then((restaurants) => {
+          restaurants.forEach((restaurant) => {
+              // Add markers to the map
+              L.marker([restaurant.lat, restaurant.lon])
+                  .addTo(map)
+                  .bindPopup(`<b>${restaurant.user_name}</b>`);
+          });
+      })
+      .catch((error) => console.error("Error fetching restaurant data:", error));
+});
+
+
+
 // // This function is responsible for initializing the map and adding markers
 // function initMap() {
 //   // Initialize the map
@@ -17,22 +43,22 @@
 //   map.options.maxZoom = 20;
 //   map.options.minZoom = 15;
 
-// //   // Fetch the restaurant data from the API
-// //   fetch('/api/restaurants')
-// //       .then(response => response.json())  // Parse the JSON response
-// //       .then(restaurants => {
-// //           console.log('Restaurants:', restaurants);  // Debugging output
-// //           if (restaurants && restaurants.length > 0) {
-// //               addMarkers(restaurants, map, bounds);  // Function to add markers to the map
-// //               displayRestaurantList(restaurants);  // Display restaurants in a list
-// //           } else {
-// //               console.error('No restaurant data available.');
-// //           }
-// //       })
-// //       .catch(error => {
-// //           console.error("Error fetching restaurants:", error);
-// //       });
-// // }
+//   // Fetch the restaurant data from the API
+//   fetch('/api/restaurants')
+//       .then(response => response.json())  // Parse the JSON response
+//       .then(restaurants => {
+//           console.log('Restaurants:', restaurants);  // Debugging output
+//           if (restaurants && restaurants.length > 0) {
+//               addMarkers(restaurants, map, bounds);  // Function to add markers to the map
+//               displayRestaurantList(restaurants);  // Display restaurants in a list
+//           } else {
+//               console.error('No restaurant data available.');
+//           }
+//       })
+//       .catch(error => {
+//           console.error("Error fetching restaurants:", error);
+//       });
+// }
 
 // // Function to add markers to the map
 // function addMarkers(restaurants, map, bounds) {

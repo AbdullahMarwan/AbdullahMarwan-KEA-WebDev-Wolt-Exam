@@ -163,33 +163,7 @@ def view_login():
             return redirect(url_for("view_restaurant"))    
     return render_template("view_login.html", x=x, title="Login", message=request.args.get("message", ""))
 
-
-# ##############################
-# @app.get("/customer")
-# @x.no_cache
-# def view_customer():
-#     try:
-#         if not session.get("user", ""): 
-#             return redirect(url_for("view_login"))
-#         user = session.get("user")
-#         if len(user.get("roles", "")) > 1:
-#             return redirect(url_for("view_choose_role"))
-#         # Fetch items using the helper function
-#         items = showItemList()
-#         return render_template("view_customer.html", items=items, user=user)
-
-#     except Exception as ex:
-#         if isinstance(ex, x.mysql.connector.Error):
-#             return f"""<template mix-target="#toast" mix-bottom>Database error occurred.</template>""", 500
-    
-#         return f"""<template mix-target="#toast" mix-bottom>System under maintenance.</template>""", 500
-        
-#     finally:
-#         if "cursor" in locals(): cursor.close()
-#         if "db" in locals(): db.close()
-
-# ############################## Rewrote the view customer route
-
+##############################
 @app.get("/customer")
 @x.no_cache
 def view_customer():
@@ -202,31 +176,35 @@ def view_customer():
         
         items = showItemList()  # Fetch items
         restaurants = showRestaurantList()  # Fetch restaurants
-                        
-        def generate_random_coordinates():
-            # Latitude range for Copenhagen (approx. 55.61 to 55.73)
-            lat = random.uniform (55.61, 55.73)
-            # Longitude range for Copenhagen (approx. 12.48 to 12.65)
-            lon = random. uniform (12.48, 12.65)
-            return lat, lon
         
-        for restaurant in restaurants:
-            lat, lon = generate_random_coordinates()
-            restaurant['lat'] = lat
-            restaurant['lon'] = lon
-            print("New Restaurant object", restaurant)
-        
-        # Initialize the map Set coordinates + limit map size
-        
-        # For each loop generating marker on the map for every restaurant        
-
-        return render_template("view_customer.html", items=items, restaurants=restaurants, user=user)
+        return render_template("view_customer.html", items=items, restaurants = restaurants, user=user)
     except Exception as ex:
         print(f"Error in view_customer: {ex}")
         return "Error occurred", 500
 
 ##############################
 
+@app.get("/api/restaurants")
+def get_restaurants():
+    try:
+        restaurants = showRestaurantList()
+        
+        def generate_random_coordinates():
+            # Latitude range for Copenhagen (approx. 55.61 to 55.73)
+            lat = random.uniform(55.61, 55.73)
+            # Longitude range for Copenhagen (approx. 12.48 to 12.65)
+            lon = random.uniform(12.48, 12.65)
+            return lat, lon
+        
+        for restaurant in restaurants:
+            lat, lon = generate_random_coordinates()
+            restaurant['lat'] = lat
+            restaurant['lon'] = lon
+        
+        return jsonify(restaurants)
+    except Exception as ex:
+        print(f"Error in get_restaurants: {ex}")
+        return jsonify({"error": "Failed to fetch restaurants"}), 500
 
 
 ##############################

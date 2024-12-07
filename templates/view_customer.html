@@ -3,8 +3,8 @@
 <head>
     <meta charset="UTF-8" />
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
-    <link rel="stylesheet" href="{{ url_for('static', filename='/css/global.css') }}"/>
-    <link rel="stylesheet" href="{{ url_for('static', filename='/css/customer.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/global.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='css/customer.css') }}"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
     <script src="{{ url_for('static', filename='header.js') }}"></script>
@@ -13,62 +13,47 @@
 </head>
 <body>
     {% include "_header_logged-in.html" %}
-<!---------------------------------------------------- A MAP and SEE ALL RESTAURANTS IN A LIST ------------------------------------------------->
+
     <main class="customer-main">
-        <div class="map-and-list">
-            <div>
-                {% if restaurants %}
-                    <p>Restaurants list is not empty.</p>
-                    <p>Restaurants: {{ restaurants }}</p>
-                    {% for restaurant in restaurants %}
-                        <p>{{ restaurant['user_pk'] }}</p>
-                    {% endfor %}
-                {% else %}
-                    <p>No restaurants available.</p>
-                {% endif %}
-            </div>
-            
+        <div class="map-and-list">            
+            <!-- Map container -->
             <section class="map-of-restaurants-customer" id="restaurant-list">
-                <div class="map" id="map"></div>
+                <div class="map" id="map" style="height: 600px;"></div>
             </section>
+
+            <!-- List of Restaurants -->
             <section class="list-of-restaurants-customer">
-                <h2>All restaurants</h2>
+                <h2>All Restaurants</h2>
+                <ul id="restaurant-list">
+                    {% for restaurant in restaurants %}
+                        <li>{{ restaurant['user_name'] }}</li>
+                    {% endfor %}
+                </ul>
             </section>
         </div>
 
-<!------------------------------------------------------ SEE ALL ITEMS ------------------------------------------------------>
-
+        <!-- Items Section -->
         <section class="list-of-items-customer" id="items-list-customer">
-            <h2>All items</h2>
+            <h2>All Items</h2>
             {% if items %}
             <div class="item-list">
-            {% for item in items %}
-                <article class="item-card">
-                    <!-- Access the image from db -->
-                    <img src="../static/dishes/{{ item['item_image'] if item['item_image'] else './images/image_15.jpg' }}" alt="{{ item['item_title'] }}" class="card-img"/>
-
-                    <div class="card-content">
-                        <!-- Access the title from db -->
-                        <div>
-                            <h3 class="card-title">
-                                {{ item['item_title'] if item['item_title'] else 'No title
-                                available' }}
-                            </h3>
-                            <!-- Access the price -->
-                            <p class="card-price">
-                                {{ item['item_price'] if item['item_price'] else 'N/A' }} kr.
-                            </p>
+                {% for item in items %}
+                    <article class="item-card">
+                        <img src="{{ url_for('static', filename='dishes/' + item['item_image']) if item['item_image'] else url_for('static', filename='images/image_15.jpg') }}" alt="{{ item['item_title'] }}" class="card-img"/>
+                        <div class="card-content">
+                            <h3 class="card-title">{{ item['item_title'] if item['item_title'] else 'No title available' }}</h3>
+                            <p class="card-price">{{ item['item_price'] if item['item_price'] else 'N/A' }} kr.</p>
+                            <button type="submit" class="buy">Buy this dish</button>
                         </div>
-                        <button type="submit" class="buy">Buy this dish</button>
-                    </div>
-                </article>
-            {% endfor %}
+                    </article>
+                {% endfor %}
             </div>
-        {% else %}
-            <p>No items found.</p>
-        {% endif %}
+            {% else %}
+                <p>No items found.</p>
+            {% endif %}
         </section>
     </main>
+
     {% include "_bottom.html" %}
 </body>
 </html>
