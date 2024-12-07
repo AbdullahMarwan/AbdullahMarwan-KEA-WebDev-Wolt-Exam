@@ -228,6 +228,25 @@ def view_restaurant():
     return render_template("view_restaurant.html", user=user)
 
 # Route for viewing the restaurant items (when the button is clicked)
+@app.route('/customer/items/<restaurant_id>')
+def customer_items(restaurant_id):
+    if not session.get("user", ""):
+        return redirect(url_for("view_login"))
+
+    user = session.get("user")
+    if "customer" not in user.get("roles", {}):
+        return redirect(url_for("view_login"))
+    
+    restaurants = showRestaurantList()
+    
+    print("Restaurant ID after clicking button:", restaurant_id)
+
+    items = showItemListByRestaurant(restaurant_id)  # Fetch items based on restaurant_id
+    return render_template('view_customer.html', items=items, restaurants=restaurants, user=user)
+
+#########################
+
+# Route for viewing the restaurant items (when the button is clicked)
 @app.route('/restaurant/items/<restaurant_id>')
 def restaurant_items(restaurant_id):
     if not session.get("user", ""):
@@ -236,6 +255,8 @@ def restaurant_items(restaurant_id):
     user = session.get("user")
     if "restaurant" not in user.get("roles", {}):
         return redirect(url_for("view_login"))
+    
+    print("Restaurant ID after clicking button:", restaurant_id)
 
     items = showItemListByRestaurant(restaurant_id)  # Fetch items based on restaurant_id
     return render_template('view_restaurant.html', view='items', items=items, user=user)
