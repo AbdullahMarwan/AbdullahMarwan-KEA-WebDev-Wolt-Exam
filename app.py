@@ -61,12 +61,9 @@ def showRestaurantList():
         cursor.execute(query)
         
         # Fetch all rows and structure the data into dictionaries
-        results = cursor.fetchall()
-        print("Results:", results)  # Debugging output: Print the raw result from the query
-        restaurants = [{'user_pk': row[0], 'user_name': row[1]} for row in results]
+        restaurants = cursor.fetchall()
+        # print("Results:", restaurants)  # Debugging output: Print the raw result from the query
         
-        print("Restaurants from showRestaurantList ", restaurants)
-
         return restaurants
         # return restaurants
     except Exception as ex:
@@ -205,8 +202,7 @@ def view_customer():
         
         items = showItemList()  # Fetch items
         restaurants = showRestaurantList()  # Fetch restaurants
-        ic("Restaurants", restaurants)
-        
+                        
         # Initialize the map Set coordinates + limit map size
         
         def generate_random_coordinates():
