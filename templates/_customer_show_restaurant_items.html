@@ -1,6 +1,11 @@
 <!-- Items Section -->
 <section class="list-of-items-customer" id="items-list-customer">
+    {% if restaurant_name %}
+    <h2>All items from {{restaurant_name}} </h2>
+    {% else %}
     <h2>All Items</h2>
+    {% endif %}
+
     {% if items %}
     <div class="item-list">
         {% for item in items %}

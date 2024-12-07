@@ -242,7 +242,17 @@ def customer_items(restaurant_id):
     print("Restaurant ID after clicking button:", restaurant_id)
 
     items = showItemListByRestaurant(restaurant_id)  # Fetch items based on restaurant_id
-    return render_template('view_customer.html', items=items, restaurants=restaurants, user=user)
+    
+    # restaurant_name = request.args.get("restaurant_name").value
+    
+       # Fetch restaurant name using the user_pk (restaurant_id)
+    restaurant_name = None
+    for restaurant in restaurants:
+        if restaurant['user_pk'] == restaurant_id:
+            restaurant_name = restaurant['user_name']
+            break
+    
+    return render_template('view_customer.html', items=items, restaurants=restaurants, user=user, restaurant_name=restaurant_name)
 
 #########################
 
