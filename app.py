@@ -203,8 +203,6 @@ def view_customer():
         items = showItemList()  # Fetch items
         restaurants = showRestaurantList()  # Fetch restaurants
                         
-        # Initialize the map Set coordinates + limit map size
-        
         def generate_random_coordinates():
             # Latitude range for Copenhagen (approx. 55.61 to 55.73)
             lat = random.uniform (55.61, 55.73)
@@ -214,11 +212,13 @@ def view_customer():
         
         for restaurant in restaurants:
             lat, lon = generate_random_coordinates()
-            ic("Lat + Lon", lat, lon)
-            
+            restaurant['lat'] = lat
+            restaurant['lon'] = lon
+            print("New Restaurant object", restaurant)
         
-        # For each loop generating marker on the map for every restaurant
+        # Initialize the map Set coordinates + limit map size
         
+        # For each loop generating marker on the map for every restaurant        
 
         return render_template("view_customer.html", items=items, restaurants=restaurants, user=user)
     except Exception as ex:
