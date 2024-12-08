@@ -2,17 +2,14 @@
         <div class="header-logo-ctn">
             <img src="../static/images/SPIS.svg" class="logo">
         </div>
-        <input class="search-input" type="text" placeholder="Search">
         <button class="burger-menu-btn" aria-label="Toggle Menu">☰</button>
         <nav class="menu">
             <ul>
                 <li>
-                    <button id="signup-btn" class="btn signup">Tilmeld dig</button>
-                    
+                    <a href="{{ url_for('view_signup') }}" button id="signup-btn" class="btn signup">Tilmeld dig</button></a>
                 </li>
-                <li>
-                    <button id="login-btn" class="btn login">Log ind</button>
-                </li>
+                    <a href="{{ url_for('view_login') }}" button id="login-btn" class="btn login">Log ind</button></a>
+                </a>
             </ul>
         </nav>
     </header>

@@ -10,73 +10,11 @@
     <title>Login and Signup</title>
 </head>
 <body>
-    {% include "_header-logged-out.html" %}
+    {% include "_header_logged-out.html" %}
     <div id="overlay"></div>
     
     <main class="w-full h-100vh d-flex p-items-center">
         <h2 id="main-headline" class="main-headline">Middag til hele familien<br>bragt til dig</h2>
-
-        <!-- Signup Box -->
-        <section id="signup-box" class="bg-c-blue p-4 border-rounded shadow mx-auto w-30%" style="display: none;">
-            <form id="frm_user_signup" class="w-25% d-flex flex-col gap-4 mx-auto">
-                <div>
-                    <h1>Signup</h1>
-                </div>
-                <div class="d-flex flex-col">
-                    <label for="user_name"><span>Name</span></label>
-                    <input name="user_name" type="text" mix-check="{{ x.USER_NAME_REGEX }}" required>
-                </div>
-                <div class="d-flex flex-col">
-                    <label for="user_last_name"><span>Last Name</span></label>
-                    <input name="user_last_name" type="text" mix-check="{{ x.USER_LAST_NAME_REGEX }}" required>
-                </div>
-                <div class="d-flex flex-col">
-                    <label for="user_email"><span>Email</span></label>
-                    <input name="user_email" type="email" mix-check="{{ x.REGEX_EMAIL }}" required>
-                </div>
-                <div class="d-flex flex-col">
-                    <label for="user_password" class="d-flex">
-                        <span>Password</span>
-                        <span class="ml-auto text-c-gray:+25">{{ x.USER_PASSWORD_MIN }} to {{ x.USER_PASSWORD_MAX }} chars</span>
-                    </label>
-                    <input name="user_password" type="password" mix-check="{{ x.REGEX_USER_PASSWORD }}" required>
-                </div>
-                <div class="d-flex flex-col">
-                    <label for="user_role"><span>Role</span></label>
-                    <select name="user_role" class="custom-select" aria-label="Role selection" required>
-                        <option selected disabled>Choose role</option>
-                        <option value="customer">Customer</option>
-                        <option value="restaurant">Restaurant</option>
-                        <option value="partner">Partner</option>
-                    </select>
-                </div>
-                <button mix-post="/users" mix-data="#frm_user_signup">Signup</button>
-                <a href="#" id="login-link" class="text-a-center">Login</a>
-            </form>
-        </section>
-
-        <!-- Login Box -->
-        <section id="login-box" class="bg-c-blue p-4 border-rounded shadow mx-auto w-30%" style="display: none;">
-            <form id="frm_user_login" class="w-full d-flex flex-col gap-4">
-                <div>
-                    <h1>Login på din konto</h1>
-                </div>
-                <div class="text-c-green text-200">{{ message }}</div>
-                <div class="d-flex flex-col">
-                    <label for="user_email"><span>Email</span></label>
-                    <input name="user_email" type="text" mix-check="{{ x.REGEX_EMAIL }}">
-                </div>
-                <div class="d-flex flex-col">
-                    <label for="user_password" class="d-flex">
-                        <span>Password</span>
-                        <span class="ml-auto text-c-gray:+25">{{ x.USER_PASSWORD_MIN }} to {{ x.USER_PASSWORD_MAX }} chars</span>
-                    </label>
-                    <input name="user_password" type="text" mix-check="{{ x.REGEX_USER_PASSWORD }}">
-                </div>
-                <button mix-post="/login" mix-data="#frm_user_login">Login</button>
-                <a href="#" id="signup-link" class="text-a-center">Signup</a>
-            </form>
-        </section>
     </main>
 </body>
 </html>
