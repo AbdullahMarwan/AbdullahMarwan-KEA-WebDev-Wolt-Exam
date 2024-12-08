@@ -1,3 +1,7 @@
+
+@import url('https://fonts.googleapis.com/css2?family=Roboto:wght@400;500;700&display=swap');
+
+
 /* General Reset */
 * {
     margin: 0;
@@ -5,6 +9,79 @@
     box-sizing: border-box;
 }
 
+body{
+    background-color: #f7f7f7; 
+}
+
+
+/* ------------------------------------ VARIABLES AND FONTS ------------------------------------   */
+
+
+:root{
+--font:'Roboto', sans-serif;
+}
+
+h1 {
+    font-family: var(--font);
+    font-size: 2.25em;
+    font-weight: 800;
+}
+h2{
+    font-family: var(--font);
+    font-size: 1.88;
+    font-weight: 700;
+}
+h3{
+    font-family: var(--font);
+    font-size: 1.5em;
+    font-weight: 600;
+}
+h4{
+    font-family: var(--font);
+    font-size: 1.125em;
+    font-weight: 500;
+}
+
+p{
+    font-family: var(--font);
+    font-size: 0.875em;
+    font-weight: 400;
+}
+
+@media only screen and (min-width: 768px) {
+    .herosectionH1{
+        font-family: var(--font);
+        font-size: 4.5em;
+        font-weight: 900;
+    }
+
+    h1{
+        font-family: var(--font);
+        font-size: 3em;
+        font-weight: 800;
+    }
+    h2{
+        font-family: var(--font);
+        font-size: 2.25em;
+        font-weight: 700;
+    }
+    h3{
+        font-family: var(--font);
+        font-size: 1.75em;
+        font-weight: 600;
+    }
+    h4{
+        font-family: var(--font);
+        font-size: 1.375em;
+        font-weight: 500;
+    }
+
+    p{
+        font-family: var(--font);
+        font-size: 1em;
+        font-weight: 400;
+    }
+}
 
 
 .header {
@@ -226,6 +303,10 @@ header {
         flex-basis: auto; /* Adjust to fit content */
         margin: 0; /* Remove extra margin */
     }
+
+    .logo{
+        height:50px;
+    }
 }
 
 /* For mobile screens (up to 768px), keep the burger menu */
@@ -245,3 +326,126 @@ header {
         display: block; /* Show menu when opened */
     }
 }
+
+
+/*------------------------------- EDIT PROFILE ---------------------------------------*/
+.edit-profile-main{
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+
+    section{
+    background-color: #ffffff;
+    padding: 2rem;
+    border-radius: 8px;
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+    width: 400px; 
+    margin:1em;
+    }
+
+    h1{
+        text-align: center;
+    }
+
+
+    .input-field{
+        display:flex;
+        flex-direction: column;
+        padding:1em;
+    }
+    
+    .save-btn {
+        width: 90%;
+        padding: 0.5rem;
+        background-color: #007bff;
+        border: none;
+        border-radius: 4px;
+        color: #fff;
+        cursor: pointer;
+        margin:1em;
+    }
+    .save-btn:hover {
+        background-color: #0056b3;
+    }
+
+    #options-edit{
+        display:flex;
+        margin:1em;
+    }
+
+    .delete-btn{
+        width: 100%;
+        padding: 0.5rem;
+        background-color: red;
+        border: none;
+        border-radius: 4px;
+        color: #fff;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+    }
+
+}
+
+
+
+/*
+#frm_edit_profile label span {
+  font-weight: bold;
+  margin-bottom: 0.1rem;
+  display: block;
+}
+
+#frm_edit_profile input[type="text"],
+#frm_edit_profile input[type="email"] {
+  width: 100%;
+  padding: 0.5rem;
+  border: 1px solid #ccc;
+  border-radius: 4px;
+  font-size: 0.9rem;
+}
+
+#frm_edit_profile button {
+  width: 100%;
+  padding: 0.5rem;
+  background-color: #007bff;
+  border: none;
+  border-radius: 4px;
+  color: #fff;
+  font-size: 1rem;
+  cursor: pointer;
+}
+
+#frm_edit_profile button:hover {
+  background-color: #0056b3;
+}
+
+#frm_edit_profile a.btn-secondary {
+  display: inline-block;
+  margin-top: 1rem;
+  text-align: center;
+  color: #6c757d;
+  text-decoration: none;
+  padding: 0.5rem;
+  background-color: #e2e6ea;
+  border-radius: 4px;
+}
+
+#frm_edit_profile a.btn-secondary:hover {
+  background-color: #dae0e5;
+}
+
+.d-flex {
+    display: flex;
+  }
+  
+  .flex-col {
+    flex-direction: column;
+  }
+  
+  .p-items-center {
+    align-items: center;
+  }
+*/

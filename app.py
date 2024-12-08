@@ -1,3 +1,5 @@
+import json
+import random
 from flask import Flask, session, render_template, redirect, url_for, make_response, request, flash, jsonify
 from flask_session import Session
 from werkzeug.security import generate_password_hash
@@ -40,6 +42,33 @@ def showItemList():
     except Exception as ex:
         print(f"Error fetching items: {ex}")
         return []  # Return empty list in case of error
+    finally:
+        if "cursor" in locals():
+            cursor.close()
+        if "db" in locals():
+            db.close()
+
+##############################
+def showRestaurantList():
+    try:
+        db, cursor = x.db()
+        query = """
+            SELECT users.user_pk, users.user_name
+            FROM users
+            JOIN users_roles ON users.user_pk = users_roles.user_role_user_fk
+            WHERE users_roles.user_role_role_fk = '9f8c8d22-5a67-4b6c-89d7-58f8b8cb4e15'
+        """
+        cursor.execute(query)
+        
+        # Fetch all rows and structure the data into dictionaries
+        restaurants = cursor.fetchall()
+        # print("Results:", restaurants)  # Debugging output: Print the raw result from the query
+        
+        return restaurants
+        # return restaurants
+    except Exception as ex:
+        print(f"Error fetching restaurants: {ex}")
+        return []
     finally:
         if "cursor" in locals():
             cursor.close()
@@ -134,33 +163,7 @@ def view_login():
             return redirect(url_for("view_restaurant"))    
     return render_template("view_login.html", x=x, title="Login", message=request.args.get("message", ""))
 
-
-# ##############################
-# @app.get("/customer")
-# @x.no_cache
-# def view_customer():
-#     try:
-#         if not session.get("user", ""): 
-#             return redirect(url_for("view_login"))
-#         user = session.get("user")
-#         if len(user.get("roles", "")) > 1:
-#             return redirect(url_for("view_choose_role"))
-#         # Fetch items using the helper function
-#         items = showItemList()
-#         return render_template("view_customer.html", items=items, user=user)
-
-#     except Exception as ex:
-#         if isinstance(ex, x.mysql.connector.Error):
-#             return f"""<template mix-target="#toast" mix-bottom>Database error occurred.</template>""", 500
-    
-#         return f"""<template mix-target="#toast" mix-bottom>System under maintenance.</template>""", 500
-        
-#     finally:
-#         if "cursor" in locals(): cursor.close()
-#         if "db" in locals(): db.close()
-
-# ############################## Rewrote the view customer route
-        
+##############################
 @app.get("/customer")
 @x.no_cache
 def view_customer():
@@ -171,21 +174,37 @@ def view_customer():
         if len(user.get("roles", "")) > 1:
             return redirect(url_for("view_choose_role"))
         
-        # Fetch items using the helper function
-        items = showItemList()
-        return render_template("view_customer.html", items=items, user=user)
-
-    except Exception as ex:
-        if isinstance(ex, x.mysql.connector.Error):
-            return f"""<template mix-target="#toast" mix-bottom>Database error occurred.</template>""", 500
-    
-        return f"""<template mix-target="#toast" mix-bottom>System under maintenance.</template>""", 500
+        items = showItemList()  # Fetch items
+        restaurants = showRestaurantList()  # Fetch restaurants
         
-    finally:
-        pass
-    
+        return render_template("view_customer.html", items=items, restaurants = restaurants, user=user)
+    except Exception as ex:
+        print(f"Error in view_customer: {ex}")
+        return "Error occurred", 500
+
 ##############################
 
+@app.get("/api/restaurants")
+def get_restaurants():
+    try:
+        restaurants = showRestaurantList()
+        
+        def generate_random_coordinates():
+            # Latitude range for Copenhagen (approx. 55.61 to 55.73)
+            lat = random.uniform(55.61, 55.73)
+            # Longitude range for Copenhagen (approx. 12.48 to 12.65)
+            lon = random.uniform(12.48, 12.65)
+            return lat, lon
+        
+        for restaurant in restaurants:
+            lat, lon = generate_random_coordinates()
+            restaurant['lat'] = lat
+            restaurant['lon'] = lon
+        
+        return jsonify(restaurants)
+    except Exception as ex:
+        print(f"Error in get_restaurants: {ex}")
+        return jsonify({"error": "Failed to fetch restaurants"}), 500
 
 
 ##############################
@@ -209,6 +228,35 @@ def view_restaurant():
     return render_template("view_restaurant.html", user=user)
 
 # Route for viewing the restaurant items (when the button is clicked)
+@app.route('/customer/items/<restaurant_id>')
+def customer_items(restaurant_id):
+    if not session.get("user", ""):
+        return redirect(url_for("view_login"))
+
+    user = session.get("user")
+    if "customer" not in user.get("roles", {}):
+        return redirect(url_for("view_login"))
+    
+    restaurants = showRestaurantList()
+    
+    print("Restaurant ID after clicking button:", restaurant_id)
+
+    items = showItemListByRestaurant(restaurant_id)  # Fetch items based on restaurant_id
+    
+    # restaurant_name = request.args.get("restaurant_name").value
+    
+       # Fetch restaurant name using the user_pk (restaurant_id)
+    restaurant_name = None
+    for restaurant in restaurants:
+        if restaurant['user_pk'] == restaurant_id:
+            restaurant_name = restaurant['user_name']
+            break
+    
+    return render_template('view_customer.html', items=items, restaurants=restaurants, user=user, restaurant_name=restaurant_name)
+
+#########################
+
+# Route for viewing the restaurant items (when the button is clicked)
 @app.route('/restaurant/items/<restaurant_id>')
 def restaurant_items(restaurant_id):
     if not session.get("user", ""):
@@ -217,17 +265,11 @@ def restaurant_items(restaurant_id):
     user = session.get("user")
     if "restaurant" not in user.get("roles", {}):
         return redirect(url_for("view_login"))
+    
+    print("Restaurant ID after clicking button:", restaurant_id)
 
     items = showItemListByRestaurant(restaurant_id)  # Fetch items based on restaurant_id
     return render_template('view_restaurant.html', view='items', items=items, user=user)
-
-import os
-import uuid
-from werkzeug.utils import secure_filename
-
-import os
-import uuid
-from werkzeug.utils import secure_filename
 
 @app.route('/restaurant/add_item', methods=['GET', 'POST'])
 def restaurant_add_item():
@@ -364,7 +406,7 @@ def view_admin():
 
 
         db, cursor = x.db()  # Use x.db() for consistent DB connection and cursor
-        q = "SELECT `user_pk`, `user_name`, `user_last_name`, `user_email`, `user_deleted_at`, `user_blocked_at`, `user_verified_at` FROM `users`"
+        q = "SELECT `user_pk`, `user_name`, `user_last_name`, `user_avatar`,  `user_email`, `user_deleted_at`, `user_blocked_at`, `user_verified_at` FROM `users`"
         cursor.execute(q)
         users = cursor.fetchall()  # Fetch the result as a dictionary or tuple, depending on the cursor setup
         ic(users)

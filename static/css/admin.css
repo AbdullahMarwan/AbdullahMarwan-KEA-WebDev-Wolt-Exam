@@ -13,6 +13,18 @@ h1 {
     margin: 20px 0;
 }
 
+/* User list */
+
+
+#avatar-img{
+    max-height: 6em;
+    border-radius: 5em;
+}
+
+#unblock-block-btn{
+    padding: 0.3em;
+}
+
 /* Item List Container */
 .item-list {
     display: flex;
@@ -79,6 +91,8 @@ h1 {
     border-radius: 6px;
     background-color: #fefefe;
     box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: grid   ;
+    place-items: center;
 }
 
 .individual-user li {
@@ -139,15 +153,12 @@ p {
         max-width: 800px;
     }
 
-    .individual-user {
-        display: grid;
-        grid-template-columns: 1fr 1fr;
-        gap: 1rem;
-    }
+
+
 
     .individual-user li {
         font-size: 1rem;
-        margin-bottom: 0;
+        margin-bottom: 0.3em;
     }
 }
 
@@ -164,7 +175,11 @@ p {
         max-width: 1200px;
     }
 
-    .individual-user {
-        grid-template-columns: repeat(3, 1fr);
+
+    .individual-user{
+        display: flex;
+        justify-content: space-between;
+        align-items: center;
     }
+
 }
