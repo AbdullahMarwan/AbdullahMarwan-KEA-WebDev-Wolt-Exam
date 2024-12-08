@@ -13,6 +13,9 @@ section{
     margin:1em;
 }
 
+.heading {
+    margin-bottom: 1em;
+}
 
 
 .btn {
@@ -33,13 +36,11 @@ section{
 /*  THE CARDS WITH THE ITEMS*/
 /* Item List Container */
 .item-list {
-    display: flex;
-    flex-direction: column; /* Default for mobile: stack items vertically */
-    gap: 15px;
+    display: grid;
+    grid-template-columns: repeat(1, 1fr); /* 1 item per row on mobile */
+    gap: 2em;
     padding: 10px;
     margin: 0;
-    grid-column-start: 1;
-    grid-column-end: 3;
 }
 
 /* Individual Card */
@@ -59,6 +60,7 @@ section{
 
 /* Card Image */
 .card-img {
+    max-height: 150px;
     width: 50%;
     height: auto;
     object-fit: cover; /* Maintain aspect ratio and crop if needed */
@@ -71,7 +73,7 @@ section{
 }
 
 .card-title {
-    font-size: 1rem;
+    font-size: 1.25rem;
     margin: 0 0 10px 0;
     color: #202125;
 }
@@ -86,10 +88,17 @@ section{
 
 
 
-@media (max-width: 768px) {
-    .customer-main{
-        display:grid;
-        grid-template-columns: 1fr 1fr;
+@media (min-width: 768px) {
+
+    .item-list {
+        grid-template-columns: repeat(2, 1fr); /* 4 items per row on desktop */
+    }
+}
+
+
+@media (min-width: 1024px) {
+    .item-list {
+        grid-template-columns: repeat(3, 1fr); /* 4 items per row on desktop */
     }
 }
 

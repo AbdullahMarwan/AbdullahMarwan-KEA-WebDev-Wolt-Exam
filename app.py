@@ -1,5 +1,6 @@
 from flask import Flask, session, render_template, redirect, url_for, make_response, request, flash, jsonify
 from flask_session import Session
+from datetime import datetime
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 import x
@@ -366,20 +367,27 @@ def admin_or_pagination(page_id=1):
         limit = 20 
         offset = (page_id - 1) * limit  # Offset is based on the page_id
         
-        
-        
-        
-
         # Database query
         db, cursor = x.db()
-        q = "SELECT `user_pk`, `user_name`, `user_last_name`, `user_avatar`,  `user_email`, `user_deleted_at`, `user_blocked_at`, `user_verified_at` FROM `users` LIMIT %s OFFSET %s"
+        q = "SELECT `user_pk`, `user_name`, `user_last_name`, `user_avatar`, `user_email`, `user_deleted_at`, `user_blocked_at`, `user_verified_at` FROM `users` LIMIT %s OFFSET %s"
         cursor.execute(q, (limit, offset))
         users = cursor.fetchall()
 
+        # Query to get the total number of users
+        count_query = "SELECT COUNT(*) FROM `users`"
+        cursor.execute(count_query)
+        result = cursor.fetchone()  # Get the count from the first column
 
+        # Extract the count value
+        total_users = result['COUNT(*)'] if result else 0  # Access 'COUNT(*)' key in the dictionary
+
+        for user in users:
+            user['user_deleted_at'] = convert_epoch_to_datetime(user['user_deleted_at'])
+            user['user_blocked_at'] = convert_epoch_to_datetime(user['user_blocked_at'])
+            user['user_verified_at'] = convert_epoch_to_datetime(user['user_verified_at'])
 
         # Render template with paginated content
-        return render_template("view_admin.html", users=users, page_id=page_id)
+        return render_template("view_admin.html", users=users, page_id=page_id, total_users=total_users)
     except Exception as ex:
         ic(f"Exception: {ex}")  # Log the error
         if isinstance(ex, x.mysql.connector.Error):
@@ -390,17 +398,13 @@ def admin_or_pagination(page_id=1):
         if "db" in locals(): db.close()
 
 
+# Function to convert epoch to datetime string
+def convert_epoch_to_datetime(epoch_time):
+    if epoch_time and epoch_time != 0:
+        return datetime.utcfromtimestamp(epoch_time).strftime('%Y-%m-%d %H:%M:%S')
+    return None  # Return None if the value is 0 or invalid
+
 ##############################
-
-
-# @app.route('/admin/page/<page_id>', methods=['GET', 'POST'])
-# def user_list_pagination():
-#     try:
-#         page-btn = request.get("page-btn")
-#     finally:
-#         ic("works")
-
-
 
 @app.post("/admin/user-list/block")
 def block_or_unblock_user():
@@ -411,9 +415,11 @@ def block_or_unblock_user():
         if not "admin" in user.get("roles", ""):
             return redirect(url_for("view_login"))
         
-        # Get user_pk and action from the form
+        # Get user_pk, action, and page_id from the form
         user_pk = request.form.get("user_pk")
         action = request.form.get("action")
+        page_id = request.form.get('page_id', type=int)  # Now it should correctly get the page_id from the form
+
 
         if not user_pk or action not in ["block", "unblock"]:
             return redirect(url_for("view_admin"))
@@ -429,7 +435,9 @@ def block_or_unblock_user():
             cursor.execute(query, (user_pk,))
         
         db.commit()
-        return redirect(url_for("view_admin"))
+
+        # Redirect back to the same page after block/unblock action is performed
+        return redirect(url_for("admin_or_pagination", page_id=page_id))
 
     except Exception as ex:
         if isinstance(ex, x.mysql.connector.Error):
@@ -439,7 +447,6 @@ def block_or_unblock_user():
     finally:
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
-
 
 
 ##############################

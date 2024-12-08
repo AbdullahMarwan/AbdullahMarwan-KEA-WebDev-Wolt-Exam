@@ -13,45 +13,70 @@
 {% include "_header_logged-in.html" %}
 
 <section class="users-list">
-    <h1>All users</h1>
-    <p>Currently on Page: {{ page_id }}</p>
+    <h1>All users ({{ total_users }})</h1>
 
-    <!-- Form for navigating to the next page -->
-    <form action="{{ url_for('admin_or_pagination', page_id=page_id - 1) }}" method="get">
-        <button action="" type="submit">Previous Page</button>
-    </form>
+    <div class="page-btn-ctn">
+        {% if page_id > 1 %}
+        <form action="{{ url_for('admin_or_pagination', page_id=page_id - 1) }}" method="get">
+            <button type="submit">Previous Page</button>
+        </form>
+        {% endif %}
 
-    <form action="{{ url_for('admin_or_pagination', page_id=page_id + 1) }}" method="get">
-        <button action="" type="submit">Next Page</button>
-    </form>
-    
+        <p name="page_id">Currently on Page: {{ page_id }}</p>
+
+        <form action="{{ url_for('admin_or_pagination', page_id=page_id + 1) }}" method="get">
+            <button type="submit">Next Page</button>
+        </form>
+    </div>
+
     {% if users %}
         {% for user in users %}
-            <ul class="individual-user">
-                <li><strong></strong> <img id="avatar-img" src="../static/avatars/{{ user['user_avatar'] }}" alt="avatar">  </li>
-                <li><strong>Name:</strong> {{ user['user_name'] }}</li>
-                <li><strong>Last Name:</strong> {{ user['user_last_name'] }}</li>
-                <li><strong>Email:</strong> {{ user['user_email'] }}</li>
-                <li><strong>Deleted At:</strong> {{ user['user_deleted_at'] }}</li>
-                <li><strong>Blocked At:</strong> {{ user['user_blocked_at'] }}</li>
-                <li><strong>Verified At:</strong> {{ user['user_verified_at'] }}</li>
+            <div class="individual-user">
+                <div class="portrait-ctn">
+                    <img id="avatar-img" src="../static/avatars/{{ user['user_avatar'] }}" alt="avatar">
+                </div>
+
+                <div class="user-info-wrapper">
+
+                    <div class="user-info">
+                        <div><strong>Name:</strong> {{ user['user_name'] }}</div>
+                        <div><strong>Last Name:</strong> {{ user['user_last_name'] }}</div>
+                        <div><strong>Email:</strong> {{ user['user_email'] }}</div>
+                    </div>
+
+                    <div class="user-info">
+                        <div><strong>Deleted At:</strong> {{ user['user_deleted_at'] or "User not deleted" }}</div>
+                        <div><strong>Blocked At:</strong> {{ user['user_blocked_at'] or "User not blocked" }}</div>
+                        <div><strong>Verified At:</strong> {{ user['user_verified_at'] or "User not verified" }}</div>
+                    </div>
+
+                </div>
 
                 <form action="/admin/user-list/block" method="post">
+                    <!-- Hidden field for user primary key -->
                     <input type="hidden" name="user_pk" value="{{ user['user_pk'] }}">
-                    {% if user['user_blocked_at'] == 0 %}
-                        <input type="hidden" name="action" value="block">
-                        <button id="unblock-block-btn" type="submit">Block</button>
-                    {% else %}
+                    
+                    <!-- Hidden field for page_id -->
+                    <input type="hidden" name="page_id" value="{{ page_id }}">
+
+                    {% if user['user_blocked_at'] %}
+                        <!-- Action for unblocking the user -->
                         <input type="hidden" name="action" value="unblock">
-                        <button id="unblock-block-btn" type="submit">Unblock</button>
+                        <button class="btn unblock-btn" id="unblock-block-btn" type="submit">Unblock</button>
+                    {% else %}
+                        <!-- Action for blocking the user -->
+                        <input type="hidden" name="action" value="block">
+                        <button class="btn block-btn" id="unblock-block-btn" type="submit">Block</button>
                     {% endif %}
                 </form>
-            </ul>
+            </div>
         {% endfor %}
     {% else %}
         <p>No users found</p>
     {% endif %}
 </section>
+
+
 
 
 

@@ -29,15 +29,16 @@
 
 <!-- AFTER CLICKING EXPLORE (SEE ALL ITEMS)-->
 
-        <section class="item-list list-of-items-customer" id="items-list-customer">
-          <h1>All items</h1>
+        <section class="list-of-items-customer" id="items-list-customer">
+          <h1 class="heading">All items</h1>
           {% if items %}
           <div class="item-list">
           {% for item in items %}
               <article class="item-card">
                   <!-- Access the image -->
-              <img src="../static/dishes/{{ item['item_image'] if item['item_image'] else './images/image_15.jpg' }}" alt="{{ item['item_title'] }}" class="card-img">
-                  
+            <div class="card-img">
+              <img src="../static/dishes/{{ item['item_image'] if item['item_image'] else './images/image_15.jpg' }}" alt="{{ item['item_title'] }}">
+            </div>
       
       
                   <div class="card-content">
