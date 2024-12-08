@@ -155,7 +155,10 @@ p, li{
     background-color: #e6f4fc;
     color: #007aff;
 }
-
+.login {
+    background-color: #007aff;
+    color: white;
+}
 
 #loginButton{
     padding: 10px 15px;
