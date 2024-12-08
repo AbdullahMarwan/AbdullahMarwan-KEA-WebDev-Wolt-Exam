@@ -183,7 +183,22 @@ def view_customer():
         print(f"Error in view_customer: {ex}")
         return "Error occurred", 500
 
-##############################
+    except Exception as ex:
+        if isinstance(ex, x.mysql.connector.Error):
+            return f"""<template mix-target="#toast" mix-bottom>Database error occurred.</template>""", 500
+    
+        return f"""<template mix-target="#toast" mix-bottom>System under maintenance.</template>""", 500
+        
+    finally:
+        pass
+    
+############################## SEARCH FOR ITEM
+@app.route("/api/search-items", methods=["GET"])
+def api_search_items():
+    try:
+        query = request.args.get("q", "").strip()
+        if not query:
+            return {"items": []}
 
 @app.get("/api/restaurants")
 def get_restaurants():
@@ -206,6 +221,42 @@ def get_restaurants():
     except Exception as ex:
         print(f"Error in get_restaurants: {ex}")
         return jsonify({"error": "Failed to fetch restaurants"}), 500
+
+        return {"items": items}
+    except Exception as ex:
+        if isinstance(ex, x.mysql.connector.Error):
+            return {"error": "Database error occurred."}, 500
+        return {"error": "System under maintenance."}, 500
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
+
+############################## SEARCH FOR RESTAURANT
+@app.route("/api/search-restaurants", methods=["GET"])
+def api_search_restaurants():
+    try:
+        query = request.args.get("q", "").strip()
+        if not query:
+            return {"restaurants": []}
+
+        db, cursor = x.db()
+        q = """
+            SELECT u.user_name 
+            FROM users u
+            JOIN users_roles ur ON u.user_pk = ur.user_role_user_fk
+            WHERE ur.user_role_role_fk = %s AND u.user_name LIKE %s
+        """
+        cursor.execute(q, ("9f8c8d22-5a67-4b6c-89d7-58f8b8cb4e15", f"%{query}%"))
+        restaurants = cursor.fetchall()
+
+        return {"restaurants": restaurants}
+    except Exception as ex:
+        if isinstance(ex, x.mysql.connector.Error):
+            return {"error": "Database error occurred."}, 500
+        return {"error": "System under maintenance."}, 500
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
 
 
 ##############################
