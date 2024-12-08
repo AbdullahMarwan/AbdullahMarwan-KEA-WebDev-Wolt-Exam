@@ -7,7 +7,6 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='css/customer.css') }}"/>
     <link rel="stylesheet" href="https://unpkg.com/leaflet@1.9.4/dist/leaflet.css" integrity="sha256-p4NxAoJBhIIN+hmNHrzRCf9tD/miZyoHS5obTRR9BMY=" crossorigin=""/>
     <script src="https://unpkg.com/leaflet@1.9.4/dist/leaflet.js" integrity="sha256-20nQCchB9co0qIjJZRGuk2/Z9VM+kNiyxNV1lvTlZBo=" crossorigin=""></script>
-    <script src="{{ url_for('static', filename='header.js') }}"></script>
     <script src="{{ url_for('static', filename='map.js') }}" defer></script>
     <script src="{{ url_for('static', filename='search.js') }}" defer></script>
     <title>Explore</title>
@@ -36,6 +35,7 @@
                 </ul>
             </section>
         </div>
+
 
         {% include "_customer_show_restaurant_items.html" %}
     </main>
