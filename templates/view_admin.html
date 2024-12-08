@@ -12,8 +12,14 @@
 
 {% include "_header_logged-in.html" %}
 
+
+
+
 <section class="users-list">
-    <h1>All users ({{ total_users }})</h1>
+    
+    <!-- TODO: make count work, Trello for details -->
+    <!-- <h1>All users ({{ total_users }})</h1> -->
+    <h1>All users</h1>
 
     <div class="page-btn-ctn">
         {% if page_id > 1 %}
@@ -21,19 +27,26 @@
             <button type="submit">Previous Page</button>
         </form>
         {% endif %}
-
+        
         <p name="page_id">Currently on Page: {{ page_id }}</p>
-
+        
+        
         <form action="{{ url_for('admin_or_pagination', page_id=page_id + 1) }}" method="get">
             <button type="submit">Next Page</button>
         </form>
     </div>
 
+    
     {% if users %}
         {% for user in users %}
             <div class="individual-user">
                 <div class="portrait-ctn">
-                    <img id="avatar-img" src="../static/avatars/{{ user['user_avatar'] }}" alt="avatar">
+
+                    
+                    <img id="avatar-img" src="{{ url_for('static', filename='avatars/' + user['user_avatar']) }}" alt="avatar">
+
+
+                    <!-- <img id="avatar-img" src="../static/avatars/{{ user['user_avatar'] }}" alt="avatar"> -->
                 </div>
 
                 <div class="user-info-wrapper">
@@ -84,7 +97,7 @@
 
 
 <section class="item-list">
-    <h1>All items</h1>
+    <h1>All items</h1> 
     {% if items %}
     <div class="item-list">
     {% for item in items %}
