@@ -199,6 +199,19 @@ def api_search_items():
         query = request.args.get("q", "").strip()
         if not query:
             return {"items": []}
+        db, cursor = x.db()
+        q = "SELECT `item_title`, `item_price` FROM `items` WHERE `item_title` LIKE %s"
+        cursor.execute(q, (f"%{query}%",))
+        items = cursor.fetchall()
+
+        return {"items": items}
+    except Exception as ex:
+        if isinstance(ex, x.mysql.connector.Error):
+            return {"error": "Database error occurred."}, 500
+        return {"error": "System under maintenance."}, 500
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
 
 @app.get("/api/restaurants")
 def get_restaurants():
