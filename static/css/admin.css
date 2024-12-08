@@ -13,16 +13,113 @@ h1 {
     margin: 20px 0;
 }
 
-/* User list */
 
-
-#avatar-img{
-    max-height: 6em;
-    border-radius: 5em;
+/* Button Styling */
+.btn {
+    color: white;
+    border: none;
+    padding: 8px 16px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
 }
 
-#unblock-block-btn{
-    padding: 0.3em;
+
+.unblock-btn {
+    background-color: #28a745;
+}
+
+.unblock-btn:hover {
+    background-color: #208537;
+}
+
+.block-btn {
+    background-color: #dc3545;
+}
+
+.block-btn:hover {
+    background-color: #c82333;
+}
+
+/* User List Styling */
+.portrait-ctn {
+    border-radius: 50%;
+    width: 100%;
+    max-width: 200px;
+    height: 200px;
+    overflow: hidden;
+    margin-bottom: 2em;
+}
+
+#avatar-img {
+    width: 100%;
+    height: 100%;
+    object-fit: cover;
+}
+
+/* Users List Container */
+.users-list {
+    max-width: 100%;
+    margin: 0 auto;
+    padding: 10px;
+}
+
+.page-btn-ctn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2em;
+    margin-bottom: 2em;
+}
+
+.user-info-wrapper {
+    display: flex;
+    height: 5em;
+    gap: 3em;
+    margin-bottom: 2em;
+}
+
+.user-info {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-between;
+}
+
+.page-btn-ctn button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.page-btn-ctn button:hover {
+    background-color: #0056b3;
+}
+
+/* Individual User Styling */
+.individual-user {
+    padding: 1rem;
+    margin: 1rem 0;
+    border: 1px solid #ddd;
+    border-radius: 6px;
+    background-color: #fefefe;
+    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
+    display: grid;
+    place-items: center;
+}
+
+.individual-user strong {
+    font-weight: bold;
+    color: #555;
+}
+
+p {
+    font-size: 1rem;
+    text-align: center;
+    color: #666;
 }
 
 /* Item List Container */
@@ -34,9 +131,9 @@ h1 {
     margin: 0;
 }
 
-/* Individual Card */
+/* Item Card Styling */
 .item-card {
-    display: flex; /* Layout for image and content side by side */
+    display: flex;
     border-radius: 8px;
     overflow: hidden;
     background-color: #fff;
@@ -49,14 +146,12 @@ h1 {
     box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
 }
 
-/* Card Image */
 .card-img {
     width: 50%;
     height: auto;
-    object-fit: cover; /* Maintain aspect ratio and crop if needed */
+    object-fit: cover;
 }
 
-/* Card Content */
 .card-content {
     width: 50%;
     padding: 1em;
@@ -64,7 +159,7 @@ h1 {
 
 .card-title {
     font-size: 1rem;
-    margin: 0 0 10px 0;
+    margin-bottom: 10px;
     color: #202125;
 }
 
@@ -74,112 +169,55 @@ h1 {
     font-weight: bold;
 }
 
-.users-list {
-    padding: 1rem;
-    max-width: 600px;
-    margin: 0 auto;
-    background-color: #ffffff;
-    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
-    border-radius: 8px;
-}
-
-.individual-user {
-    list-style: none;
-    padding: 1rem;
-    margin: 1rem 0;
-    border: 1px solid #ddd;
-    border-radius: 6px;
-    background-color: #fefefe;
-    box-shadow: 0 1px 3px rgba(0, 0, 0, 0.1);
-    display: grid   ;
-    place-items: center;
-}
-
-.individual-user li {
-    margin-bottom: 0.5rem;
-    font-size: 0.9rem;
-    color: #333;
-}
-
-.individual-user li strong {
-    font-weight: bold;
-    color: #555;
-}
-
-p {
-    font-size: 1rem;
-    text-align: center;
-    color: #666;
-}
-
-#unblock-- {
-    background-color: black;
-}
-
-#block-- {
-    background-color: red;
-    color: #fefefe;
-    border: none;
-    padding: 1em 1em;
-}
-
-
-/* Media Queries for Responsive Design */
+/* Responsive Design */
 
 /* Tablets and Larger Screens */
 @media (min-width: 600px) {
     .item-list {
-        flex-direction: row; /* Align items horizontally for larger screens */
-        flex-wrap: wrap; /* Allow wrapping to the next row */
-        justify-content: space-between; /* Space out cards evenly */
-        gap: 20px; /* Increase gap for larger screens */
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 20px;
     }
 
     .item-card {
-        flex: 0 1 calc(50% - 20px); /* Two cards per row on tablet */
-        flex-direction: row; /* Image and content side by side */
-    }
-
-    .card-img {
-        height: 100%;
-    }
-
-    .card-content {
-        width: 50%;
-        padding: 1em;
+        flex: 0 1 calc(50% - 20px);
     }
 
     .users-list {
         max-width: 800px;
     }
 
-
-
-
-    .individual-user li {
+    .individual-user div {
         font-size: 1rem;
-        margin-bottom: 0.3em;
     }
 }
 
 /* Desktops and Larger Screens */
 @media (min-width: 900px) {
     .item-card {
-        flex: 0 1 calc(33.333% - 20px); /* Three cards per row on desktop */
+        flex: 0 1 calc(33.333% - 20px);
     }
 }
-/* Larger Screens (Desktop) */
 
+/* Larger Screens (Desktop) */
 @media (min-width: 1024px) {
+
+    .portrait-ctn {
+        margin: 0;
+    }
+
+    .user-info-wrapper {
+        margin: 0;
+    }
+
     .users-list {
         max-width: 1200px;
     }
 
-
-    .individual-user{
+    .individual-user {
         display: flex;
-        justify-content: space-between;
+        justify-content: space-around;
         align-items: center;
     }
-
 }
