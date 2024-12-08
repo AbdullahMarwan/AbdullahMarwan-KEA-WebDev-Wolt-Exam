@@ -25,20 +25,19 @@
             <!-- List of Restaurants -->
             <section class="list-of-restaurants-customer">
                 <h2>All Restaurants</h2>
+                
+                <input type="text" id="search-restaurants" placeholder="Search for restaurants">
+                <div id="restaurant-results" class="search-results"></div>
+
                 <ul id="restaurant-list">
                     {% for restaurant in restaurants %}
                         <li> <a href="/customer/items/{{ restaurant.user_pk }}">{{restaurant['user_name']}}</a> </li>
                     {% endfor %}
                 </ul>
-                    <input type="text" id="search-restaurants" placeholder="Search for restaurants">
-                    <div id="restaurant-results" class="search-results"></div>
             </section>
         </div>
+
         {% include "_customer_show_restaurant_items.html" %}
-                <div class="items-search">
-                    <input type="text" id="search-items" placeholder="Search for items">
-                    <div id="item-results" class="search-results"></div>
-                </div>
     </main>
 
     {% include "_bottom.html" %}

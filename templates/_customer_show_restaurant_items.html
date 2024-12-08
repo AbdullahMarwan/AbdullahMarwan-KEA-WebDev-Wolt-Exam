@@ -6,6 +6,11 @@
     <h2>All Items</h2>
     {% endif %}
 
+    <div class="items-search">
+        <input type="text" id="search-items" placeholder="Search for items">
+        <div id="item-results" class="search-results"></div>
+    </div>
+
     {% if items %}
     <div class="item-list">
         {% for item in items %}
