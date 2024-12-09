@@ -17,10 +17,14 @@
 
 document.addEventListener('DOMContentLoaded', function() {
     // Select all 'Add to cart' buttons
-    const addToCartButtons = document.querySelectorAll('.item-card .buy');
+    const addToCartButtons = document.querySelectorAll('.buy');
+    
+    // Get the number of products display element
+    const numberOfProductsElement = document.querySelector(".number-of-products");
 
-    // Initialize total price
+    // Initialize total price and number of products
     let totalPriceValue = 0;
+    let numberOfProducts = 0;  // Counter for the number of products in the cart
 
     // Add event listener to each button
     addToCartButtons.forEach(button => {
@@ -47,17 +51,20 @@ document.addEventListener('DOMContentLoaded', function() {
                 </div>
             `;
             
-            // Append the new item to the cart list
+            // Append the new item to the cart list as the first item
             const cartList = document.querySelector('.cart-list .item-list-cart');
-            cartList.appendChild(cartItem);
-            
+            cartList.insertBefore(cartItem, cartList.firstChild);  // Add new item at the beginning
+
+            // Increment the number of products and update the display
+            numberOfProducts++;
+            numberOfProductsElement.textContent = numberOfProducts;  // Update the number of products displayed
+
             // Update the total price
             totalPriceValue += itemPrice;
             document.getElementById('total-price').textContent = "Total Price: " + totalPriceValue.toFixed(2);
         });
     });
 });
-
 
 
 
