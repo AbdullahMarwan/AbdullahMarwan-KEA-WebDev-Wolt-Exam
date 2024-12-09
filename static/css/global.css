@@ -147,9 +147,9 @@ p, li{
 }
 
 .btn {
-    padding: 8px 16px;
+    padding: 2px 16px;
     border: none;
-    border-radius: 20px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 14px;
 }
@@ -275,14 +275,14 @@ p, li{
 
 #loginButton{
     padding: 10px 15px;
-  font-size: 1em;
-  border: none;
-  background-color: #dc3545;
-  color: white;
-  border-radius: 4px;
-  cursor: pointer;
-  font-weight: bold;
-  transition: background-color 0.3s ease, transform 0.2s ease;
+    font-size: 1em;
+    border: none;
+    background-color: #dc3545;
+    color: white;
+    border-radius: 4px;
+    cursor: pointer;
+    font-weight: bold;
+    transition: background-color 0.3s ease, transform 0.2s ease;
 }
 
 
@@ -464,6 +464,10 @@ header {
     box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
     width: 400px; 
     margin:1em;
+
+    input{
+        padding:0.5em;
+    }
     }
 
     h1{
@@ -491,7 +495,7 @@ header {
         background-color: #0056b3;
     }
 
-    #options-edit{
+    .options-edit{
         display:flex;
         margin:1em;
     }
@@ -510,3 +514,46 @@ header {
 
 }
 
+
+
+/*------------------------------------------ DELETE PROFILE ----------------------------------------*/
+.delete-profile-main{
+    display: flex;
+    flex-direction: column;
+    justify-content: center;
+    align-items: center;
+    margin: 0;
+    padding: 0;
+    text-align: center;
+    margin:1em;
+
+    .delete-profile-form{
+        background-color: #ffffff;
+        padding: 2rem;
+        border-radius: 8px;
+        box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); 
+        width: 400px; 
+        margin:1em;
+    }
+
+    input{
+        padding:0.5em;
+        margin:1em;
+    }
+
+    .options-edit{
+        margin:2em auto;
+    }
+
+    .delete-btn{
+        max-width: 100%;
+        padding: 0.5rem;
+        background-color: red;
+        border: none;
+        border-radius: 4px;
+        color: #fff;
+        cursor: pointer;
+        text-decoration: none;
+        text-align: center;
+    }
+}
