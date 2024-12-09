@@ -144,9 +144,9 @@ p, li{
 }
 
 .btn {
-    padding: 8px 16px;
+    padding: 2px 16px;
     border: none;
-    border-radius: 20px;
+    border-radius: 10px;
     cursor: pointer;
     font-size: 14px;
 }
