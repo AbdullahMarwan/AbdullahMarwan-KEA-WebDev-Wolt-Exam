@@ -10,20 +10,18 @@
 </head>
 <body>
 {% include "_header_logged-in.html" %}
-<div checked="headline">
-  <h1>Delete Profile</h1>
-</div>
 
-<main class="w-full h-100vh d-flex p-items-center">
+<main class="delete-profile-main">
+  <h1>Delete profile</h1>
   <form
     id="frm_delete_profile"
-    class="w-25% d-flex flex-col gap-4 mx-auto"
+    class="delete-profile-form"
     method="post"
     action="{{ url_for('request_delete_profile') }}"
   >
-    <div class="d-flex flex-col">
+    <div class="">
       <label for="user_password">
-        <span>Enter your password to confirm deletion</span>
+        <span>Enter your password to confirm deletion:</span>
       </label>
       <input
         name="user_password"
@@ -38,105 +36,19 @@
       data will be permanently removed.
     </div>
 
-    <div>
-      <!-- Modified Button with mix-post and mix-data attributes -->
+    <div class="options-edit">
+      <a href="{{ url_for('view_partner') }}" class="btn btn-secondary"
+      >Cancel</a
+    >
       <button
         type="button"
         mix-post="/partner/request_delete_profile"
         mix-data="#frm_delete_profile"
-        class="btn btn-danger"
+        class="delete-btn btn-danger"
       >
         Delete Profile
       </button>
-
-      <a href="{{ url_for('view_partner') }}" class="btn btn-secondary"
-        >Cancel</a
-      >
     </div>
   </form>
-
-  <style>
-    /* Styles similar to signup and edit forms */
-    body {
-      font-family: Arial, sans-serif;
-      background-color: #f5f5f5;
-    }
-
-    #frm_delete_profile label span {
-      font-weight: bold;
-      margin-bottom: 0.1rem;
-      display: block;
-    }
-
-    #frm_delete_profile input[type="password"] {
-      width: 100%;
-      padding: 0.5rem;
-      border: 1px solid #ccc;
-      border-radius: 4px;
-      font-size: 0.9rem;
-    }
-
-    #frm_delete_profile button {
-      width: 100%;
-      padding: 0.5rem;
-      background-color: #dc3545;
-      border: none;
-      border-radius: 4px;
-      color: #fff;
-      font-size: 1rem;
-      cursor: pointer;
-    }
-
-    #frm_delete_profile button:hover {
-      background-color: #c82333;
-    }
-
-    #frm_delete_profile a.btn-secondary {
-      display: inline-block;
-      margin-top: 1rem;
-      text-align: center;
-      color: #6c757d;
-      text-decoration: none;
-      padding: 0.5rem;
-      background-color: #e2e6ea;
-      border-radius: 4px;
-    }
-
-    #frm_delete_profile a.btn-secondary:hover {
-      background-color: #dae0e5;
-    }
-
-    /* Existing utility classes */
-    .d-flex {
-      display: flex;
-    }
-
-    .flex-col {
-      flex-direction: column;
-    }
-
-    .p-items-center {
-      align-items: center;
-    }
-
-    /* Alert Warning Styles */
-    .alert {
-      padding: 1rem;
-      border: 1px solid transparent;
-      border-radius: 4px;
-      margin-top: 1rem;
-      font-size: 0.9rem;
-    }
-
-    .alert-warning {
-      color: #856404;
-      background-color: #fff3cd;
-      border-color: #ffeeba;
-    }
-
-    .alert-warning strong {
-      margin-right: 0.5rem;
-    }
-  </style>
 </main>
 {% include "_bottom.html" %}
