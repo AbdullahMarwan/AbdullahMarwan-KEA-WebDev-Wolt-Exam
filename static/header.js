@@ -14,7 +14,6 @@
     }
 });
 
-
 document.addEventListener('DOMContentLoaded', function() {
     // Select all 'Add to cart' buttons
     const addToCartButtons = document.querySelectorAll('.buy');
@@ -26,7 +25,26 @@ document.addEventListener('DOMContentLoaded', function() {
     let totalPriceValue = 0;
     let numberOfProducts = 0;  // Counter for the number of products in the cart
 
-    // Add event listener to each button
+    // Get the product number container
+    const productNumberCtn = document.querySelector(".number-products-ctn");
+
+    // Function to update the visibility of the number-products-ctn container
+    function updateProductNumberVisibility() {
+        // Set the number of products in the display element
+        numberOfProductsElement.textContent = numberOfProducts;  // Update the content with the current number of products
+
+        // Show or hide the product number container based on the number of products
+        if (numberOfProducts === 0) {
+            productNumberCtn.classList.add("hidden");  // Hide the container if no products
+        } else {
+            productNumberCtn.classList.remove("hidden");  // Show the container if there are products
+        }
+    }
+
+    // Initial call to ensure the correct visibility at page load
+    updateProductNumberVisibility();
+
+    // Add event listener to each 'Add to cart' button
     addToCartButtons.forEach(button => {
         button.addEventListener('click', function() {
             // Get the parent item card
@@ -45,10 +63,10 @@ document.addEventListener('DOMContentLoaded', function() {
             
             cartItem.innerHTML = `
                 <img src="${itemImage}" alt="${itemTitle}" class="cart-item-img"/>
-                <div class="cart-item-content">
+                <article class="cart-item-content">
                     <h3 class="cart-item-title">${itemTitle}</h3>
                     <p class="cart-item-price">${itemPrice} kr.</p>
-                </div>
+                </article>
             `;
             
             // Append the new item to the cart list as the first item
@@ -57,7 +75,9 @@ document.addEventListener('DOMContentLoaded', function() {
 
             // Increment the number of products and update the display
             numberOfProducts++;
-            numberOfProductsElement.textContent = numberOfProducts;  // Update the number of products displayed
+            
+            // Update the number of products displayed and the visibility
+            updateProductNumberVisibility();
 
             // Update the total price
             totalPriceValue += itemPrice;
@@ -65,7 +85,6 @@ document.addEventListener('DOMContentLoaded', function() {
         });
     });
 });
-
 
 
 
@@ -86,7 +105,7 @@ document.addEventListener('DOMContentLoaded', function() {
                 cartList.classList.remove('slide-out');  // Remove 'slide-in'
                 cartList.classList.add('slide-in');    // Add 'slide-out'
             } else
-            console.log("After toggling: ", cartList.classList);  // Log after class removal or addition
+            cartList.classList.add('slide-in');   // Add 'slide-in'
         });
     } else {
         console.log("Element(s) not found.");

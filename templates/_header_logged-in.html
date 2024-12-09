@@ -21,13 +21,27 @@
                     <button id="toggle-cart">
                         <div class="icon-ctn">
                             <div class="cart-icon-ctn">
-                                <svg viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
-                                    <path d="M6.29977 5H21L19 12H7.37671M20 16H8L6 3H3M9 20C9 20.5523 8.55228 21 8 21C7.44772 21 7 20.5523 7 20C7 19.4477 7.44772 19 8 19C8.55228 19 9 19.4477 9 20ZM20 20C20 20.5523 19.5523 21 19 21C18.4477 21 18 20.5523 18 20C18 19.4477 18.4477 19 19 19C19.5523 19 20 19.4477 20 20Z" stroke="#000000" stroke-width="2" stroke-linecap="round" stroke-linejoin="round"/>
+                                <?xml version="1.0" encoding="utf-8"?>
+
+                                <!-- Uploaded to: SVG Repo, www.svgrepo.com, Generator: SVG Repo Mixer Tools -->
+                                <svg width="800px" height="800px" viewBox="0 0 24 24" fill="none" xmlns="http://www.w3.org/2000/svg">
+                                <g clip-path="url(#clip0_15_35)">
+                                <rect width="24" height="24"/>
+                                <path d="M5.33331 6H19.8672C20.4687 6 20.9341 6.52718 20.8595 7.12403L20.1095 13.124C20.0469 13.6245 19.6215 14 19.1172 14H16.5555H9.44442H7.99998" stroke="#000000" stroke-linejoin="round"/>
+                                <path d="M2 4H4.23362C4.68578 4 5.08169 4.30341 5.19924 4.74003L8.30076 16.26C8.41831 16.6966 8.81422 17 9.26638 17H19" stroke="#000000" stroke-linecap="round" stroke-linejoin="round"/>
+                                <circle cx="10" cy="20" r="1" stroke="#000000" stroke-linejoin="round"/>
+                                <circle cx="17.5" cy="20" r="1" stroke="#000000" stroke-linejoin="round"/>
+                                </g>
+                                <defs>
+                                <clipPath id="clip0_15_35">
+                                <rect width="24" height="24"/>
+                                </clipPath>
+                                </defs>
                                 </svg>
                             </div>
-                            <div class="number-products-ctn">
-                                <p class="number-of-products"></p>
-                            </div>
+                            <div class="number-products-ctn hidden">
+                                <p class="number-of-products">0</p> <!-- This will dynamically show the number of products -->
+                            </div>                            
                         </div>
                     </button>
                 </li>
@@ -41,7 +55,7 @@
     </header>
 
 
-    <div class="cart-list slide-in">
+    <div class="cart-list">
         <div class="heading-items-ctn">
             <h2 class="cart-heading">Cart</h2>
             <div class="item-list-cart"></div>

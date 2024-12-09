@@ -154,10 +154,14 @@ p, li{
     font-size: 14px;
 }
 
+#toggle-cart {
+    background-color: transparent;
+    border: none;
+    cursor: pointer;
+}
+
 .number-products-ctn {
-    position: absolute;
-    top: 0;
-    right: 0;
+    align-self: flex-start;
     background-color: #007aff;
     color: #fefefefe;
     border-radius: 50%;
@@ -169,14 +173,17 @@ p, li{
 }
 
 .icon-ctn {
+    display: flex;
+    align-items: center;
+    justify-content: flex-start;
     position: relative;
     width: 4.5em;
     height: 3em;
 }
 
 .cart-icon-ctn {
-    width: 3em;
-    height: 3em;
+    width: 2.5em;
+    height: 2.5em;
 }
 
 .cart-list {
