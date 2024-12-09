@@ -1,8 +1,5 @@
-import json
-import random
 from flask import Flask, session, render_template, redirect, url_for, make_response, request, flash, jsonify
 from flask_session import Session
-from datetime import datetime
 from werkzeug.security import generate_password_hash
 from werkzeug.security import check_password_hash
 import x
@@ -43,33 +40,6 @@ def showItemList():
     except Exception as ex:
         print(f"Error fetching items: {ex}")
         return []  # Return empty list in case of error
-    finally:
-        if "cursor" in locals():
-            cursor.close()
-        if "db" in locals():
-            db.close()
-
-##############################
-def showRestaurantList():
-    try:
-        db, cursor = x.db()
-        query = """
-            SELECT users.user_pk, users.user_name
-            FROM users
-            JOIN users_roles ON users.user_pk = users_roles.user_role_user_fk
-            WHERE users_roles.user_role_role_fk = '9f8c8d22-5a67-4b6c-89d7-58f8b8cb4e15'
-        """
-        cursor.execute(query)
-        
-        # Fetch all rows and structure the data into dictionaries
-        restaurants = cursor.fetchall()
-        # print("Results:", restaurants)  # Debugging output: Print the raw result from the query
-        
-        return restaurants
-        # return restaurants
-    except Exception as ex:
-        print(f"Error fetching restaurants: {ex}")
-        return []
     finally:
         if "cursor" in locals():
             cursor.close()
@@ -164,7 +134,33 @@ def view_login():
             return redirect(url_for("view_restaurant"))    
     return render_template("view_login.html", x=x, title="Login", message=request.args.get("message", ""))
 
-##############################
+
+# ##############################
+# @app.get("/customer")
+# @x.no_cache
+# def view_customer():
+#     try:
+#         if not session.get("user", ""): 
+#             return redirect(url_for("view_login"))
+#         user = session.get("user")
+#         if len(user.get("roles", "")) > 1:
+#             return redirect(url_for("view_choose_role"))
+#         # Fetch items using the helper function
+#         items = showItemList()
+#         return render_template("view_customer.html", items=items, user=user)
+
+#     except Exception as ex:
+#         if isinstance(ex, x.mysql.connector.Error):
+#             return f"""<template mix-target="#toast" mix-bottom>Database error occurred.</template>""", 500
+    
+#         return f"""<template mix-target="#toast" mix-bottom>System under maintenance.</template>""", 500
+        
+#     finally:
+#         if "cursor" in locals(): cursor.close()
+#         if "db" in locals(): db.close()
+
+# ############################## Rewrote the view customer route
+        
 @app.get("/customer")
 @x.no_cache
 def view_customer():
@@ -175,13 +171,9 @@ def view_customer():
         if len(user.get("roles", "")) > 1:
             return redirect(url_for("view_choose_role"))
         
-        items = showItemList()  # Fetch items
-        restaurants = showRestaurantList()  # Fetch restaurants
-        
-        return render_template("view_customer.html", items=items, restaurants = restaurants, user=user)
-    except Exception as ex:
-        print(f"Error in view_customer: {ex}")
-        return "Error occurred", 500
+        # Fetch items using the helper function
+        items = showItemList()
+        return render_template("view_customer.html", items=items, user=user)
 
     except Exception as ex:
         if isinstance(ex, x.mysql.connector.Error):
@@ -192,84 +184,8 @@ def view_customer():
     finally:
         pass
     
-############################## SEARCH FOR ITEM
-@app.route("/api/search-items", methods=["GET"])
-def api_search_items():
-    try:
-        query = request.args.get("q", "").strip()
-        if not query:
-            return {"items": []}
-        db, cursor = x.db()
-        q = "SELECT `item_title`, `item_price` FROM `items` WHERE `item_title` LIKE %s"
-        cursor.execute(q, (f"%{query}%",))
-        items = cursor.fetchall()
+##############################
 
-        return {"items": items}
-    except Exception as ex:
-        if isinstance(ex, x.mysql.connector.Error):
-            return {"error": "Database error occurred."}, 500
-        return {"error": "System under maintenance."}, 500
-    finally:
-        if "cursor" in locals(): cursor.close()
-        if "db" in locals(): db.close()
-
-@app.get("/api/restaurants")
-def get_restaurants():
-    try:
-        restaurants = showRestaurantList()
-        
-        def generate_random_coordinates():
-            # Latitude range for Copenhagen (approx. 55.61 to 55.73)
-            lat = random.uniform(55.61, 55.73)
-            # Longitude range for Copenhagen (approx. 12.48 to 12.65)
-            lon = random.uniform(12.48, 12.65)
-            return lat, lon
-        
-        for restaurant in restaurants:
-            lat, lon = generate_random_coordinates()
-            restaurant['lat'] = lat
-            restaurant['lon'] = lon
-        
-        return jsonify(restaurants)
-    except Exception as ex:
-        print(f"Error in get_restaurants: {ex}")
-        return jsonify({"error": "Failed to fetch restaurants"}), 500
-
-        return {"items": items}
-    except Exception as ex:
-        if isinstance(ex, x.mysql.connector.Error):
-            return {"error": "Database error occurred."}, 500
-        return {"error": "System under maintenance."}, 500
-    finally:
-        if "cursor" in locals(): cursor.close()
-        if "db" in locals(): db.close()
-
-############################## SEARCH FOR RESTAURANT
-@app.route("/api/search-restaurants", methods=["GET"])
-def api_search_restaurants():
-    try:
-        query = request.args.get("q", "").strip()
-        if not query:
-            return {"restaurants": []}
-
-        db, cursor = x.db()
-        q = """
-            SELECT u.user_name 
-            FROM users u
-            JOIN users_roles ur ON u.user_pk = ur.user_role_user_fk
-            WHERE ur.user_role_role_fk = %s AND u.user_name LIKE %s
-        """
-        cursor.execute(q, ("9f8c8d22-5a67-4b6c-89d7-58f8b8cb4e15", f"%{query}%"))
-        restaurants = cursor.fetchall()
-
-        return {"restaurants": restaurants}
-    except Exception as ex:
-        if isinstance(ex, x.mysql.connector.Error):
-            return {"error": "Database error occurred."}, 500
-        return {"error": "System under maintenance."}, 500
-    finally:
-        if "cursor" in locals(): cursor.close()
-        if "db" in locals(): db.close()
 
 
 ##############################
@@ -293,35 +209,6 @@ def view_restaurant():
     return render_template("view_restaurant.html", user=user)
 
 # Route for viewing the restaurant items (when the button is clicked)
-@app.route('/customer/items/<restaurant_id>')
-def customer_items(restaurant_id):
-    if not session.get("user", ""):
-        return redirect(url_for("view_login"))
-
-    user = session.get("user")
-    if "customer" not in user.get("roles", {}):
-        return redirect(url_for("view_login"))
-    
-    restaurants = showRestaurantList()
-    
-    print("Restaurant ID after clicking button:", restaurant_id)
-
-    items = showItemListByRestaurant(restaurant_id)  # Fetch items based on restaurant_id
-    
-    # restaurant_name = request.args.get("restaurant_name").value
-    
-       # Fetch restaurant name using the user_pk (restaurant_id)
-    restaurant_name = None
-    for restaurant in restaurants:
-        if restaurant['user_pk'] == restaurant_id:
-            restaurant_name = restaurant['user_name']
-            break
-    
-    return render_template('view_customer.html', items=items, restaurants=restaurants, user=user, restaurant_name=restaurant_name)
-
-#########################
-
-# Route for viewing the restaurant items (when the button is clicked)
 @app.route('/restaurant/items/<restaurant_id>')
 def restaurant_items(restaurant_id):
     if not session.get("user", ""):
@@ -330,11 +217,17 @@ def restaurant_items(restaurant_id):
     user = session.get("user")
     if "restaurant" not in user.get("roles", {}):
         return redirect(url_for("view_login"))
-    
-    print("Restaurant ID after clicking button:", restaurant_id)
 
     items = showItemListByRestaurant(restaurant_id)  # Fetch items based on restaurant_id
     return render_template('view_restaurant.html', view='items', items=items, user=user)
+
+import os
+import uuid
+from werkzeug.utils import secure_filename
+
+import os
+import uuid
+from werkzeug.utils import secure_filename
 
 @app.route('/restaurant/add_item', methods=['GET', 'POST'])
 def restaurant_add_item():
@@ -475,25 +368,11 @@ def admin_or_pagination(page_id=1):
         
         # Database query
         db, cursor = x.db()
-        q = "SELECT `user_pk`, `user_name`, `user_last_name`, `user_avatar`, `user_email`, `user_deleted_at`, `user_blocked_at`, `user_verified_at` FROM `users` LIMIT %s OFFSET %s"
+        q = "SELECT `user_pk`, `user_name`, `user_last_name`, `user_avatar`,  `user_email`, `user_deleted_at`, `user_blocked_at`, `user_verified_at` FROM `users` LIMIT %s OFFSET %s"
         cursor.execute(q, (limit, offset))
         users = cursor.fetchall()
-
-        # Query to get the total number of users
-        count_query = "SELECT COUNT(*) FROM `users`"
-        cursor.execute(count_query)
-        result = cursor.fetchone()  # Get the count from the first column
-
-        # Extract the count value
-        total_users = result['COUNT(*)'] if result else 0  # Access 'COUNT(*)' key in the dictionary
-
-        for user in users:
-            user['user_deleted_at'] = convert_epoch_to_datetime(user['user_deleted_at'])
-            user['user_blocked_at'] = convert_epoch_to_datetime(user['user_blocked_at'])
-            user['user_verified_at'] = convert_epoch_to_datetime(user['user_verified_at'])
-
         # Render template with paginated content
-        return render_template("view_admin.html", users=users, page_id=page_id, total_users=total_users)
+        return render_template("view_admin.html", users=users, page_id=page_id)
     except Exception as ex:
         ic(f"Exception: {ex}")  # Log the error
         if isinstance(ex, x.mysql.connector.Error):
@@ -504,13 +383,73 @@ def admin_or_pagination(page_id=1):
         if "db" in locals(): db.close()
 
 
-# Function to convert epoch to datetime string
-def convert_epoch_to_datetime(epoch_time):
-    if epoch_time and epoch_time != 0:
-        return datetime.utcfromtimestamp(epoch_time).strftime('%Y-%m-%d %H:%M:%S')
-    return None  # Return None if the value is 0 or invalid
+
+
+
+# @app.get("/admin")
+# @x.no_cache
+# def view_admin():
+#     try:
+#         if not session.get("user", ""): 
+#             return redirect(url_for("view_login"))
+#         user = session.get("user")
+#         if not "admin" in user.get("roles", ""):
+#             return redirect(url_for("view_login"))
+
+
+#         db, cursor = x.db()  # Use x.db() for consistent DB connection and cursor
+#         q = "SELECT user_pk, user_name, user_last_name, user_email, user_deleted_at, user_blocked_at, user_verified_at FROM users"
+#         cursor.execute(q)
+#         users = cursor.fetchall()  # Fetch the result as a dictionary or tuple, depending on the cursor setup
+
+
+#         # Fetch items using the helper function
+#         items = showItemList()
+#         return render_template("view_admin.html", items=items, users=users)
+
+#     except Exception as ex:
+#         if isinstance(ex, x.mysql.connector.Error):
+#             return f"""<template mix-target="#toast" mix-bottom>Database error occurred.</template>""", 500
+    
+#         return f"""<template mix-target="#toast" mix-bottom>System under maintenance.</template>""", 500
+        
+#     finally:
+#         if "cursor" in locals(): cursor.close()
+#         if "db" in locals(): db.close()
+
+# @app.route('/admin', methods=['GET'])
+# def admin_page():
+#     try:
+#         # Handle session and user authentication
+#         if not session.get("user", ""):
+#             return redirect(url_for("view_login"))
+#         user = session.get("user")
+#         if "admin" not in user.get("roles", ""):
+#             return redirect(url_for("view_login"))
+
+#         # Fetch users and render the admin page (pagination will be handled separately)
+#         return render_template("view_admin.html")
+    
+#     except Exception as ex:
+#         ic(f"Exception: {ex}")  # Log the error
+#         if isinstance(ex, x.mysql.connector.Error):
+#             return "Database error occurred.", 500
+#         return "System under maintenance.", 500
+
+
+
 
 ##############################
+
+
+# @app.route('/admin/page/<page_id>', methods=['GET', 'POST'])
+# def user_list_pagination():
+#     try:
+#         page-btn = request.get("page-btn")
+#     finally:
+#         ic("works")
+
+
 
 @app.post("/admin/user-list/block")
 def block_or_unblock_user():
@@ -521,11 +460,9 @@ def block_or_unblock_user():
         if not "admin" in user.get("roles", ""):
             return redirect(url_for("view_login"))
         
-        # Get user_pk, action, and page_id from the form
+        # Get user_pk and action from the form
         user_pk = request.form.get("user_pk")
         action = request.form.get("action")
-        page_id = request.form.get('page_id', type=int)  # Now it should correctly get the page_id from the form
-
 
         if not user_pk or action not in ["block", "unblock"]:
             return redirect(url_for("view_admin"))
@@ -541,9 +478,7 @@ def block_or_unblock_user():
             cursor.execute(query, (user_pk,))
         
         db.commit()
-
-        # Redirect back to the same page after block/unblock action is performed
-        return redirect(url_for("admin_or_pagination", page_id=page_id))
+        return redirect(url_for("view_admin"))
 
     except Exception as ex:
         if isinstance(ex, x.mysql.connector.Error):
@@ -553,6 +488,7 @@ def block_or_unblock_user():
     finally:
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
+
 
 
 ##############################
