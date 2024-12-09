@@ -36,7 +36,7 @@ def _________GET_________(): pass
 def showItemList():
     try:
         db, cursor = x.db()
-        q = "SELECT `item_title`, `item_price`, `item_image` FROM `items` LIMIT 20"
+        q = "SELECT `item_pk`, `item_title`, `item_price`, `item_image` FROM `items` LIMIT 20"
         cursor.execute(q)
         items = cursor.fetchall()
         return items
@@ -48,6 +48,60 @@ def showItemList():
             cursor.close()
         if "db" in locals():
             db.close()
+
+
+##############################
+
+@app.route('/add_to_cart', methods=['POST'])
+def add_to_cart():
+    try:
+        # Get the item data from the AJAX request
+        item_data = request.get_json()
+
+        # Check if item data is valid
+        if not item_data:
+            return jsonify({"error": "No item data provided"}), 400
+
+        # Extract item details
+        item_pk = item_data.get('item_pk')
+        item_title = item_data.get('item_title')
+        item_price = item_data.get('item_price')
+        item_image = item_data.get('item_image')
+
+        # Ensure all required data is present
+        if not item_pk or not item_title or not item_price or not item_image:
+            return jsonify({"error": "Missing required item data"}), 400
+
+        # Initialize cart if it doesn't exist
+        if 'cart' not in session:
+            session['cart'] = []
+
+        # Add the item to the cart
+        session['cart'].append({
+            'item_pk': item_pk,
+            'item_title': item_title,
+            'item_price': item_price,
+            'item_image': item_image
+        })
+
+        # Calculate total price
+        total_price = sum(item['item_price'] for item in session['cart'])
+
+        # Return the updated cart and total price
+        return jsonify({
+            'item': {
+                'item_pk': item_pk,
+                'item_title': item_title,
+                'item_price': item_price,
+                'item_image': item_image
+            },
+            'total_price': total_price
+        })
+    except Exception as e:
+        print(f"Error: {e}")  # This will print the error in the terminal
+        return jsonify({"error": "Something went wrong on the server"}), 500
+
+
 
 ##############################
 def showRestaurantList():
