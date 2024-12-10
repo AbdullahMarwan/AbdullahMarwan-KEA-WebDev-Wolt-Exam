@@ -971,6 +971,54 @@ def user_delete(user_pk):
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
 
+############################## delete item
+@app.delete("/items/<item_pk>")
+def delete_item(item_pk):
+    try:
+        # Validate session and permissions
+        if not session.get("user", ""): 
+            return redirect(url_for("view_login"))
+
+        if not "restaurant" in session.get("user").get("roles"): 
+            return redirect(url_for("view_login"))
+        
+        ic("item_pk: " + item_pk)
+
+        item_pk = x.validate_uuid4(item_pk)
+
+        db, cursor = x.db()
+
+        # Perform the deletion
+        q = "DELETE FROM items WHERE item_pk = %s"
+        cursor.execute(q, (item_pk,))
+
+        if cursor.rowcount != 1: 
+            x.raise_custom_exception("Cannot delete item", 400)
+
+        db.commit()
+
+        # Return template to update the UI
+        return f"""
+        <template mix-target="#item_{item_pk}" mix-replace></template>
+        """
+
+    except Exception as ex:
+        if "db" in locals(): db.rollback()
+        if isinstance(ex, x.CustomException): 
+            return f"""
+            <template mix-target="#message" mix-top>{ex.message}</template>
+            """, ex.code
+        if isinstance(ex, x.mysql.connector.Error):
+            return """
+            <template mix-target="#message" mix-top>Database error</template>
+            """, 500
+        return """
+        <template mix-target="#message" mix-top>System under maintenance</template>
+        """, 500
+
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
 
 
 
