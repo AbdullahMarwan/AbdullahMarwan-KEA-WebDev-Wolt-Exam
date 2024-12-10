@@ -33,7 +33,7 @@
         {% for user in users %}
             <div class="individual-user">
                 <div class="portrait-ctn">
-                    <img id="avatar-img" src="../static/avatars/{{ user['user_avatar'] }}" alt="avatar">
+                    <img id="avatar-img" src="{{ url_for('static', filename='avatars/' + user['user_avatar']) }}" alt="avatar">
                 </div>
 
                 <div class="user-info-wrapper">

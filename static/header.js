@@ -87,9 +87,11 @@ document.addEventListener('DOMContentLoaded', function () {
                 });
 
                 // Update total price in the DOM
-                totalPriceField.textContent = `Total Price: ${totalPriceValue.toFixed(2)} kr.`;
-
-
+                data.cart.js
+                totalPriceField.textContent = `Total Price: ${totalPriceValue.toFixed(2)} kr.`;                
+                const cartArray = data.cart;
+                buyItems(totalPriceField.textContent, cartArray);
+                // Output: [{ title: "Item 1", price: 100 }]
 
                 // Ensure visibility reflects the updated count
                 updateProductNumberVisibility();
@@ -129,7 +131,11 @@ document.addEventListener('DOMContentLoaded', function () {
                     'Accept': 'application/json',
                     'Content-Type': 'application/json',
                 },
-                body: JSON.stringify({ pk: itemPk }),
+                body: JSON.stringify({ 
+                    pk: itemPk
+                    
+
+                 }),
             });
     
             const content = await rawResponse.json();
@@ -201,7 +207,6 @@ document.addEventListener('DOMContentLoaded', function () {
     
                     cartList.appendChild(cartItem);
 
-
                         // Add event listener to the remove button
                         const removeButton = cartItem.querySelector('.cross-icon-btn');
     
@@ -253,3 +258,37 @@ document.addEventListener('DOMContentLoaded', function () {
 
 
 
+
+async function buyItems(totalPriceField, items) {
+    const buyBtn = document.querySelector(".buy-btn");
+    buyBtn.addEventListener("click", async () => {
+        try {
+            console.log(items);
+
+
+            const rawResponse = await fetch('/buy_items', {
+                method: 'POST',
+                headers: {
+                    'Accept': 'application/json',
+                    'Content-Type': 'application/json',
+                },
+                body: JSON.stringify({ 
+                    totalPrice: totalPriceField,
+                    itemList: items
+                }),
+            });
+
+            if (!rawResponse.ok) {
+                // Handle non-200 responses
+                const errorText = await rawResponse.text();
+                console.error('Server error response:', errorText);
+                return;
+            }
+
+            const content = await rawResponse.json();
+            console.log('Server response after removal:', content);
+        } catch (error) {
+            console.error('Error removing item:', error);
+        }
+    });
+}

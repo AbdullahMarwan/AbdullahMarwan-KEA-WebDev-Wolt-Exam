@@ -120,6 +120,52 @@ def remove_from_cart():
         return jsonify({"error": "Failed to remove item"}), 500
 
 
+
+##############################
+
+@app.route('/buy_items', methods=['POST'])
+def buy_items():
+    try:
+        data = request.json  # Parse incoming JSON
+        total_price = data.get("totalPrice")
+        item_list = data.get("itemList")
+        user = session.get("user")
+        user_email = user.get("user_email")
+
+
+        ic("total_price:" + total_price)
+        ic("Item list:", item_list)
+
+        # Perform your logic here...
+
+        # Send informational email
+        x.send_buy_email(to_email=user_email, total_price=total_price, item_list=item_list)
+        ic("buy email sent.")
+
+        # Return a redirect template to trigger frontend redirection
+        return f"""<template mix-redirect="{url_for("view_login")}"></template>"""
+
+    except Exception as ex:
+        ic(f"Exception occurred during profile deletion: {ex}")
+        if "db" in locals():
+            db.rollback()
+            ic("Database rolled back due to exception.")
+        if isinstance(ex, x.CustomException):
+            toast = render_template("___toast.html", message=ex.message)
+            return f"""<template mix-target="#toast">{toast}</template>""", ex.code
+        if isinstance(ex, x.mysql.connector.Error):
+            ic(ex)
+            return f"""<template mix-target="#toast" mix-bottom>Database error.</template>""", 500
+        return f"""<template mix-target="#toast" mix-bottom>System under maintenance.</template>""", 500
+    finally:
+        if "cursor" in locals():
+            cursor.close()
+            ic("Cursor closed.")
+        if "db" in locals():
+            db.close()
+            ic("Database connection closed.")
+
+
 ##############################
 def showRestaurantList():
     try:
