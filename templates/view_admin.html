@@ -76,13 +76,6 @@
     {% endif %}
 </section>
 
-
-
-
-
-
-
-
 <section class="item-list">
     <h1>All items</h1>
     {% if items %}
@@ -91,9 +84,6 @@
         <article class="item-card">
             <!-- Access the image -->
         <img src="../static/dishes/{{ item['item_image'] if item['item_image'] else '../static/images/image_15.jpg' }}" alt="{{ item['item_title'] }}" class="card-img">
-            
-
-
             <div class="card-content">
                 <!-- Access the title -->
                 <h3 class="card-title">{{ item['item_title'] if item['item_title'] else 'No title available' }}</h3>

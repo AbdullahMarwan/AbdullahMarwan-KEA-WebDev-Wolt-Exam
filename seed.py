@@ -4,16 +4,16 @@ import time
 import random
 from werkzeug.security import generate_password_hash
 from faker import Faker
-
+ 
 fake = Faker()
-
+ 
 from icecream import ic
 ic.configureOutput(prefix=f'***** | ', includeContext=True)
-
-
+ 
+ 
 db, cursor = x.db()
-
-
+ 
+ 
 def insert_user(user):       
     q = f"""
         INSERT INTO users
@@ -21,14 +21,14 @@ def insert_user(user):
         """
     values = tuple(user.values())
     cursor.execute(q, values)
-
-
-
-
-
+ 
+ 
+ 
+ 
+ 
 try:
-
-
+ 
+ 
     
     ##############################
     cursor.execute("DROP TABLE IF EXISTS items") # dependent table
@@ -54,8 +54,8 @@ try:
         )
         """        
     cursor.execute(q)
-
-
+ 
+ 
     ##############################
     
     q = """
@@ -69,9 +69,9 @@ try:
         );
         """        
     cursor.execute(q)
-    cursor.execute("ALTER TABLE items ADD FOREIGN KEY (item_user_fk) REFERENCES users(user_pk) ON DELETE CASCADE ON UPDATE RESTRICT") 
-
-
+    cursor.execute("ALTER TABLE items ADD FOREIGN KEY (item_user_fk) REFERENCES users(user_pk) ON DELETE CASCADE ON UPDATE RESTRICT")
+ 
+ 
     ##############################
     cursor.execute("DROP TABLE IF EXISTS roles")
     q = """
@@ -82,8 +82,8 @@ try:
         );
         """        
     cursor.execute(q)
-
-
+ 
+ 
     ##############################    
     q = """
         CREATE TABLE users_roles (
@@ -93,23 +93,23 @@ try:
         );
         """        
     cursor.execute(q)
-    cursor.execute("ALTER TABLE users_roles ADD FOREIGN KEY (user_role_user_fk) REFERENCES users(user_pk) ON DELETE CASCADE ON UPDATE RESTRICT") 
-    cursor.execute("ALTER TABLE users_roles ADD FOREIGN KEY (user_role_role_fk) REFERENCES roles(role_pk) ON DELETE CASCADE ON UPDATE RESTRICT") 
-
-
-
-
-
-    ############################## 
+    cursor.execute("ALTER TABLE users_roles ADD FOREIGN KEY (user_role_user_fk) REFERENCES users(user_pk) ON DELETE CASCADE ON UPDATE RESTRICT")
+    cursor.execute("ALTER TABLE users_roles ADD FOREIGN KEY (user_role_role_fk) REFERENCES roles(role_pk) ON DELETE CASCADE ON UPDATE RESTRICT")
+ 
+ 
+ 
+ 
+ 
+    ##############################
     # Create roles
     q = f"""
         INSERT INTO roles (role_pk, role_name)
-        VALUES ("{x.ADMIN_ROLE_PK}", "admin"), ("{x.CUSTOMER_ROLE_PK}", "customer"), 
+        VALUES ("{x.ADMIN_ROLE_PK}", "admin"), ("{x.CUSTOMER_ROLE_PK}", "customer"),
         ("{x.PARTNER_ROLE_PK}", "partner"), ("{x.RESTAURANT_ROLE_PK}", "restaurant")
         """
     cursor.execute(q)
-
-    ############################## 
+ 
+    ##############################
     # Create admin user
     user_pk = str(uuid.uuid4())
     user = {
@@ -124,17 +124,17 @@ try:
         "user_blocked_at" : 0,
         "user_updated_at" : 0,
         "user_verified_at" : int(time.time()),
-        "user_verification_key" : str(uuid.uuid4()) 
+        "user_verification_key" : str(uuid.uuid4())
     }            
     insert_user(user)
     # Assign role to admin user
     q = f"""
-        INSERT INTO users_roles (user_role_user_fk, user_role_role_fk) VALUES ("{user_pk}", 
+        INSERT INTO users_roles (user_role_user_fk, user_role_role_fk) VALUES ("{user_pk}",
         "{x.ADMIN_ROLE_PK}")        
         """    
     cursor.execute(q)    
-
-    ############################## 
+ 
+    ##############################
     # Create customer
     user_pk = "4218788d-03b7-4812-bd7d-31c8859e92d8"
     user = {
@@ -155,13 +155,13 @@ try:
    
     # Assign role to customer user
     q = f"""
-        INSERT INTO users_roles (user_role_user_fk, user_role_role_fk) VALUES ("{user_pk}", 
+        INSERT INTO users_roles (user_role_user_fk, user_role_role_fk) VALUES ("{user_pk}",
         "{x.CUSTOMER_ROLE_PK}")        
         """    
     cursor.execute(q)
-
-
-    ############################## 
+ 
+ 
+    ##############################
     # Create partner
     user_pk = str(uuid.uuid4())
     user = {
@@ -181,12 +181,12 @@ try:
     insert_user(user)
     # Assign role to partner user
     q = f"""
-        INSERT INTO users_roles (user_role_user_fk, user_role_role_fk) VALUES ("{user_pk}", 
+        INSERT INTO users_roles (user_role_user_fk, user_role_role_fk) VALUES ("{user_pk}",
         "{x.PARTNER_ROLE_PK}")        
         """    
     cursor.execute(q)
-
-    ############################## 
+ 
+    ##############################
     # Create restaurant
     user_pk = str(uuid.uuid4())
     user = {
@@ -207,15 +207,15 @@ try:
     
     # Assign role to restaurant user
     q = f"""
-        INSERT INTO users_roles (user_role_user_fk, user_role_role_fk) VALUES ("{user_pk}", 
+        INSERT INTO users_roles (user_role_user_fk, user_role_role_fk) VALUES ("{user_pk}",
         "{x.RESTAURANT_ROLE_PK}")        
         """    
     cursor.execute(q)
-
-
-    ############################## 
+ 
+ 
+    ##############################
     # Create 50 customer
-
+ 
     domains = ["example.com", "testsite.org", "mydomain.net", "website.co", "fakemail.io", "gmail.com", "hotmail.com"]
     user_password = hashed_password = generate_password_hash("password")
     for _ in range(50):
@@ -236,17 +236,17 @@ try:
             "user_verified_at" : user_verified_at,
             "user_verification_key" : str(uuid.uuid4())
         }
-
+ 
         insert_user(user)
         cursor.execute("""INSERT INTO users_roles (
             user_role_user_fk,
             user_role_role_fk)
             VALUES (%s, %s)""", (user_pk, x.CUSTOMER_ROLE_PK))
-
-
-    ############################## 
+ 
+ 
+    ##############################
     # Create 50 partners
-
+ 
     user_password = hashed_password = generate_password_hash("password")
     for _ in range(50):
         user_pk = str(uuid.uuid4())
@@ -265,25 +265,25 @@ try:
             "user_verified_at" : user_verified_at,
             "user_verification_key" : str(uuid.uuid4())
         }
-
+ 
         insert_user(user)
-
+ 
         cursor.execute("""
         INSERT INTO users_roles (
             user_role_user_fk,
             user_role_role_fk)
             VALUES (%s, %s)
         """, (user_pk, x.PARTNER_ROLE_PK))
-
-    ############################## 
+ 
+    ##############################
     # Create 50 restaurants
     dishes = ["Spaghetti Carbonara","Chicken Alfredo","Beef Wellington","Sushi","Pizza Margherita","Tacos","Caesar Salad","Fish and Chips","Pad Thai","Dim Sum","Croissant","Ramen","Lasagna","Burrito","Chicken Parmesan","Tom Yum Soup","Shawarma","Paella","Hamburger","Pho","Chicken Tikka Masala","Moussaka","Goulash","Bangers and Mash","Peking Duck","Falafel","Ceviche","Chili Con Carne","Ratatouille","Beef Stroganoff","Fajitas","Samosas","Lobster Roll","Arancini","Tiramisu","Beef Empanadas","Poutine","Biryani","Hummus","Schnitzel","Meatloaf","Quiche","Paella Valenciana","Clam Chowder","Sweet and Sour Pork","Enchiladas","Crepes","Masala Dosa","Gnocchi","Jambalaya","Pork Ribs","Tandoori Chicken","Nasi Goreng","Kimchi","Roti","Lamb Tagine","Risotto","Croque Monsieur","Beef Burritos","Baked Ziti","Yakitori","Fettuccine Alfredo","Peking Duck Pancakes","Empanadas","Ahi Poke","Cacciatore","Pappardelle","Cannelloni","Empanadas de Pollo","Gado-Gado","Carne Asada","Chicken Katsu","Falafel Wrap","Maki Rolls","Stuffed Bell Peppers","Souvlaki","Bibimbap","Tofu Stir Fry","Chilaquiles","Mango Sticky Rice","Ragu","Beef Brisket","Tortilla Española","Panzanella","Chicken Shawarma","Pesto Pasta","Bulgogi","Maki Sushi","Cordon Bleu","Blini with Caviar","Clafoutis","Salmon Teriyaki","Shrimp Scampi","Frittata","Chateaubriand","Crab Cakes","Chicken Fried Rice","Hot Pot","Mole Poblano","Tofu Scramble"]
-
+ 
     # Predefined lists for generating restaurant names
     prefixes = ['Golden', 'Blue', 'Silver', 'Royal', 'Epic', 'Happy', 'Urban', 'Cozy', 'Mellow', 'Mystic']
     suffixes = ['Grill', 'Café', 'Bistro', 'Bar', 'Restaurant', 'Lounge', 'Diner', 'Steakhouse', 'Tavern', 'Pizzeria']
     types_of_cuisine = ['Italian', 'Mexican', 'Indian', 'Chinese', 'French', 'Japanese', 'Mediterranean', 'American', 'Vietnamese', 'Thai']
-
+ 
     # Generate a fake restaurant name
     def generate_restaurant_name():
         prefix = prefixes[fake.random_int(0, len(prefixes) - 1)]
@@ -291,7 +291,7 @@ try:
         cuisine = types_of_cuisine[fake.random_int(0, len(types_of_cuisine) - 1)]
         
         return f"{prefix} {fake.word().capitalize()} {suffix} - {cuisine}"
-
+ 
     user_password = hashed_password = generate_password_hash("password")
     for _ in range(50):
         user_pk = str(uuid.uuid4())
@@ -311,14 +311,14 @@ try:
             "user_verification_key" : str(uuid.uuid4())
         }
         insert_user(user)
-
+ 
         cursor.execute("""
         INSERT INTO users_roles (
             user_role_user_fk,
             user_role_role_fk)
             VALUES (%s, %s)
         """, (user_pk, x.RESTAURANT_ROLE_PK))
-
+ 
         for _ in range(random.randint(5,50)):
             dish_id = random.randint(1, 100)
             cursor.execute("""
@@ -326,18 +326,16 @@ try:
                 item_pk, item_user_fk, item_title, item_price, item_image)
                 VALUES (%s, %s, %s, %s, %s)
             """, (str(uuid.uuid4()), user_pk, random.choice(dishes), round(random.uniform(50, 999), 2), f"dish_{dish_id}.jpg"))
-
-
-
-
+ 
+ 
+ 
+ 
     db.commit()
-
+ 
 except Exception as ex:
     ic(ex)
     if "db" in locals(): db.rollback()
-
+ 
 finally:
     if "cursor" in locals(): cursor.close()
     if "db" in locals(): db.close()
-
-

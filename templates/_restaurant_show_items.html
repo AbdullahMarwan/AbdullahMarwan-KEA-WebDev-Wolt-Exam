@@ -2,11 +2,9 @@
   {% if items %}
   <div class="item-list">
   {% for item in items %}
-      <article class="item-card">
+      <article class="item-card" id="item_{{ item['item_pk'] }}">
           <!-- Access the image -->
-      <img src="{{ url_for('static', filename='dishes/' + (item['item_image'] if item['item_image'] else 'images/image_15.jpg')) }}" alt="{{ item['item_title'] }}" class="card-img">
-          
-
+          <img src="{{ url_for('static', filename='dishes/' + (item['item_image'] if item['item_image'] else 'images/image_15.jpg')) }}" alt="{{ item['item_title'] }}" class="card-img">
 
           <div class="card-content">
               <!-- Access the title -->
@@ -15,10 +13,16 @@
               <!-- Access the price -->
               <p class="card-price">{{ item['item_price'] if item['item_price'] else 'N/A' }} kr.</p>
 
-                      <!-- Edit Button -->
+              <!-- Edit Button -->
               <a href="{{ url_for('restaurant_edit_item', item_id=item['item_pk']) }}" class="go-to-edit-item">Edit</a>
 
-              <button class="delete-item">Delete</button> <!--VIRKER IKKE ENDNU! -->
+              <!-- Delete Button with mix-delete functionality -->
+              <button class="delete-item" 
+                      mix-delete="{{ url_for('delete_item', item_pk=item['item_pk']) }}"
+                      mix-target="#item_{{ item['item_pk'] }}"
+                      mix-replace>
+                  Delete
+              </button>
           </div>
       </article>
   {% endfor %}
