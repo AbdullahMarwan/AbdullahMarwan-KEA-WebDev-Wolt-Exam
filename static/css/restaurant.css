@@ -199,50 +199,17 @@ background-color: darkred;
 
 @media (min-width: 600px) {
     .item-list {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        gap: 20px;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
     }
 
-    .item-card {
-        flex: 0 1 calc(50% - 20px);
-    }
-
-    .users-list {
-        max-width: 800px;
-    }
-
-    .individual-user div {
-        font-size: 1rem;
-    }
 }
 
-@media (min-width: 900px) {
-    .item-card {
-        flex: 0 1 calc(33.333% - 20px);
-    }
-}
 
 /* Larger Screens (Desktop) */
 @media (min-width: 1024px) {
-
-    .portrait-ctn {
-        margin: 0;
-    }
-
-    .user-info-wrapper {
-        margin: 0;
-    }
-
-    .users-list {
-        max-width: 1200px;
-    }
-
-    .individual-user {
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-    }
+    .item-list {
+        grid-template-columns: 1fr 1fr 1fr;
+        }
 }
 
