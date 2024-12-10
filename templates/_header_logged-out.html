@@ -1,14 +1,15 @@
+
     <header>
-        <div class="header-logo-ctn">
-            <img src="../static/images/SPIS.svg" class="logo">
+        <div class="logo-ctn">
+            <img src="../static/images/SPIS.svg" class="">
         </div>
         <button class="burger-menu-btn" aria-label="Toggle Menu">☰</button>
         <nav class="menu">
             <ul>
                 <li>
-                    <a href="{{ url_for('view_signup') }}" button id="signup-btn" class="btn signup">Tilmeld dig</button></a>
+                    <a href="{{ url_for('view_signup') }}" id="signup-btn" class="header-btn">Tilmeld dig</a>
                 </li>
-                    <a href="{{ url_for('view_login') }}" button id="login-btn" class="btn login">Log ind</button></a>
+                    <a href="{{ url_for('view_login') }}" id="login-btn" class="header-btn">Log ind</a>
                 </a>
             </ul>
         </nav>
