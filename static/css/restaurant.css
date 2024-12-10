@@ -16,7 +16,7 @@
         align-items:center;
     }
 
-    a{
+    .a-items-restaurant, .a-add-item-restaurant {
         padding:10px;
         margin:10px;
         font-family: var(--font);
@@ -136,8 +136,8 @@
 }
 
 .card-img {
-    width: 50%;
-    height: auto;
+    max-width: 50%;
+    aspect-ratio: 1/1;
     object-fit: cover;
 }
 
@@ -161,15 +161,37 @@
     font-weight: bold;
 }
 
+.go-to-edit-item{
+    padding:5px 20px;
+    font-family: var(--font);
+    font-size: 1em;
+    font-weight: 400;
+    border-radius: 4px;
+    background-color: #007bff;
+    border:none;
+    color:#fff;
+    margin-top:1em;
+    text-decoration: none;
+}
+
 .delete-item{
     padding:5px 20px;
     font-family: var(--font);
+    font-size: 1em;
+    font-weight: 400;
     border-radius: 4px;
     background-color: red;
     border:none;
     color:#fff;
     margin-top:1em;
 }
+
+
+.delete-item:hover{
+background-color: darkred;
+}
+
+
 
 /*---------------------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------, Tablets, Desktops and Larger Screens 
