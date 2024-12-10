@@ -126,8 +126,40 @@ form a:hover {
     color: white;
 }
 
+
+/* Styling til password-wrapper */
+.password-wrapper {
+    position: relative;
+    width: 100%;
+}
+
+.password-wrapper input[type="password"],
+.password-wrapper input[type="text"] {
+    width: 100%;
+    padding-right: 40px; /* Gør plads til checkbox */
+}
+
+.password-wrapper input[type="checkbox"] {
+    position: absolute;
+    top: 50%;
+    right: 10px; /* Flyt checkbox til højre */
+    transform: translateY(-50%);
+    cursor: pointer;
+    width: 20px;
+    height: 20px;
+}
+
 /* Responsiv styling */
 @media (max-width: 768px) {
+
+
+    .password-wrapper input[type="checkbox"] {
+        right: 5px; /* Justér afstand for mindre skærme */
+        width: 18px;
+        height: 18px;
+    }
+
+    
     section {
         margin-top: 20px;
         padding: 1.5rem;
