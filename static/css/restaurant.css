@@ -1,0 +1,226 @@
+
+/*---------------------------------------------------------------------------------------------------------------------------------------------
+---------------------------------------------------------------------- MAIN ---------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------*/
+.restaurant-main{
+    margin:1em;
+
+    h1{
+        text-align: center;
+    }
+
+
+    .restaurant-page-buttons{
+        display:flex;
+        justify-content: center;
+        align-items:center;
+    }
+
+    a{
+        padding:10px;
+        margin:10px;
+        font-family: var(--font);
+        text-decoration: none;
+        border-radius: 4px;
+        border:1px solid #007bff;
+        color:#007bff;
+        text-align: center;
+    }
+
+    a:hover{
+        background-color: #007bff;
+        color:#f8f9fa;
+    }
+}
+
+/*---------------------------------------------------------------------------------------------------------------------------------------------
+ ----------------------------------------------------------------------ADD ITEM ---------------------------------------------------------------
+ --------------------------------------------------------------------------------------------------------------------------------------------*/
+    /* Add Item Form Section */
+    .add-item-form {
+        max-width: 800px;
+        margin: 20px auto;
+        padding: 20px;
+        background-color: #fff;
+        border-radius: 10px;
+        box-shadow: 0 4px 8px rgba(0, 0, 0, 0.1);
+    }
+
+    h2 {
+        text-align: center;
+        margin-bottom: 20px;
+    }
+
+    /* Form Group Styling */
+    .form-group {
+        margin-bottom: 20px;
+    }
+
+    .form-group label {
+        display: block;
+        font-size: 1rem;
+        color: #333;
+        margin-bottom: 8px;
+    }
+
+    .form-group input {
+        width: 100%;
+        padding: 10px;
+        font-size: 1rem;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+        background-color: #f9f9f9;
+        transition: border-color 0.3s ease;
+    }
+
+    .form-group input:focus {
+        border-color: #007bff;
+        outline: none;
+    }
+
+    /* Button Styling */
+    .btn {
+        display: inline-block;
+        padding: 12px 30px;
+        font-size: 1rem;
+        font-weight: bold;
+        color: #fff;
+        background-color: #007bff;
+        border-radius: 5px;
+        border: none;
+        text-align: center;
+        transition: background-color 0.3s ease;
+        cursor: pointer;
+    }
+
+    .btn:hover {
+        background-color: #0056b3;
+    }
+
+    /* File Input Styling */
+    #item_image {
+        padding: 6px 10px;
+        font-size: 1rem;
+        background-color: #f9f9f9;
+        border: 1px solid #ccc;
+        border-radius: 5px;
+    }
+
+
+/*---------------------------------------------------------------------------------------------------------------------------------------------
+--------------------------------------------------------------------SHOW ALL ITEMS-------------------------------------------------------------
+--------------------------------------------------------------------------------------------------------------------------------------------*/
+
+/* Item List Container */
+.item-list {
+    display: flex;
+    flex-direction: column; /* Default for mobile: stack items vertically */
+    gap: 15px;
+    padding: 10px;
+    margin: 0;
+}
+
+/* Item Card Styling */
+.item-card {
+    display: flex;
+    border-radius: 8px;
+    overflow: hidden;
+    background-color: #fff;
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.1);
+    transition: transform 0.3s, box-shadow 0.3s;
+}
+
+.item-card:hover {
+    transform: translateY(-5px);
+    box-shadow: 0 4px 8px rgba(0, 0, 0, 0.2);
+}
+
+.card-img {
+    width: 50%;
+    height: auto;
+    object-fit: cover;
+}
+
+.card-content {
+    width: 50%;
+    padding: 1em;
+    display: flex;
+    flex-direction: column;
+    align-items: flex-start;
+}
+
+.card-title {
+    font-size: 1rem;
+    margin-bottom: 10px;
+    color: #202125;
+}
+
+.card-price {
+    font-size: 1rem;
+    color: #009de0;
+    font-weight: bold;
+}
+
+.delete-item{
+    padding:5px 20px;
+    font-family: var(--font);
+    border-radius: 4px;
+    background-color: red;
+    border:none;
+    color:#fff;
+    margin-top:1em;
+}
+
+/*---------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------, Tablets, Desktops and Larger Screens 
+--------------------------------------------------------------------------------------------------------------------------------------------*/
+
+@media (min-width: 600px) {
+    .item-list {
+        flex-direction: row;
+        flex-wrap: wrap;
+        justify-content: space-between;
+        gap: 20px;
+    }
+
+    .item-card {
+        flex: 0 1 calc(50% - 20px);
+    }
+
+    .users-list {
+        max-width: 800px;
+    }
+
+    .individual-user div {
+        font-size: 1rem;
+    }
+}
+
+@media (min-width: 900px) {
+    .item-card {
+        flex: 0 1 calc(33.333% - 20px);
+    }
+}
+
+/* Larger Screens (Desktop) */
+@media (min-width: 1024px) {
+
+    .portrait-ctn {
+        margin: 0;
+    }
+
+    .user-info-wrapper {
+        margin: 0;
+    }
+
+    .users-list {
+        max-width: 1200px;
+    }
+
+    .individual-user {
+        display: flex;
+        justify-content: space-around;
+        align-items: center;
+    }
+}
+
