@@ -407,6 +407,7 @@ def restaurant_items(restaurant_id):
     items = showItemListByRestaurant(restaurant_id)  # Fetch items based on restaurant_id
     return render_template('view_restaurant.html', view='items', items=items, user=user)
 
+##################################################
 @app.route('/restaurant/add_item', methods=['GET', 'POST'])
 def restaurant_add_item():
     # Allowed image extensions (you can expand this if needed)
@@ -434,14 +435,14 @@ def restaurant_add_item():
         # Check if the image exists and is allowed
         if item_image and allowed_file(item_image.filename):
             filename = secure_filename(item_image.filename)  # Secure the filename
-            image_path = os.path.join('dishes', filename)  # Save inside the 'dishes' folder
-            
+            image_path = os.path.join('static', 'dishes', filename) #save in dishes inside static
+
             # Make sure the 'dishes' directory exists in the root
             if not os.path.exists('dishes'):
                 os.makedirs('dishes')  # Create 'dishes' directory if it doesn't exist
             
-            # Save the file to the 'dishes' folder in the root directory
-            item_image.save(os.path.join('dishes', filename))  # Save in 'dishes' folder directly under the root
+            # Save the file to the 'dishes' folder in the static folder
+            item_image.save(image_path)
             
         else:
             ic("test")# image_path = None  # Handle case where image is not provided or not allowed
@@ -464,6 +465,9 @@ def restaurant_add_item():
         return redirect(url_for('restaurant_items', restaurant_id=user.get('user_pk')))
     
     return render_template('view_restaurant.html', view='add_item', user=user)
+
+##################################################
+
 
 @app.route('/restaurant/edit_item/<item_id>', methods=['GET', 'POST'])
 def restaurant_edit_item(item_id):
