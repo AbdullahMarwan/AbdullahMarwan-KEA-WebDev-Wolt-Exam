@@ -649,7 +649,7 @@ def convert_epoch_to_datetime(epoch_time):
 ##############################
 
 @app.post("/admin/user-list/block")
-def block_or_unblock_user():
+def block_or_unblock_user(item_pk):
     try:
         if not session.get("user", ""):
             return redirect(url_for("view_login"))
