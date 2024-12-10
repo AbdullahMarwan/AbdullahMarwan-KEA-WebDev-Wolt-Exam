@@ -364,6 +364,7 @@ def view_restaurant():
     # Render the restaurant page without items (initial state)
     return render_template("view_restaurant.html", user=user)
 
+########################################################################### ITEMS FOR A SPECIFIC RESTAURANT CUSTOMER POV
 # Route for viewing the restaurant items (when the button is clicked)
 @app.route('/customer/items/<restaurant_id>')
 def customer_items(restaurant_id):
@@ -391,7 +392,7 @@ def customer_items(restaurant_id):
     
     return render_template('view_customer.html', items=items, restaurants=restaurants, user=user, restaurant_name=restaurant_name)
 
-#########################
+########################################################################### SHOW ALL ITEMS:
 
 # Route for viewing the restaurant items (when the button is clicked)
 @app.route('/restaurant/items/<restaurant_id>')
@@ -408,6 +409,7 @@ def restaurant_items(restaurant_id):
     items = showItemListByRestaurant(restaurant_id)  # Fetch items based on restaurant_id
     return render_template('view_restaurant.html', view='items', items=items, user=user)
 
+########################################################################### ADD NEW ITEM
 @app.route('/restaurant/add_item', methods=['GET', 'POST'])
 def restaurant_add_item():
     # Allowed image extensions (you can expand this if needed)
@@ -466,6 +468,7 @@ def restaurant_add_item():
     
     return render_template('view_restaurant.html', view='add_item', user=user)
 
+########################################################################### RESTAURANT EDIT ITEM
 @app.route('/restaurant/edit_item/<item_id>', methods=['GET', 'POST'])
 def restaurant_edit_item(item_id):
     if not session.get("user", ""):
@@ -501,7 +504,7 @@ def restaurant_edit_item(item_id):
         # Update item details in the database
         cursor.execute('''
             UPDATE items 
-            SET item_title = %s, item_price = %s, item_image = %s
+            SET item_title = %s, item_price = %s
             WHERE item_pk = %s
         ''', (item_title, item_price, image_path, item_id))
         db.commit()
@@ -512,7 +515,7 @@ def restaurant_edit_item(item_id):
     return render_template('view_restaurant.html', view='edit_item', item=item, user=user)
 
 
-##############################
+################################################################################
 @app.get("/partner")
 @x.no_cache
 def view_partner():
