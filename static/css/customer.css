@@ -27,14 +27,15 @@ section{
     border:none;
 }
 
-
-    #map { height: 500px; }
-
 /*------------------------------------------ THE MAP AND LIST OF RESTAURANTS -------------------------------------------*/
-#map { height: 250px; }
+#map{ 
+    height: 250px; 
+}
 
 @media (min-width: 768px) {
-    #map { height: 500px; }
+    #map { 
+        height: 500px; 
+    }
     .map-and-list{
         display:grid;
         grid-template-columns:50% 50%;
@@ -42,10 +43,10 @@ section{
 }
 
 .restaurant-list-container{
-    max-height: 50vh;
+    max-height: 350px;
     overflow: scroll;
     text-align: center;
-    margin-top:4em;
+    margin-top:20px;
 
     li{
         color:black;

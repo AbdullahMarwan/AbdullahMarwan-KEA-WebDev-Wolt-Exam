@@ -27,8 +27,11 @@
             <label for="user_email">E-mail</label>
             <input
               name="user_email"
-              type="text"
+              type="email"
               mix-check="{{ x.REGEX_EMAIL }}"
+              pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" 
+                title="Please enter a valid email address (e.g., johndoe@example.com)." 
+                required
             />
 
           </div>
@@ -48,7 +51,8 @@
                 id="password-input-login"
                 type="password"
                 mix-check="{{ x.REGEX_USER_PASSWORD }}"
-                style="padding-right: 40px;"
+                title="Password must be at least 8 characters long." 
+                required
               />
               <span
                 id="eye-icon-login"
