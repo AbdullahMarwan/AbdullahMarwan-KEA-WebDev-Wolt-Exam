@@ -4,7 +4,7 @@
   {% for item in items %}
       <article class="item-card">
           <!-- Access the image -->
-      <img src="../static/dishes/{{ item['item_image'] if item['item_image'] else '../static/images/image_15.jpg' }}" alt="{{ item['item_title'] }}" class="card-img">
+      <img src="{{ url_for('static', filename='dishes/' + (item['item_image'] if item['item_image'] else 'images/image_15.jpg')) }}" alt="{{ item['item_title'] }}" class="card-img">
           
 
 
@@ -16,7 +16,7 @@
               <p class="card-price">{{ item['item_price'] if item['item_price'] else 'N/A' }} kr.</p>
 
                       <!-- Edit Button -->
-              <a href="{{ url_for('restaurant_edit_item', item_id=item['item_pk']) }}" class="btn btn-warning">Edit</a>
+              <a href="{{ url_for('restaurant_edit_item', item_id=item['item_pk']) }}" class="go-to-edit-item">Edit</a>
 
               <button class="delete-item">Delete</button> <!--VIRKER IKKE ENDNU! -->
           </div>
