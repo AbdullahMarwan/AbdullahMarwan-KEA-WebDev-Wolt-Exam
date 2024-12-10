@@ -998,7 +998,7 @@ def verify_user(verification_key):
 
 
 ####################
-@app.get("/partner/edit_profile")
+@app.get("/edit_profile")
 @x.no_cache
 def view_edit_profile():
     if not session.get("user"): 
@@ -1006,7 +1006,7 @@ def view_edit_profile():
     user = session.get("user")
     return render_template("edit_profile.html", user=user, x=x)
 
-@app.post("/partner/edit_profile")
+@app.post("/edit_profile")
 @x.no_cache
 def edit_profile():
     try:
@@ -1077,7 +1077,7 @@ def view_delete_profile():
 
 
 ######################
-@app.post("/partner/request_delete_profile")
+@app.post("/request_delete_profile")
 @x.no_cache
 def request_delete_profile():
     try:
