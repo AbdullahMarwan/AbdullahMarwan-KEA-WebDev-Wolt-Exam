@@ -39,15 +39,15 @@
                 <div class="user-info-wrapper">
 
                     <div class="user-info">
-                        <div><strong>Name:</strong> {{ user['user_name'] }}</div>
-                        <div><strong>Last Name:</strong> {{ user['user_last_name'] }}</div>
-                        <div><strong>Email:</strong> {{ user['user_email'] }}</div>
+                        <p><strong>Name:</strong> {{ user['user_name'] }}</p>
+                        <p><strong>Last Name:</strong> {{ user['user_last_name'] }}</p>
+                        <p><strong>Email:</strong> {{ user['user_email'] }}</p>
                     </div>
 
                     <div class="user-info">
-                        <div><strong>Deleted At:</strong> {{ user['user_deleted_at'] or "User not deleted" }}</div>
-                        <div><strong>Blocked At:</strong> {{ user['user_blocked_at'] or "User not blocked" }}</div>
-                        <div><strong>Verified At:</strong> {{ user['user_verified_at'] or "User not verified" }}</div>
+                        <p><strong>Deleted At:</strong> {{ user['user_deleted_at'] or "User not deleted" }}</p>
+                        <p><strong>Blocked At:</strong> {{ user['user_blocked_at'] or "User not blocked" }}</p>
+                        <p><strong>Verified At:</strong> {{ user['user_verified_at'] or "User not verified" }}</p>
                     </div>
 
                 </div>

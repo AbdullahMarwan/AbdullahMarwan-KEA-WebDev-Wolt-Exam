@@ -15,7 +15,7 @@ img, svg {
 }
 
 body{
-    background-color: #f7f7f7; 
+    background-color: #f7f7f7;
 }
 
 /* ------------------------------------ FONTS ------------------------------------   */
@@ -46,7 +46,7 @@ h4{
     font-weight: 500;
 }
 
-p, label{
+p, label, strong{
     font-family: var(--font);
     font-size: 0.875em;
     font-weight: 400;
