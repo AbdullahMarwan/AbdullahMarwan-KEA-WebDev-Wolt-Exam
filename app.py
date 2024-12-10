@@ -52,55 +52,72 @@ def showItemList():
 
 ##############################
 
+@app.route('/get_cart', methods=['GET'])
+def get_cart():
+    try:
+        cart_data = session.get('cart', [])
+        return jsonify({"cart": cart_data}), 200
+    except Exception as e:
+        print(f"Error: {e}")
+        return jsonify({"error": "Failed to fetch cart"}), 500
+
+
+
+import threading
+
+session_lock = threading.Lock()
+
 @app.route('/add_to_cart', methods=['POST'])
 def add_to_cart():
     try:
-        # Get the item data from the AJAX request
-        item_data = request.get_json()
+        new_cart_item = request.json.get("cart", [])
+        
+        if not (isinstance(new_cart_item, list) and all(isinstance(item, dict) for item in new_cart_item)):
+            return jsonify({"error": "Invalid cart data format"}), 400
 
-        # Check if item data is valid
-        if not item_data:
-            return jsonify({"error": "No item data provided"}), 400
+        with session_lock:
+            existing_cart = session.get("cart", [])
+            session["cart"] = existing_cart + new_cart_item
+            session.modified = True
+            session.permanent = True
 
-        # Extract item details
-        item_pk = item_data.get('item_pk')
-        item_title = item_data.get('item_title')
-        item_price = item_data.get('item_price')
-        item_image = item_data.get('item_image')
+        print("Updated cart:", session["cart"])
+        
+        return jsonify({"message": "Cart updated successfully", "cart": session["cart"]}), 200
 
-        # Ensure all required data is present
-        if not item_pk or not item_title or not item_price or not item_image:
-            return jsonify({"error": "Missing required item data"}), 400
-
-        # Initialize cart if it doesn't exist
-        if 'cart' not in session:
-            session['cart'] = []
-
-        # Add the item to the cart
-        session['cart'].append({
-            'item_pk': item_pk,
-            'item_title': item_title,
-            'item_price': item_price,
-            'item_image': item_image
-        })
-
-        # Calculate total price
-        total_price = sum(item['item_price'] for item in session['cart'])
-
-        # Return the updated cart and total price
-        return jsonify({
-            'item': {
-                'item_pk': item_pk,
-                'item_title': item_title,
-                'item_price': item_price,
-                'item_image': item_image
-            },
-            'total_price': total_price
-        })
     except Exception as e:
-        print(f"Error: {e}")  # This will print the error in the terminal
-        return jsonify({"error": "Something went wrong on the server"}), 500
+        print(f"Error: {e}")
+        return jsonify({"error": "Failed to update cart"}), 500
 
+
+
+
+@app.route('/remove_from_cart', methods=['POST'])
+def remove_from_cart():
+    try:
+        item_pk = request.json.get('pk')
+        if not item_pk:
+            return jsonify({"error": "Invalid item_pk provided"}), 400
+
+        cart_data = session.get('cart', [])
+
+        # Remove only the first occurrence of an item with the matching pk
+        found = False
+        updated_cart = []
+        for item in cart_data:
+            if not found and str(item['pk']) == str(item_pk):
+                found = True  # Skip this item (remove it) and stop at the first match
+                continue
+            updated_cart.append(item)
+
+        # Update the session with the modified cart
+        session['cart'] = updated_cart
+        session.modified = True
+
+        return jsonify({"message": "Item removed successfully", "cart": updated_cart}), 200
+    except Exception as e:
+        print(f"Error in remove_from_cart: {e}")
+        return jsonify({"error": "Failed to remove item"}), 500
 
 
 ##############################
