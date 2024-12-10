@@ -6,7 +6,6 @@
 }
 
 body {
-    font-family: Arial, sans-serif;
     background-image: url('../dishes/dish_101.jpg'); /* Absolut sti */
     background-size: cover;
     background-position: center;
@@ -119,6 +118,7 @@ form a {
     border: 1px solid #007bff;
     border-radius: 4px;
     transition: background-color 0.3s ease, color 0.3s ease;
+    font-family:var(--font);
 }
 
 form a:hover {
@@ -175,4 +175,8 @@ form a:hover {
         font-size: 0.8rem;
         padding: 0.5rem;
     }
+}
+
+.grey{
+    color:grey;
 }

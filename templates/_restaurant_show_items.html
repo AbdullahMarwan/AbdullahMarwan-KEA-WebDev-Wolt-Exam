@@ -1,34 +1,26 @@
 <section class="item-list">
-  <h1>Item List</h1>
   {% if items %}
   <div class="item-list">
-    {% for item in items %}
-    <article class="item-card">
-      <!-- Display the image if available, otherwise a default image -->
-      <img
-        src="{{ item['item_image'] if item['item_image'] else './images/image_15.jpg' }}"
-        alt="{{ item['item_title'] }}"
-        class="card-img"
-      />
+  {% for item in items %}
+      <article class="item-card">
+          <!-- Access the image -->
+      <img src="../static/dishes/{{ item['item_image'] if item['item_image'] else '../static/images/image_15.jpg' }}" alt="{{ item['item_title'] }}" class="card-img">
+          
 
-      <div class="card-content">
-        <!-- Display the item title -->
-        <h3 class="card-title">
-          {{ item['item_title'] if item['item_title'] else 'No title available' }}
-        </h3>
 
-        <!-- Display the item price -->
-        <p class="card-price">
-          {{ item['item_price'] if item['item_price'] else 'N/A' }} kr.
-        </p>
+          <div class="card-content">
+              <!-- Access the title -->
+              <h3 class="card-title">{{ item['item_title'] if item['item_title'] else 'No title available' }}</h3>
+              
+              <!-- Access the price -->
+              <p class="card-price">{{ item['item_price'] if item['item_price'] else 'N/A' }} kr.</p>
 
-        <!-- Edit Button -->
-        <a href="{{ url_for('restaurant_edit_item', item_id=item['item_pk']) }}" class="btn btn-warning">Edit</a>
-      </div>
-    </article>
-    {% endfor %}
+              <button class="delete-item">Delete</button> <!--VIRKER IKKE ENDNU! -->
+          </div>
+      </article>
+  {% endfor %}
   </div>
-  {% else %}
+{% else %}
   <p>No items found.</p>
-  {% endif %}
+{% endif %}
 </section>
