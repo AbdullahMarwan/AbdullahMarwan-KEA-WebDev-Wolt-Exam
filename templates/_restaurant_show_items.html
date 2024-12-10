@@ -15,6 +15,9 @@
               <!-- Access the price -->
               <p class="card-price">{{ item['item_price'] if item['item_price'] else 'N/A' }} kr.</p>
 
+                      <!-- Edit Button -->
+              <a href="{{ url_for('restaurant_edit_item', item_id=item['item_pk']) }}" class="btn btn-warning">Edit</a>
+
               <button class="delete-item">Delete</button> <!--VIRKER IKKE ENDNU! -->
           </div>
       </article>
