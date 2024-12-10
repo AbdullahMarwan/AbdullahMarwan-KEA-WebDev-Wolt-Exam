@@ -108,8 +108,7 @@ p, label, strong{
 }
 
 .logo-ctn {
-    max-width: 5em;
-    margin-right: 15px;
+    max-width: 6.5em;
 }
 
 .location {
@@ -368,7 +367,6 @@ header {
 
 .menu ul li form button:hover {
     background-color: #c82333;
-    transform: scale(1.05);
 }
 
 .menu ul li a:focus, .menu ul li form button:focus {
