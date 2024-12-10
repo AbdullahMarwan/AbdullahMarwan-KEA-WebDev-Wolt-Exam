@@ -235,7 +235,19 @@ p, li{
     padding: 1em;
 }
 
+.cross-icon-btn {
+    position: absolute;
+    top: 1.5em;
+    right: 1.5em;
+    background-color: black;
+    width: 2em;
+    height: 2em;
+    border-radius: 50%;
+    cursor: pointer;
+}
+
 .cart-item {
+    position: relative;
     display: flex;
     height: 10em;
     background-color: #fff;
