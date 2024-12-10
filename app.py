@@ -226,7 +226,7 @@ def view_login():
         if len(session.get("user").get("roles")) > 1:
             return redirect(url_for("view_choose_role")) 
         if "admin" in session.get("user").get("roles"):
-            return redirect(url_for("view_admin"))
+            return redirect(url_for("admin_or_pagination"))
         if "customer" in session.get("user").get("roles"):
             return redirect(url_for("view_customer")) 
         if "partner" in session.get("user").get("roles"):
@@ -240,11 +240,12 @@ def view_login():
 @x.no_cache
 def view_customer():
     try:
-        if not session.get("user", ""): 
+        # Handle session and user authentication
+        if not session.get("user", ""):
             return redirect(url_for("view_login"))
         user = session.get("user")
-        if len(user.get("roles", "")) > 1:
-            return redirect(url_for("view_choose_role"))
+        if "customer" not in user.get("roles", ""):
+            return redirect(url_for("view_login"))
         
         items = showItemList()  # Fetch items
         restaurants = showRestaurantList()  # Fetch restaurants
@@ -515,16 +516,14 @@ def restaurant_edit_item(item_id):
 @app.get("/partner")
 @x.no_cache
 def view_partner():
-    if not session.get("user", ""): 
+    # Handle session and user authentication
+    if not session.get("user", ""):
+        return redirect(url_for("view_login"))
+    user = session.get("user")
+    if "partner" not in user.get("roles", ""):
         return redirect(url_for("view_login"))
     
     user = session.get("user")
-    
-    # Ensure the user has only the 'partner' role
-    if len(user.get("roles", [])) > 1:
-        return redirect(url_for("view_choose_role"))
-    if "partner" not in user.get("roles", []):
-        return redirect(url_for("view_login"))  # Optional: Redirect if user lacks 'partner' role
     
     # Render the partner dashboard/profile template
     return render_template("view_partner.html", user=user)
