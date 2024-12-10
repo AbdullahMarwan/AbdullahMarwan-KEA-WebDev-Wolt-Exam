@@ -437,17 +437,18 @@ def restaurant_add_item():
         # Check if the image exists and is allowed
         if item_image and allowed_file(item_image.filename):
             filename = secure_filename(item_image.filename)  # Secure the filename
-            image_path = os.path.join('dishes', filename)  # Save inside the 'dishes' folder
+            image_path = os.path.join('static', 'dishes', filename)  # Save inside the 'static/dishes' folder
             
-            # Make sure the 'dishes' directory exists in the root
-            if not os.path.exists('dishes'):
-                os.makedirs('dishes')  # Create 'dishes' directory if it doesn't exist
+            # Make sure the 'static/dishes' directory exists
+            dishes_folder = os.path.join('static', 'dishes')
+            if not os.path.exists(dishes_folder):
+                os.makedirs(dishes_folder)  # Create 'dishes' directory if it doesn't exist
             
-            # Save the file to the 'dishes' folder in the root directory
-            item_image.save(os.path.join('dishes', filename))  # Save in 'dishes' folder directly under the root
+            # Save the file to the 'static/dishes' folder
+            item_image.save(image_path)  # Save in 'static/dishes' folder
             
         else:
-            ic("test")# image_path = None  # Handle case where image is not provided or not allowed
+            image_path = None  # Handle case where image is not provided or not allowed
 
         # Now insert item details into the database
         db, cursor = x.db()
@@ -458,8 +459,9 @@ def restaurant_add_item():
         ) VALUES (%s, %s, %s, %s, %s)
         '''
         cursor.execute(q, (
-            item_pk, item_user_fk, item_title, item_price, filename
+            item_pk, item_user_fk, item_title, item_price, filename if item_image else None
         ))
+
         
         db.commit()  # Commit changes to the database
         
@@ -471,6 +473,13 @@ def restaurant_add_item():
 ########################################################################### RESTAURANT EDIT ITEM
 @app.route('/restaurant/edit_item/<item_id>', methods=['GET', 'POST'])
 def restaurant_edit_item(item_id):
+    # Allowed image extensions (you can expand this if needed)
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+    # Function to check allowed file extension
+    def allowed_file(filename):
+        return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
     if not session.get("user", ""):
         return redirect(url_for("view_login"))
 
@@ -496,17 +505,25 @@ def restaurant_edit_item(item_id):
         # Optional: process image upload if a new image is provided
         if item_image and allowed_file(item_image.filename):
             filename = secure_filename(item_image.filename)
-            image_path = os.path.join('dishes', filename)
+            image_path = os.path.join('static', 'dishes', filename)  # Correct path for saving inside static/dishes
+            
+            # Make sure the 'static/dishes' directory exists
+            dishes_folder = os.path.join('static', 'dishes')
+            if not os.path.exists(dishes_folder):
+                os.makedirs(dishes_folder)  # Create 'dishes' folder if it doesn't exist
+            
+            # Save the new image to 'static/dishes'
             item_image.save(image_path)
         else:
             image_path = item['item_image']  # Use existing image if no new image is provided
 
-        # Update item details in the database
-        cursor.execute('''
+        # Update item details in the database, including the image path if it was updated
+        cursor.execute(''' 
             UPDATE items 
-            SET item_title = %s, item_price = %s
+            SET item_title = %s, item_price = %s, item_image = %s
             WHERE item_pk = %s
-        ''', (item_title, item_price, image_path, item_id))
+        ''', (item_title, item_price, filename if item_image else item['item_image'], item_id))
+
         db.commit()
 
         return redirect(url_for('restaurant_items', restaurant_id=user.get('user_pk')))
