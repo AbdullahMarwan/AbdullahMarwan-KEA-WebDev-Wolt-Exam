@@ -390,9 +390,8 @@ def api_search_restaurants():
         if "db" in locals(): db.close()
 
 
-##############################
+############################### Route for viewing the restaurant (without items)
 
-# Route for viewing the restaurant (without items)
 @app.get("/restaurant")
 @x.no_cache
 def view_restaurant():
@@ -429,7 +428,7 @@ def customer_items(restaurant_id):
     
     # restaurant_name = request.args.get("restaurant_name").value
     
-       # Fetch restaurant name using the user_pk (restaurant_id)
+    # Fetch restaurant name using the user_pk (restaurant_id)
     restaurant_name = None
     for restaurant in restaurants:
         if restaurant['user_pk'] == restaurant_id:
@@ -595,8 +594,8 @@ def view_partner():
     return render_template("view_partner.html", user=user)
 
 ##############################
-@app.route('/admin', methods=['GET'])
-@app.route('/admin/page/<int:page_id>', methods=['GET'])
+@app.get('/admin')
+@app.get('/admin/page/<int:page_id>')
 def admin_or_pagination(page_id=1):
     try:
         # Handle session and user authentication
@@ -609,7 +608,7 @@ def admin_or_pagination(page_id=1):
         limit = 20 
         offset = (page_id - 1) * limit  # Offset is based on the page_id
         
-        # Database query
+        # Database query for users
         db, cursor = x.db()
         q = "SELECT `user_pk`, `user_name`, `user_last_name`, `user_avatar`, `user_email`, `user_deleted_at`, `user_blocked_at`, `user_verified_at` FROM `users` LIMIT %s OFFSET %s"
         cursor.execute(q, (limit, offset))
@@ -628,8 +627,11 @@ def admin_or_pagination(page_id=1):
             user['user_blocked_at'] = convert_epoch_to_datetime(user['user_blocked_at'])
             user['user_verified_at'] = convert_epoch_to_datetime(user['user_verified_at'])
 
-        # Render template with paginated content
-        return render_template("view_admin.html", users=users, page_id=page_id, total_users=total_users)
+        # Fetch items using showItemList
+        items = showItemList()
+
+        # Render template with paginated content and items
+        return render_template("view_admin.html", users=users, page_id=page_id, total_users=total_users, items=items)
     except Exception as ex:
         ic(f"Exception: {ex}")  # Log the error
         if isinstance(ex, x.mysql.connector.Error):
@@ -638,6 +640,7 @@ def admin_or_pagination(page_id=1):
     finally:
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
+
 
 
 # Function to convert epoch to datetime string
