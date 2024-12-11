@@ -652,7 +652,7 @@ def convert_epoch_to_datetime(epoch_time):
 ##############################
 
 @app.post("/admin/user-list/block")
-def block_or_unblock_user(item_pk):
+def block_or_unblock_user():
     try:
         if not session.get("user", ""):
             return redirect(url_for("view_login"))
@@ -693,6 +693,49 @@ def block_or_unblock_user(item_pk):
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
 
+
+##############################
+
+@app.get("/admin/item/list")
+def show_admin_item_list():
+    try:
+        if not session.get("user", ""):
+            return redirect(url_for("view_login"))
+        user = session.get("user")
+        if not "admin" in user.get("roles", ""):
+            return redirect(url_for("view_login"))
+        
+        page_id = 0
+        
+        ic("lessagooo")
+        
+        items = showItemList()
+        
+        
+        return render_template("view_admin.html", items=items, page_id=page_id)  
+    finally:
+        pass
+    
+    
+    ##############################
+
+@app.get("/admin/user/list")
+def show_admin_user_list():
+    try:
+        if not session.get("user", ""):
+            return redirect(url_for("view_login"))
+        user = session.get("user")
+        if not "admin" in user.get("roles", ""):
+            return redirect(url_for("view_login"))
+        
+        ic("lessagooo")
+        
+        user = showItemList()
+        
+        
+        return render_template("view_admin.html", user=user)  
+    finally:
+        pass
 
 ##############################
 @app.get("/choose-role")

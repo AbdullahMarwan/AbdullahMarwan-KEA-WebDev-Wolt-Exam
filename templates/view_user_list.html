@@ -1,0 +1,63 @@
+    <section class="users-list">
+        <h1>All users ({{ total_users }})</h1>
+    
+        <div class="page-btn-ctn">
+            {% if page_id > 1 %}
+            <form action="{{ url_for('admin_or_pagination', page_id=page_id - 1) }}" method="get">
+                <button type="submit">Previous Page</button>
+            </form>
+            {% endif %}
+    
+            <p name="page_id">Currently on Page: {{ page_id }}</p>
+    
+            <form action="{{ url_for('admin_or_pagination', page_id=page_id + 1) }}" method="get">
+                <button type="submit">Next Page</button>
+            </form>
+        </div>
+    
+        {% if users %}
+            {% for user in users %}
+                <div class="individual-user">
+                    <div class="portrait-ctn">
+                        <img id="avatar-img" src="{{ url_for('static', filename='avatars/' + user['user_avatar']) }}" alt="avatar">
+                    </div>
+    
+                    <div class="user-info-wrapper">
+    
+                        <div class="user-info">
+                            <p><strong>Name:</strong> {{ user['user_name'] }}</p>
+                            <p><strong>Last Name:</strong> {{ user['user_last_name'] }}</p>
+                            <p><strong>Email:</strong> {{ user['user_email'] }}</p>
+                        </div>
+    
+                        <div class="user-info">
+                            <p><strong>Deleted At:</strong> {{ user['user_deleted_at'] or "User not deleted" }}</p>
+                            <p><strong>Blocked At:</strong> {{ user['user_blocked_at'] or "User not blocked" }}</p>
+                            <p><strong>Verified At:</strong> {{ user['user_verified_at'] or "User not verified" }}</p>
+                        </div>
+    
+                    </div>
+    
+                    <form action="/admin/user-list/block" method="post">
+                        <!-- Hidden field for user primary key -->
+                        <input type="hidden" name="user_pk" value="{{ user['user_pk'] }}">
+                        
+                        <!-- Hidden field for page_id -->
+                        <input type="hidden" name="page_id" value="{{ page_id }}">
+    
+                        {% if user['user_blocked_at'] %}
+                            <!-- Action for unblocking the user -->
+                            <input type="hidden" name="action" value="unblock">
+                            <button class="btn unblock-btn" id="unblock-block-btn" type="submit">Unblock</button>
+                        {% else %}
+                            <!-- Action for blocking the user -->
+                            <input type="hidden" name="action" value="block">
+                            <button class="btn block-btn" id="unblock-block-btn" type="submit">Block</button>
+                        {% endif %}
+                    </form>
+                </div>
+            {% endfor %}
+        {% else %}
+            <p>No users found</p>
+        {% endif %}
+    </section>

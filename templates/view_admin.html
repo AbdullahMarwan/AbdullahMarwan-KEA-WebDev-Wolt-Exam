@@ -13,95 +13,27 @@
 {% include "_header_logged-in.html" %}
 
 <main class="admin-main">
-    <section class="users-list">
-        <h1>All users ({{ total_users }})</h1>
+
+<h1>Welcome</h1>
+<div class="admin-page-buttons">
+    <a
+      href=""
+      class="a-add-item-admin {% if view == 'add_item' %} active {% endif %}"
+      >Users</a
+    >
     
-        <div class="page-btn-ctn">
-            {% if page_id > 1 %}
-            <form action="{{ url_for('admin_or_pagination', page_id=page_id - 1) }}" method="get">
-                <button type="submit">Previous Page</button>
-            </form>
-            {% endif %}
-    
-            <p name="page_id">Currently on Page: {{ page_id }}</p>
-    
-            <form action="{{ url_for('admin_or_pagination', page_id=page_id + 1) }}" method="get">
-                <button type="submit">Next Page</button>
-            </form>
-        </div>
-    
-        {% if users %}
-            {% for user in users %}
-                <div class="individual-user">
-                    <div class="portrait-ctn">
-                        <img id="avatar-img" src="{{ url_for('static', filename='avatars/' + user['user_avatar']) }}" alt="avatar">
-                    </div>
-    
-                    <div class="user-info-wrapper">
-    
-                        <div class="user-info">
-                            <p><strong>Name:</strong> {{ user['user_name'] }}</p>
-                            <p><strong>Last Name:</strong> {{ user['user_last_name'] }}</p>
-                            <p><strong>Email:</strong> {{ user['user_email'] }}</p>
-                        </div>
-    
-                        <div class="user-info">
-                            <p><strong>Deleted At:</strong> {{ user['user_deleted_at'] or "User not deleted" }}</p>
-                            <p><strong>Blocked At:</strong> {{ user['user_blocked_at'] or "User not blocked" }}</p>
-                            <p><strong>Verified At:</strong> {{ user['user_verified_at'] or "User not verified" }}</p>
-                        </div>
-    
-                    </div>
-    
-                    <form action="/admin/user-list/block" method="post">
-                        <!-- Hidden field for user primary key -->
-                        <input type="hidden" name="user_pk" value="{{ user['user_pk'] }}">
-                        
-                        <!-- Hidden field for page_id -->
-                        <input type="hidden" name="page_id" value="{{ page_id }}">
-    
-                        {% if user['user_blocked_at'] %}
-                            <!-- Action for unblocking the user -->
-                            <input type="hidden" name="action" value="unblock">
-                            <button class="btn unblock-btn" id="unblock-block-btn" type="submit">Unblock</button>
-                        {% else %}
-                            <!-- Action for blocking the user -->
-                            <input type="hidden" name="action" value="block">
-                            <button class="btn block-btn" id="unblock-block-btn" type="submit">Block</button>
-                        {% endif %}
-                    </form>
-                </div>
-            {% endfor %}
-        {% else %}
-            <p>No users found</p>
-        {% endif %}
-    </section>
-    
-    <section class="item-section-admin">
-        <h1>All items</h1>
-        {% if items %}
-        <div class="item-list">
-        {% for item in items %}
-            <article class="item-card">
-                <!-- Access the image -->
-                <img src="{{ url_for('static', filename='dishes/' + (item['item_image'] if item['item_image'] else 'images/image_15.jpg')) }}" alt="{{ item['item_title'] }}" class="card-img">
-                <div class="card-content">
-<div>
-                        <!-- Access the title -->
-                        <h3 class="card-title">{{ item['item_title'] if item['item_title'] else 'No title available' }}</h3>
-                        
-                        <!-- Access the price -->
-                        <p class="card-price">{{ item['item_price'] if item['item_price'] else 'N/A' }} kr.</p>
+    <a
+        href="/admin/item/list"
+        class="a-items-admin {% if view == 'items' %} active {% endif %}"
+        >Items</a
+    >
 </div>
-                 <div>   <button class="block-btn btn">Block item</button></div>
-                </div>
-            </article>
-        {% endfor %}
-        </div>
-    {% else %}
-        <p>No items found.</p>
-    {% endif %}
-    </section>
+
+
+
+{% include "view_user_list.html" %}
+
+
     
 </main>
 </body>
