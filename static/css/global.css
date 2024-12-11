@@ -383,7 +383,7 @@ color:#007bff;
 
 /* When 'slide-out' class is added, move the cart offscreen */
 .slide-out {
-    right: -35vw !important;  /* Slide it back offscreen */
+    right: -100% !important;  /* Slide it back offscreen */
 }
 
 
@@ -406,19 +406,22 @@ color:#007bff;
 
 .cart-item-content {
     display: flex;
-    flex-direction: column;
-    justify-content: space-around;
-    padding: 1em;
+    justify-content: space-between;
+    width:50%;
+}
+
+.title-and-price{
+    padding:1em;
 }
 
 .cross-icon-btn {
-    position:absolute;
-    right:7%;
     background-color: black;
     width: 2em;
     height: 2em;
     border-radius: 50%;
     cursor: pointer;
+    margin-top:1em;
+    margin-right:0.5em;
 }
 .cart-item {
     display: flex;
@@ -453,6 +456,13 @@ color:#007bff;
     .cart-list{
         width: 50%;
         right:-50%;
+    }
+    .item-list-cart {
+        display: grid;
+        gap: 1em;
+        width: 100%;
+        max-height: 400px; 
+        overflow-y: auto;
     }
 }
 
