@@ -383,7 +383,7 @@ color:#007bff;
 
 /* When 'slide-out' class is added, move the cart offscreen */
 .slide-out {
-    right: -35vw !important;  /* Slide it back offscreen */
+    right: -100% !important;  /* Slide it back offscreen */
 }
 
 
