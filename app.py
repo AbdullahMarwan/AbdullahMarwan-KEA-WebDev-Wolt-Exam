@@ -627,10 +627,8 @@ def admin_or_pagination(page_id=1):
             user1['user_blocked_at'] = convert_epoch_to_datetime(user1['user_blocked_at'])
             user1['user_verified_at'] = convert_epoch_to_datetime(user1['user_verified_at'])
 
-
-
         # Render template with paginated content and items
-        return render_template("view_admin.html", users=users, page_id=page_id, total_users=total_users, items=items, user = user)
+        return render_template("view_admin.html", users=users, page_id=page_id, total_users=total_users, user = user)
     except Exception as ex:
         ic(f"Exception: {ex}")  # Log the error
         if isinstance(ex, x.mysql.connector.Error):
@@ -714,7 +712,7 @@ def show_admin_item_list():
         itemlist = True
         
         
-        return render_template("view_admin.html", items=items, page_id=page_id, itemlist=itemlist)  
+        return render_template("view_admin.html", items=items, page_id=page_id, itemlist=itemlist, user=user)  
     finally:
         pass
     
