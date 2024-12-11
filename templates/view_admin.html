@@ -17,7 +17,7 @@
 <h1>Welcome</h1>
 <div class="admin-page-buttons">
     <a
-      href=""
+      href="/admin"
       class="a-add-item-admin {% if view == 'add_item' %} active {% endif %}"
       >Users</a
     >
@@ -30,8 +30,11 @@
 </div>
 
 
-
-{% include "view_user_list.html" %}
+{% if itemlist %}
+    {% include "view_item_list.html" %}
+{% else %}
+    {% include "view_user_list.html" %}
+{% endif %}
 
 
     
