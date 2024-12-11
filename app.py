@@ -622,16 +622,16 @@ def admin_or_pagination(page_id=1):
         # Extract the count value
         total_users = result['COUNT(*)'] if result else 0  # Access 'COUNT(*)' key in the dictionary
 
-        for user in users:
-            user['user_deleted_at'] = convert_epoch_to_datetime(user['user_deleted_at'])
-            user['user_blocked_at'] = convert_epoch_to_datetime(user['user_blocked_at'])
-            user['user_verified_at'] = convert_epoch_to_datetime(user['user_verified_at'])
+        for user1 in users:
+            user1['user_deleted_at'] = convert_epoch_to_datetime(user1['user_deleted_at'])
+            user1['user_blocked_at'] = convert_epoch_to_datetime(user1['user_blocked_at'])
+            user1['user_verified_at'] = convert_epoch_to_datetime(user1['user_verified_at'])
 
         # Fetch items using showItemList
         items = showItemList()
 
         # Render template with paginated content and items
-        return render_template("view_admin.html", users=users, page_id=page_id, total_users=total_users, items=items)
+        return render_template("view_admin.html", users=users, page_id=page_id, total_users=total_users, items=items, user = user)
     except Exception as ex:
         ic(f"Exception: {ex}")  # Log the error
         if isinstance(ex, x.mysql.connector.Error):
