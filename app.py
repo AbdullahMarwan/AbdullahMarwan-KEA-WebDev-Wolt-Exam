@@ -689,6 +689,65 @@ def block_or_unblock_user():
     finally:
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
+        
+        
+        
+        
+        
+        
+##############################
+
+@app.get("/item/block")
+def block_item():
+    try:
+        if not session.get("user", ""):
+            return redirect(url_for("view_login"))
+        if not "admin" in session.get("roles", ""):
+            return redirect(url_for("view_login"))
+
+
+        items = showItemList()
+        ic(items)
+        
+        
+        return render_template("view_login")
+    finally:
+        pass
+        
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
+
 
 
 ##############################

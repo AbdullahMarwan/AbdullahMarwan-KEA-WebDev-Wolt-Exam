@@ -3,7 +3,7 @@
     {% if items %}
     <div class="item-list">
     {% for item in items %}
-        <article class="item-card">
+        <article class="item-card" data-item-pk="{{ item['item_pk'] }}">
             <!-- Access the image -->
             <img src="{{ url_for('static', filename='dishes/' + (item['item_image'] if item['item_image'] else 'images/image_15.jpg')) }}" alt="{{ item['item_title'] }}" class="card-img">
             <div class="card-content">
@@ -18,7 +18,7 @@
 
 
                 
-            <div>   <button id="delete-item-btn" class="block-btn btn">Block item</button></div>
+                <button mix-get="/item/block" id="delete-item-btn" class="block-btn btn">Block item</button>
             </div>
         </article>
     {% endfor %}
