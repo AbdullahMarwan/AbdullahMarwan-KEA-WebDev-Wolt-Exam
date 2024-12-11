@@ -267,6 +267,7 @@ async function buyItems(totalPriceField, items) {
     buyBtn.addEventListener("click", async () => {
         try {
             console.log(items);
+            alert("Success! You have been sent an email with order details")
 
 
             const rawResponse = await fetch('/buy_items', {
