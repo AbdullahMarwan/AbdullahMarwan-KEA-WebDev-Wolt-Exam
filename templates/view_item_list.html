@@ -1,0 +1,29 @@
+<section class="item-section-admin">
+    <h1>All items</h1>
+    {% if items %}
+    <div class="item-list">
+    {% for item in items %}
+        <article class="item-card">
+            <!-- Access the image -->
+            <img src="{{ url_for('static', filename='dishes/' + (item['item_image'] if item['item_image'] else 'images/image_15.jpg')) }}" alt="{{ item['item_title'] }}" class="card-img">
+            <div class="card-content">
+
+                <div>
+                    <!-- Access the title -->
+                    <h3 class="card-title">{{ item['item_title'] if item['item_title'] else 'No title available' }}</h3>
+                    
+                    <!-- Access the price -->
+                    <p class="card-price">{{ item['item_price'] if item['item_price'] else 'N/A' }} kr.</p>
+                </div>
+
+
+                
+            <div>   <button id="delete-item-btn" class="block-btn btn">Block item</button></div>
+            </div>
+        </article>
+    {% endfor %}
+    </div>
+{% else %}
+    <p>No items found.</p>
+{% endif %}
+</section>
