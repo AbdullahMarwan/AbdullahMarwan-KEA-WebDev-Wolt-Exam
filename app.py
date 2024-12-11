@@ -697,23 +697,75 @@ def block_or_unblock_user():
         
 ##############################
 
-@app.get("/item/block")
-def block_item():
+@app.get("/item/block<item_pk>")
+def block_item(item_pk):
     try:
         if not session.get("user", ""):
             return redirect(url_for("view_login"))
-        if not "admin" in session.get("roles", ""):
+        user = session.get("user")
+        if not "admin" in user.get("roles", ""):
             return redirect(url_for("view_login"))
+        
+        
+        print(item_pk)
+        
+        item = {
+            "item_pk" : x.validate_item_pk(item_pk),
+            "item_blocked_at" : int(time.time())
+        }
+        
+        
+        btn_unblock = render_template("___btn_unblock_item.html")
 
+        
+        db, cursor = x.db()
+        cursor.execute("""UPDATE items SET item_blocked_at = %s
+                        WHERE item_pk = %s AND item_blocked_at = 0""", (item["item_blocked_at"], item["item_pk"]))
+        if cursor.rowcount == 0: # UPDATE DELETE INSERT
+            raise Exception("User could not be blocked", 404)
+        db.commit()
+        
+        
 
         items = showItemList()
         ic(items)
         
         
-        return render_template("view_login")
-    finally:
-        pass
+        return f"""
+        <template 
+        mix-target='#block--{item}' 
+        mix-replace>
+            {btn_unblock}
+        </template>
+        <template mix-target="#toast" mix-bottom>
+            {toast}
+        </template>
+        """
         
+        
+        
+        
+        
+        
+
+    except Exception as ex:
+        print(ex)
+        if "db" in locals():db.rollback()
+        if len(ex.args) >= 2: # own created exception
+            response.status = ex.args[1]
+            toast = template("__toast", message = ex.args[0])
+            return f"""
+                    <template mix-target="#toast" mix-bottom>
+                        {toast}
+                    </template>
+                    """
+        else: # python exception, not under our control
+            error = "System under maintenance. Please try again"
+            response.status = 500
+            return {"error":f"{error}"}
+    finally:
+        if "db" in locals(): db.close()
+
 
 
 
