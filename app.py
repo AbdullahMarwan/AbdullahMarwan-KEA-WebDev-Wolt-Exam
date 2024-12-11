@@ -120,6 +120,52 @@ def remove_from_cart():
         return jsonify({"error": "Failed to remove item"}), 500
 
 
+
+##############################
+
+@app.route('/buy_items', methods=['POST'])
+def buy_items():
+    try:
+        data = request.json  # Parse incoming JSON
+        total_price = data.get("totalPrice")
+        item_list = data.get("itemList")
+        user = session.get("user")
+        user_email = user.get("user_email")
+
+
+        ic("total_price:" + total_price)
+        ic("Item list:", item_list)
+
+        # Perform your logic here...
+
+        # Send informational email
+        x.send_buy_email(to_email=user_email, total_price=total_price, item_list=item_list)
+        ic("buy email sent.")
+
+        # Return a redirect template to trigger frontend redirection
+        return f"""<template mix-redirect="{url_for("view_login")}"></template>"""
+
+    except Exception as ex:
+        ic(f"Exception occurred during profile deletion: {ex}")
+        if "db" in locals():
+            db.rollback()
+            ic("Database rolled back due to exception.")
+        if isinstance(ex, x.CustomException):
+            toast = render_template("___toast.html", message=ex.message)
+            return f"""<template mix-target="#toast">{toast}</template>""", ex.code
+        if isinstance(ex, x.mysql.connector.Error):
+            ic(ex)
+            return f"""<template mix-target="#toast" mix-bottom>Database error.</template>""", 500
+        return f"""<template mix-target="#toast" mix-bottom>System under maintenance.</template>""", 500
+    finally:
+        if "cursor" in locals():
+            cursor.close()
+            ic("Cursor closed.")
+        if "db" in locals():
+            db.close()
+            ic("Database connection closed.")
+
+
 ##############################
 def showRestaurantList():
     try:
@@ -226,7 +272,7 @@ def view_login():
         if len(session.get("user").get("roles")) > 1:
             return redirect(url_for("view_choose_role")) 
         if "admin" in session.get("user").get("roles"):
-            return redirect(url_for("view_admin"))
+            return redirect(url_for("admin_or_pagination"))
         if "customer" in session.get("user").get("roles"):
             return redirect(url_for("view_customer")) 
         if "partner" in session.get("user").get("roles"):
@@ -240,11 +286,12 @@ def view_login():
 @x.no_cache
 def view_customer():
     try:
-        if not session.get("user", ""): 
+        # Handle session and user authentication
+        if not session.get("user", ""):
             return redirect(url_for("view_login"))
         user = session.get("user")
-        if len(user.get("roles", "")) > 1:
-            return redirect(url_for("view_choose_role"))
+        if "customer" not in user.get("roles", ""):
+            return redirect(url_for("view_login"))
         
         items = showItemList()  # Fetch items
         restaurants = showRestaurantList()  # Fetch restaurants
@@ -343,9 +390,8 @@ def api_search_restaurants():
         if "db" in locals(): db.close()
 
 
-##############################
+############################### Route for viewing the restaurant (without items)
 
-# Route for viewing the restaurant (without items)
 @app.get("/restaurant")
 @x.no_cache
 def view_restaurant():
@@ -363,6 +409,7 @@ def view_restaurant():
     # Render the restaurant page without items (initial state)
     return render_template("view_restaurant.html", user=user)
 
+########################################################################### ITEMS FOR A SPECIFIC RESTAURANT CUSTOMER POV
 # Route for viewing the restaurant items (when the button is clicked)
 @app.route('/customer/items/<restaurant_id>')
 def customer_items(restaurant_id):
@@ -381,7 +428,7 @@ def customer_items(restaurant_id):
     
     # restaurant_name = request.args.get("restaurant_name").value
     
-       # Fetch restaurant name using the user_pk (restaurant_id)
+    # Fetch restaurant name using the user_pk (restaurant_id)
     restaurant_name = None
     for restaurant in restaurants:
         if restaurant['user_pk'] == restaurant_id:
@@ -390,7 +437,7 @@ def customer_items(restaurant_id):
     
     return render_template('view_customer.html', items=items, restaurants=restaurants, user=user, restaurant_name=restaurant_name)
 
-#########################
+########################################################################### SHOW ALL ITEMS:
 
 # Route for viewing the restaurant items (when the button is clicked)
 @app.route('/restaurant/items/<restaurant_id>')
@@ -407,6 +454,7 @@ def restaurant_items(restaurant_id):
     items = showItemListByRestaurant(restaurant_id)  # Fetch items based on restaurant_id
     return render_template('view_restaurant.html', view='items', items=items, user=user)
 
+########################################################################### ADD NEW ITEM
 @app.route('/restaurant/add_item', methods=['GET', 'POST'])
 def restaurant_add_item():
     # Allowed image extensions (you can expand this if needed)
@@ -434,17 +482,18 @@ def restaurant_add_item():
         # Check if the image exists and is allowed
         if item_image and allowed_file(item_image.filename):
             filename = secure_filename(item_image.filename)  # Secure the filename
-            image_path = os.path.join('dishes', filename)  # Save inside the 'dishes' folder
+            image_path = os.path.join('static', 'dishes', filename)  # Save inside the 'static/dishes' folder
             
-            # Make sure the 'dishes' directory exists in the root
-            if not os.path.exists('dishes'):
-                os.makedirs('dishes')  # Create 'dishes' directory if it doesn't exist
+            # Make sure the 'static/dishes' directory exists
+            dishes_folder = os.path.join('static', 'dishes')
+            if not os.path.exists(dishes_folder):
+                os.makedirs(dishes_folder)  # Create 'dishes' directory if it doesn't exist
             
-            # Save the file to the 'dishes' folder in the root directory
-            item_image.save(os.path.join('dishes', filename))  # Save in 'dishes' folder directly under the root
+            # Save the file to the 'static/dishes' folder
+            item_image.save(image_path)  # Save in 'static/dishes' folder
             
         else:
-            ic("test")# image_path = None  # Handle case where image is not provided or not allowed
+            image_path = None  # Handle case where image is not provided or not allowed
 
         # Now insert item details into the database
         db, cursor = x.db()
@@ -455,8 +504,9 @@ def restaurant_add_item():
         ) VALUES (%s, %s, %s, %s, %s)
         '''
         cursor.execute(q, (
-            item_pk, item_user_fk, item_title, item_price, filename
+            item_pk, item_user_fk, item_title, item_price, filename if item_image else None
         ))
+
         
         db.commit()  # Commit changes to the database
         
@@ -465,8 +515,16 @@ def restaurant_add_item():
     
     return render_template('view_restaurant.html', view='add_item', user=user)
 
+########################################################################### RESTAURANT EDIT ITEM
 @app.route('/restaurant/edit_item/<item_id>', methods=['GET', 'POST'])
 def restaurant_edit_item(item_id):
+    # Allowed image extensions (you can expand this if needed)
+    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+
+    # Function to check allowed file extension
+    def allowed_file(filename):
+        return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
     if not session.get("user", ""):
         return redirect(url_for("view_login"))
 
@@ -492,17 +550,25 @@ def restaurant_edit_item(item_id):
         # Optional: process image upload if a new image is provided
         if item_image and allowed_file(item_image.filename):
             filename = secure_filename(item_image.filename)
-            image_path = os.path.join('dishes', filename)
+            image_path = os.path.join('static', 'dishes', filename)  # Correct path for saving inside static/dishes
+            
+            # Make sure the 'static/dishes' directory exists
+            dishes_folder = os.path.join('static', 'dishes')
+            if not os.path.exists(dishes_folder):
+                os.makedirs(dishes_folder)  # Create 'dishes' folder if it doesn't exist
+            
+            # Save the new image to 'static/dishes'
             item_image.save(image_path)
         else:
             image_path = item['item_image']  # Use existing image if no new image is provided
 
-        # Update item details in the database
-        cursor.execute('''
+        # Update item details in the database, including the image path if it was updated
+        cursor.execute(''' 
             UPDATE items 
             SET item_title = %s, item_price = %s, item_image = %s
             WHERE item_pk = %s
-        ''', (item_title, item_price, image_path, item_id))
+        ''', (item_title, item_price, filename if item_image else item['item_image'], item_id))
+
         db.commit()
 
         return redirect(url_for('restaurant_items', restaurant_id=user.get('user_pk')))
@@ -511,27 +577,25 @@ def restaurant_edit_item(item_id):
     return render_template('view_restaurant.html', view='edit_item', item=item, user=user)
 
 
-##############################
+################################################################################
 @app.get("/partner")
 @x.no_cache
 def view_partner():
-    if not session.get("user", ""): 
+    # Handle session and user authentication
+    if not session.get("user", ""):
+        return redirect(url_for("view_login"))
+    user = session.get("user")
+    if "partner" not in user.get("roles", ""):
         return redirect(url_for("view_login"))
     
     user = session.get("user")
-    
-    # Ensure the user has only the 'partner' role
-    if len(user.get("roles", [])) > 1:
-        return redirect(url_for("view_choose_role"))
-    if "partner" not in user.get("roles", []):
-        return redirect(url_for("view_login"))  # Optional: Redirect if user lacks 'partner' role
     
     # Render the partner dashboard/profile template
     return render_template("view_partner.html", user=user)
 
 ##############################
-@app.route('/admin', methods=['GET'])
-@app.route('/admin/page/<int:page_id>', methods=['GET'])
+@app.get('/admin')
+@app.get('/admin/page/<int:page_id>')
 def admin_or_pagination(page_id=1):
     try:
         # Handle session and user authentication
@@ -544,7 +608,7 @@ def admin_or_pagination(page_id=1):
         limit = 20 
         offset = (page_id - 1) * limit  # Offset is based on the page_id
         
-        # Database query
+        # Database query for users
         db, cursor = x.db()
         q = "SELECT `user_pk`, `user_name`, `user_last_name`, `user_avatar`, `user_email`, `user_deleted_at`, `user_blocked_at`, `user_verified_at` FROM `users` LIMIT %s OFFSET %s"
         cursor.execute(q, (limit, offset))
@@ -558,13 +622,13 @@ def admin_or_pagination(page_id=1):
         # Extract the count value
         total_users = result['COUNT(*)'] if result else 0  # Access 'COUNT(*)' key in the dictionary
 
-        for user in users:
-            user['user_deleted_at'] = convert_epoch_to_datetime(user['user_deleted_at'])
-            user['user_blocked_at'] = convert_epoch_to_datetime(user['user_blocked_at'])
-            user['user_verified_at'] = convert_epoch_to_datetime(user['user_verified_at'])
+        for user1 in users:
+            user1['user_deleted_at'] = convert_epoch_to_datetime(user1['user_deleted_at'])
+            user1['user_blocked_at'] = convert_epoch_to_datetime(user1['user_blocked_at'])
+            user1['user_verified_at'] = convert_epoch_to_datetime(user1['user_verified_at'])
 
-        # Render template with paginated content
-        return render_template("view_admin.html", users=users, page_id=page_id, total_users=total_users)
+        # Render template with paginated content and items
+        return render_template("view_admin.html", users=users, page_id=page_id, total_users=total_users, user = user)
     except Exception as ex:
         ic(f"Exception: {ex}")  # Log the error
         if isinstance(ex, x.mysql.connector.Error):
@@ -573,6 +637,7 @@ def admin_or_pagination(page_id=1):
     finally:
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
+
 
 
 # Function to convert epoch to datetime string
@@ -625,6 +690,52 @@ def block_or_unblock_user():
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
 
+
+##############################
+
+@app.get("/admin/item/list")
+def show_admin_item_list():
+    try:
+        if not session.get("user", ""):
+            return redirect(url_for("view_login"))
+        user = session.get("user")
+        if not "admin" in user.get("roles", ""):
+            return redirect(url_for("view_login"))
+        
+        page_id = 0
+        
+        ic("lessagooo")
+        
+        items = showItemList()
+        
+        
+        itemlist = True
+        
+        
+        return render_template("view_admin.html", items=items, page_id=page_id, itemlist=itemlist, user=user)  
+    finally:
+        pass
+    
+    
+    ##############################
+
+@app.get("/admin/user/list")
+def show_admin_user_list():
+    try:
+        if not session.get("user", ""):
+            return redirect(url_for("view_login"))
+        user = session.get("user")
+        if not "admin" in user.get("roles", ""):
+            return redirect(url_for("view_login"))
+        
+        ic("lessagooo")
+        
+        user = showItemList()
+        
+        
+        return render_template("view_admin.html", user=user)  
+    finally:
+        pass
 
 ##############################
 @app.get("/choose-role")
@@ -952,6 +1063,54 @@ def user_delete(user_pk):
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
 
+############################## delete item
+@app.delete("/items/<item_pk>")
+def delete_item(item_pk):
+    try:
+        # Validate session and permissions
+        if not session.get("user", ""): 
+            return redirect(url_for("view_login"))
+
+        if not "restaurant" in session.get("user").get("roles"): 
+            return redirect(url_for("view_login"))
+        
+        ic("item_pk: " + item_pk)
+
+        item_pk = x.validate_uuid4(item_pk)
+
+        db, cursor = x.db()
+
+        # Perform the deletion
+        q = "DELETE FROM items WHERE item_pk = %s"
+        cursor.execute(q, (item_pk,))
+
+        if cursor.rowcount != 1: 
+            x.raise_custom_exception("Cannot delete item", 400)
+
+        db.commit()
+
+        # Return template to update the UI
+        return f"""
+        <template mix-target="#item_{item_pk}" mix-replace></template>
+        """
+
+    except Exception as ex:
+        if "db" in locals(): db.rollback()
+        if isinstance(ex, x.CustomException): 
+            return f"""
+            <template mix-target="#message" mix-top>{ex.message}</template>
+            """, ex.code
+        if isinstance(ex, x.mysql.connector.Error):
+            return """
+            <template mix-target="#message" mix-top>Database error</template>
+            """, 500
+        return """
+        <template mix-target="#message" mix-top>System under maintenance</template>
+        """, 500
+
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
 
 
 
@@ -998,7 +1157,7 @@ def verify_user(verification_key):
 
 
 ####################
-@app.get("/partner/edit_profile")
+@app.get("/edit_profile")
 @x.no_cache
 def view_edit_profile():
     if not session.get("user"): 
@@ -1006,7 +1165,7 @@ def view_edit_profile():
     user = session.get("user")
     return render_template("edit_profile.html", user=user, x=x)
 
-@app.post("/partner/edit_profile")
+@app.post("/edit_profile")
 @x.no_cache
 def edit_profile():
     try:
@@ -1077,7 +1236,7 @@ def view_delete_profile():
 
 
 ######################
-@app.post("/partner/request_delete_profile")
+@app.post("/request_delete_profile")
 @x.no_cache
 def request_delete_profile():
     try:

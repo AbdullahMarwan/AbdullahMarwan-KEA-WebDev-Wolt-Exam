@@ -6,6 +6,7 @@
     <link rel="stylesheet" href="{{ url_for('static', filename='/css/global.css') }}">
     <link rel="stylesheet" href="{{ url_for('static', filename='/css/restaurant.css') }}">
     <script src="{{ url_for('static', filename='header.js') }}" defer></script>
+    <script src="{{ url_for('static', filename='delete.js') }}" defer></script>
     <title>Your restaurant</title>
 </head>
 <body>
@@ -16,12 +17,12 @@
       <div class="restaurant-page-buttons">
         <a
           href="/restaurant/items/{{ user.user_pk }}"
-          class="items-restaurant {% if view == 'items' %} active {% endif %}"
+          class="a-items-restaurant {% if view == 'items' %} active {% endif %}"
           >Items</a
         >
         <a
           href="/restaurant/add_item"
-          class="add-item-restaurant {% if view == 'add_item' %} active {% endif %}"
+          class="a-add-item-restaurant {% if view == 'add_item' %} active {% endif %}"
           >Add new item</a
         >
       </div>

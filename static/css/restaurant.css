@@ -16,7 +16,7 @@
         align-items:center;
     }
 
-    a{
+    .a-items-restaurant, .a-add-item-restaurant {
         padding:10px;
         margin:10px;
         font-family: var(--font);
@@ -136,8 +136,8 @@
 }
 
 .card-img {
-    width: 50%;
-    height: auto;
+    max-width: 50%;
+    aspect-ratio: 1/1;
     object-fit: cover;
 }
 
@@ -161,9 +161,24 @@
     font-weight: bold;
 }
 
+.go-to-edit-item{
+    padding:5px 20px;
+    font-family: var(--font);
+    font-size: 1em;
+    font-weight: 400;
+    border-radius: 4px;
+    background-color: #007bff;
+    border:none;
+    color:#fff;
+    margin-top:1em;
+    text-decoration: none;
+}
+
 .delete-item{
     padding:5px 20px;
     font-family: var(--font);
+    font-size: 1em;
+    font-weight: 400;
     border-radius: 4px;
     background-color: red;
     border:none;
@@ -171,56 +186,30 @@
     margin-top:1em;
 }
 
+
+.delete-item:hover{
+background-color: darkred;
+}
+
+
+
 /*---------------------------------------------------------------------------------------------------------------------------------------------
 -----------------------------------, Tablets, Desktops and Larger Screens 
 --------------------------------------------------------------------------------------------------------------------------------------------*/
 
 @media (min-width: 600px) {
     .item-list {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        gap: 20px;
+    display:grid;
+    grid-template-columns: 1fr 1fr;
     }
 
-    .item-card {
-        flex: 0 1 calc(50% - 20px);
-    }
-
-    .users-list {
-        max-width: 800px;
-    }
-
-    .individual-user div {
-        font-size: 1rem;
-    }
 }
 
-@media (min-width: 900px) {
-    .item-card {
-        flex: 0 1 calc(33.333% - 20px);
-    }
-}
 
 /* Larger Screens (Desktop) */
 @media (min-width: 1024px) {
-
-    .portrait-ctn {
-        margin: 0;
-    }
-
-    .user-info-wrapper {
-        margin: 0;
-    }
-
-    .users-list {
-        max-width: 1200px;
-    }
-
-    .individual-user {
-        display: flex;
-        justify-content: space-around;
-        align-items: center;
-    }
+    .item-list {
+        grid-template-columns: 1fr 1fr 1fr;
+        }
 }
 

@@ -11,8 +11,43 @@ h1 {
     margin: 20px 0;
 }
 
+p {
+    font-size: 1em
+}
 
-/* Button Styling */
+
+.admin-main{
+    margin:1em;
+
+    h1{
+        text-align: center;
+    }
+
+
+    .admin-page-buttons{
+        display:flex;
+        justify-content: center;
+        align-items:center;
+    }
+
+    .a-items-admin, .a-add-item-admin {
+        padding:10px;
+        margin:10px;
+        font-family: var(--font);
+        text-decoration: none;
+        border-radius: 4px;
+        border:1px solid #007bff;
+        color:#007bff;
+        text-align: center;
+    }
+
+    a:hover{
+        background-color: #007bff;
+        color:#f8f9fa;
+    }
+}
+
+/*----------------------------------------------- Button Styling ----------------------------------------------- */
 .btn {
     color: white;
     border: none;
@@ -39,7 +74,7 @@ h1 {
     background-color: #c82333;
 }
 
-/* User List Styling */
+/*----------------------------------------------- User List Styling -----------------------------------------------*/
 .portrait-ctn {
     border-radius: 50%;
     width: 100%;
@@ -97,7 +132,7 @@ h1 {
     background-color: #0056b3;
 }
 
-/* Individual User Styling */
+/* ----------------------------------------------- Individual User Styling -----------------------------------------------*/
 .individual-user {
     padding: 1rem;
     margin: 1rem 0;
@@ -114,22 +149,24 @@ h1 {
     color: #555;
 }
 
-p {
-    font-size: 1rem;
-    text-align: center;
-    color: #666;
+/*--------------------------------------------------------------------------------------------------------------------------------------------
+----------------------------------------------- Item List Container----------------------------------------------- 
+---------------------------------------------------------------------------------------------------------------------------------------------*/
+.item-section-admin{
+    display:flex;
+    flex-direction: column;
+    padding:10px;
 }
 
-/* Item List Container */
 .item-list {
     display: flex;
-    flex-direction: column; /* Default for mobile: stack items vertically */
+    flex-direction: column; 
     gap: 15px;
     padding: 10px;
     margin: 0;
 }
 
-/* Item Card Styling */
+/* -----------------------------------------------Item Card Styling -----------------------------------------------*/
 .item-card {
     display: flex;
     border-radius: 8px;
@@ -145,14 +182,17 @@ p {
 }
 
 .card-img {
-    width: 50%;
-    height: auto;
+    max-width: 50%;
+    aspect-ratio: 1/1;
     object-fit: cover;
 }
 
 .card-content {
     width: 50%;
     padding: 1em;
+    display: flex;
+    flex-direction: column;
+    justify-content: space-around;
 }
 
 .card-title {
@@ -167,14 +207,14 @@ p {
     font-weight: bold;
 }
 
-/* Responsive Design */
-/* Tablets and Larger Screens */
-@media (min-width: 600px) {
+/*---------------------------------------------------------------------------------------------------------------------------------------------
+-----------------------------------------------Responsive Design -----------------------------------------------
+---------------------------------------------------------------------------------------------------------------------------------------------*/
+/* Tablets*/
+@media (min-width: 500px) {
     .item-list {
-        flex-direction: row;
-        flex-wrap: wrap;
-        justify-content: space-between;
-        gap: 20px;
+        display:grid;
+        grid-template-columns: 1fr 1fr;
     }
 
     .item-card {
@@ -190,15 +230,23 @@ p {
     }
 }
 
-/* Desktops and Larger Screens */
-@media (min-width: 900px) {
+/* Desktop */
+@media (min-width: 1024px) {
+    .item-list {
+        display:flex;
+        flex-direction: column;
+        margin-top:3em;
+    }
+
     .item-card {
         flex: 0 1 calc(33.333% - 20px);
     }
-}
 
-/* Larger Screens (Desktop) */
-@media (min-width: 1024px) {
+    .admin-main{
+        max-width: 80%;
+        margin: auto;
+        justify-items:center;
+    }
 
     .portrait-ctn {
         margin: 0;
@@ -212,9 +260,9 @@ p {
         max-width: 1200px;
     }
 
-    .individual-user {
+    /* .individual-user {
         display: flex;
         justify-content: space-around;
         align-items: center;
-    }
+    } */
 }

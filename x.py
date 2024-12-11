@@ -242,33 +242,66 @@ def send_forgot_password_email(to_email, user_verification_key):
 
 ################
 
-def send_deletion_info_email(to_email):
+def send_buy_email(to_email, total_price, item_list):
     try:
         sender_email = "spis.eksamen.2024@gmail.com"
-        password = "bstw jflj vjdg kvxk"  # If 2FA is on, use an App Password instead
+        password = "bstw jflj vjdg kvxk"  # Use an App Password instead
         if not sender_email or not password:
-            raise_custom_exception("Email configuration is missing.", 500)
+            raise ValueError("Email configuration is missing.")
 
         receiver_email = to_email
 
+        import html
+
+        # Validate item_list
+        if not isinstance(item_list, list):
+            raise ValueError("item_list must be a list of dictionaries.")
+
+        # Generate the HTML list
+        item_list_html = "<ul>"
+        for item in item_list:
+            if isinstance(item, dict):
+                print("Processing valid item:", item)
+                item_title = html.escape(item.get('title', 'Unknown'))
+                item_price = html.escape(str(item.get('price', '0')))
+                item_list_html += f"""
+                    <li>
+
+                        {item_title} - {item_price} kr
+                    </li>
+                """
+            else:
+                print(f"Unexpected item structure: {item}")  # Log the unexpected item
+        item_list_html += "</ul>"
+
+
+        # Construct the email
         message = MIMEMultipart()
-        message["From"] = "SPIS exam project 2024"
+        message["From"] = sender_email
         message["To"] = receiver_email
-        message["Subject"] = "Your Profile Has Been Deleted"
+        message["Subject"] = "You have bought items, good job mate"
 
         # Body of the email
-        body = f"""<p>Dear User,</p>
-                   <p>Your profile has been successfully deleted from our system.</p>
-                   <p>If you did not perform this action, please contact our support team immediately.</p>
-                   <p>Best regards,<br>SPIS Exam Project 2024 Team</p>"""
+        body = f"""
+        <p>Dear User,</p>
+        <p>Here is a list of the items you have bought:</p>
+        <div>
+            {item_list_html}
+        </div>
+        <p>{total_price}</p>
+        <p>If you did not perform this action, please contact our support team immediately.</p>
+        <p>Best regards,<br>SPIS Exam Project 2024 Team</p>
+        """
         message.attach(MIMEText(body, "html"))
 
+        # Send the email
         with smtplib.SMTP("smtp.gmail.com", 587) as server:
             server.starttls()
             server.login(sender_email, password)
             server.sendmail(sender_email, receiver_email, message.as_string())
-        ic("Deletion informational email sent successfully!")
+        print("Bought items email sent successfully!")
 
     except Exception as ex:
-        ic(ex)
-        raise_custom_exception("Cannot send deletion informational email.", 500)
+        print(f"Error: {ex}")
+        raise ValueError("Cannot send buy items email.")
+
