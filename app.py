@@ -34,22 +34,6 @@ def _________GET_________(): pass
 
 ##############################
 
-def showItemList():
-    try:
-        db, cursor = x.db()
-        q = "SELECT `item_pk`, `item_title`, `item_price`, `item_image`, `item_blocked_at` FROM `items` LIMIT 20"
-        cursor.execute(q)
-        items = cursor.fetchall()
-        return items
-    except Exception as ex:
-        print(f"Error fetching items: {ex}")
-        return []  # Return empty list in case of error
-    finally:
-        if "cursor" in locals():
-            cursor.close()
-        if "db" in locals():
-            db.close()
-
 
 ##############################
 
@@ -664,6 +648,9 @@ def block_user(user_pk):
         }
 
 
+
+
+
         btn_unblock = render_template("___btn_unblock_user.html", user=user)
 
         response = f"""
@@ -741,7 +728,6 @@ def block_or_unblock_user():
 @app.get("/item/block/<item_pk>")
 def block_item(item_pk):
     try:
-
         # Define the item (validate if needed)
         item = {
             "item_pk": item_pk  # Add validation logic if required
@@ -760,7 +746,6 @@ def block_item(item_pk):
         cursor.execute(q_select, (epoch_time, item_pk))
 
         db.commit()
-
 
 
         # Prepare the response
@@ -823,56 +808,83 @@ def unblock_item(item_pk):
 
 
 
-
-
-
-
-
-
-
-
 ##############################
 
 @app.get("/admin/item/list")
 def show_admin_item_list():
-    try:
-        if not session.get("user", ""):
-            return redirect(url_for("view_login"))
-        user = session.get("user")
-        if not "admin" in user.get("roles", ""):
-            return redirect(url_for("view_login"))
-        
-        page_id = 0
-        
-        
-        items = showItemList()
-        
-        
-        
-        
-        return render_template("view_admin.html", items=items, page_id=page_id, user=user)  
-    finally:
-        pass
-    
-    
-    ##############################
+        try:
+            if not session.get("user", ""):
+                return redirect(url_for("view_login"))
+            user = session.get("user")
+            if "admin" not in user.get("roles", ""):
+                return redirect(url_for("view_login"))
+            
+            items = showItemList(1)
+            
+            # Render template with paginated content and items
+            return render_template("view_admin.html", items=items, user=user)
+        finally:
+            pass
 
-@app.get("/admin/user/list")
-def show_admin_user_list():
+
+
+
+
+def showItemList(page_id):
     try:
-        if not session.get("user", ""):
-            return redirect(url_for("view_login"))
-        user = session.get("user")
-        if not "admin" in user.get("roles", ""):
-            return redirect(url_for("view_login"))
-        
-        
-        user = showItemList()
-        
-        
-        return render_template("view_admin.html", user=user)  
+        limit = 20
+        offset = (page_id - 1) * limit
+        db, cursor = x.db()
+        q = "SELECT `item_pk`, `item_title`, `item_price`, `item_image`, `item_blocked_at` FROM `items` LIMIT %s OFFSET %s"
+        cursor.execute(q, (limit, offset))
+        items = cursor.fetchall()
+
+        return items
+    except Exception as ex:
+        print(f"Error fetching items: {ex}")
+        return []  # Return empty list in case of error
     finally:
-        pass
+        if "cursor" in locals():
+            cursor.close()
+        if "db" in locals():
+            db.close()
+
+
+
+
+#         limit = 20
+#         offset = (page_id - 1) * limit  # Offset is based on the page_id
+#         db, cursor = x.db()
+
+#         q = "SELECT `item_pk`, `item_title`, `item_price`, `item_image`, `item_blocked_at` FROM `items` LIMIT %s OFFSET %s"
+#         cursor.execute(q, (limit, offset))
+#         items = cursor.fetchall()
+
+
+
+#         # Query to get the total number of users
+#         count_query = "SELECT COUNT(*) FROM `items`"
+#         cursor.execute(count_query)
+#         result = cursor.fetchone()  # Get the count from the first column
+
+#         # Extract the count value
+#         total_items = result['COUNT(*)'] if result else 0  # Access 'COUNT(*)' key in the dictionary
+#         ic(items)
+#         ic(total_items)
+
+#         # Render template with paginated content and items
+#         return render_template("view_admin.html", items=items, total_items=total_items)
+#     except Exception as ex:
+#         ic(f"Exception: {ex}")  # Log the error
+#         if isinstance(ex, x.mysql.connector.Error):
+#             return "Database error occurred.", 500
+#         return "System under maintenance.", 500
+#     finally:
+#         if "cursor" in locals(): cursor.close()
+#         if "db" in locals(): db.close()
+    
+    
+##############################
 
 ##############################
 @app.get("/choose-role")
