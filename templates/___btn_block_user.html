@@ -1,3 +1,5 @@
-<button mix-get="/users/block<item_pk>" id="block--{{ user['user_pk'] }}">
-Block
+<button
+    id="block-{{ item['item_pk'] }}"
+    mix-get="/item/block/{{ item['item_pk'] }}">
+    Block
 </button>

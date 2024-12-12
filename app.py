@@ -697,69 +697,101 @@ def block_or_unblock_user():
         
 ##############################
 
-@app.get("/item/block<item_pk>")
+@app.get("/item/block/<item_pk>")
 def block_item(item_pk):
     try:
-        # Check user authentication and authorization
-        if not session.get("user", ""):
-            return redirect(url_for("view_login"))
-        user = session.get("user")
-        if "admin" not in user.get("roles", ""):
-            return redirect(url_for("view_login"))
+        ic(item_pk)  # Log for debugging
 
-        ic("item_pk: " + item_pk)
-
-        # Validate and block the item
+        # Define the item (validate if needed)
         item = {
-            "item_pk": x.validate_item_pk(item_pk),
-            "item_blocked_at": int(time.time()),
-            
+            "item_pk": item_pk  # Add validation logic if required
         }
 
-        db, cursor = x.db()
-        cursor.execute(
-            """
-            UPDATE items 
-            SET item_blocked_at = %s
-            WHERE item_pk = %s AND item_blocked_at = 0
-            """,
-            (item["item_blocked_at"], item["item_pk"]),
-        )
-        if cursor.rowcount == 0:
-            raise Exception("Item could not be blocked", 404)
+        ic(item)
 
-        db.commit()
+        # Prepare the Unblock button using a template
+        btn_unblock = render_template("___btn_unblock_item.html", item=item)
 
-        # Prepare the replacement button (Unblock)
-        btn_unblock = render_template(
-            "___btn_unblock_item.html", item_pk=item["item_pk"]
-        )
 
-        # Respond with a mix-replace template
-        return f"""
+        # Prepare the response
+        response = f"""
         <template 
-            mix-target="#block--{item['item_pk']}"
+            mix-target="#block-{item['item_pk']}"
             mix-replace>
             {btn_unblock}
         </template>
         """
+        return response
+
     except Exception as ex:
-        if "db" in locals():
-            db.rollback()
-        if len(ex.args) >= 2:
-            render_template.status = ex.args[1]
-            toast = render_template("__toast.html", message=ex.args[0])
-            return f"""
-            <template mix-target="#toast" mix-bottom>
-                {toast}
-            </template>
-            """
-        else:
-            error = "System under maintenance. Please try again"
-            return {"error": error}
-    finally:
-        if "db" in locals():
-            db.close()
+        print(f"Error: {ex}")
+        return "Error occurred", 500
+
+
+
+# @app.get("/item/unblock<item_pk>")
+# def unblock_item(item_pk):
+#     try:
+#         # Check user authentication and authorization
+#         if not session.get("user", ""):
+#             return redirect(url_for("view_login"))
+#         user = session.get("user")
+#         if "admin" not in user.get("roles", ""):
+#             return redirect(url_for("view_login"))
+
+#         ic("item_pk: " + item_pk)
+
+#         # Validate and unblock the item
+#         item = {
+#             "item_pk": x.validate_item_pk(item_pk),
+#             "item_blocked_at": 0,  # Unblocking sets this to 0
+#         }
+
+#         db, cursor = x.db()
+#         cursor.execute(
+#             """
+#             UPDATE items 
+#             SET item_blocked_at = 0
+#             WHERE item_pk = %s AND item_blocked_at > 0
+#             """,
+#             (item["item_pk"],),
+#         )
+#         if cursor.rowcount == 0:
+#             raise Exception("Item could not be unblocked", 404)
+
+#         db.commit()
+
+#         # Prepare the replacement button (Block)
+#         btn_block = render_template(
+#             "___btn_block_item.html", item_pk=item["item_pk"]
+#         )
+
+#         # Respond with a mix-replace template
+#         return f"""
+#         <template 
+#             mix-target="#block--{item['item_pk']}"
+#             mix-replace>
+#             {btn_block}
+#         </template>
+#         """
+#     except Exception as ex:
+#         if "db" in locals():
+#             db.rollback()
+#         if len(ex.args) >= 2:
+#             render_template.status = ex.args[1]
+#             toast = render_template("__toast.html", message=ex.args[0])
+#             return f"""
+#             <template mix-target="#toast" mix-bottom>
+#                 {toast}
+#             </template>
+#             """
+#         else:
+#             error = "System under maintenance. Please try again"
+#             return {"error": error}
+#     finally:
+#         if "db" in locals():
+#             db.close()
+
 
 
 
@@ -833,7 +865,6 @@ def show_admin_item_list():
         
         page_id = 0
         
-        ic("lessagooo")
         
         items = showItemList()
         
@@ -857,7 +888,6 @@ def show_admin_user_list():
         if not "admin" in user.get("roles", ""):
             return redirect(url_for("view_login"))
         
-        ic("lessagooo")
         
         user = showItemList()
         
