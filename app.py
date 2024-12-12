@@ -1276,7 +1276,7 @@ def view_edit_profile():
     user = session.get("user")
     return render_template("edit_profile.html", user=user, x=x)
 
-@app.post("/edit_profile")
+@app.put("/edit_profile")
 @x.no_cache
 def edit_profile():
     try:
@@ -1312,7 +1312,7 @@ def edit_profile():
         session['user'] = user
 
         flash("Profile updated successfully.", "success")
-        return redirect(url_for("view_partner"))
+        return f"""<template mix-redirect="{url_for("view_login")}"></template>"""
 
     except Exception as ex:
         ic(ex)

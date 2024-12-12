@@ -360,20 +360,25 @@ color:#007bff;
 }
 
 .cart-list {
-    /* padding: 2.5em 0em 2.5em 0em; */
-    display: flex;
+    padding: 2em;
     width: 100%;
     height: 90vh;
     position: fixed;
-    right: -100%;  /* Initially offscreen */
+    right: -100%;
     background-color: #fbfbfb;
+    transition: right 0.5s ease-out;
+    border-radius: 25px 0px 0px 25px;
+    border-left: 1px solid grey;
+    z-index: 500000;
+    justify-content: space-between;
+}
+
+.cart-content {
+    display: flex;
     flex-direction: column;
     align-items: center;
-    justify-content:space-between;
-    transition: right 0.5s ease-out;  /* Smooth transition for sliding */
-    border-radius: 25px 0px 0px 25px;
-    border-left:1px solid grey;
-    z-index:500000;
+    height: 100%;
+    justify-content: space-between;
 }
 
 /* When 'slide-in' class is added, slide the cart into view */
@@ -388,7 +393,6 @@ color:#007bff;
 
 
 .heading-items-ctn {
-    padding: 1.5em;
     width: 100%;
 }
 
@@ -400,28 +404,31 @@ color:#007bff;
     display: grid;
     gap: 1em;
     width: 100%;
-    max-height: 350px; 
     overflow-y: auto;
+    max-height: 50vh;
 }
 
 .cart-item-content {
     display: flex;
     justify-content: space-between;
-    width:50%;
+    width: 50%;
+    flex-direction: row;
+    padding: 1em;
 }
 
-.title-and-price{
-    padding:1em;
+.title-and-price {
+    display: flex;
+    flex-direction: column;
+    justify-content: space-evenly;
 }
+
 
 .cross-icon-btn {
     background-color: black;
-    width: 2em;
+    min-width: 2em;
     height: 2em;
     border-radius: 50%;
     cursor: pointer;
-    margin-top:1em;
-    margin-right:0.5em;
 }
 .cart-item {
     display: flex;
@@ -452,6 +459,13 @@ color:#007bff;
     border: none;
 }
 
+.buy-price-ctn {
+    display: flex;
+    flex-direction: column;
+    align-items: center;
+    margin-top: 2em;
+}
+
 @media (min-width: 768px) {
     .cart-list{
         width: 50%;
@@ -461,12 +475,12 @@ color:#007bff;
         display: grid;
         gap: 1em;
         width: 100%;
-        max-height: 400px; 
         overflow-y: auto;
     }
 }
 
 @media (min-width: 1024px) {
+
     .cart-list{
         width: 35vw;
         right:-35vw;
