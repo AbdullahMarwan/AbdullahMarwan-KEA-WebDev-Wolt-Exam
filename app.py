@@ -710,6 +710,17 @@ def block_item(item_pk):
         btn_unblock = render_template("___btn_unblock_item.html", item=item)
 
 
+        db, cursor = x.db()  # Assuming x.db() returns a database connection and cursor
+        q = "SELECT `item_pk` FROM `items` WHERE `item_pk` = %s"
+
+
+        # Execute the query with item_pk as a parameter
+        cursor.execute(q, (item_pk,))
+
+        # Fetch the result
+        itemDB = cursor.fetchone()
+
+
         # Prepare the response
         response = f"""
         <template 
