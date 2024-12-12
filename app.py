@@ -33,10 +33,11 @@ def inject_x():
 def _________GET_________(): pass
 
 ##############################
+
 def showItemList():
     try:
         db, cursor = x.db()
-        q = "SELECT `item_pk`, `item_title`, `item_price`, `item_image` FROM `items` LIMIT 20"
+        q = "SELECT `item_pk`, `item_title`, `item_price`, `item_image` FROM `items`, `item_blocked_at` LIMIT 20"
         cursor.execute(q)
         items = cursor.fetchall()
         return items
@@ -709,16 +710,17 @@ def block_item(item_pk):
         # Prepare the Unblock button using a template
         btn_unblock = render_template("___btn_unblock_item.html", item=item)
 
+        epoch_time = int(time.time())
+        ic(epoch_time)
 
         db, cursor = x.db()  # Assuming x.db() returns a database connection and cursor
-        q = "SELECT `item_pk` FROM `items` WHERE `item_pk` = %s"
-
+        q_select = "UPDATE `items` SET `item_blocked_at`= %s WHERE `item_pk`= %s"
 
         # Execute the query with item_pk as a parameter
-        cursor.execute(q, (item_pk,))
+        cursor.execute(q_select, (epoch_time, item_pk))
 
-        # Fetch the result
-        itemDB = cursor.fetchone()
+        db.commit()
+
 
 
         # Prepare the response
@@ -749,9 +751,18 @@ def unblock_item(item_pk):
         # Prepare the replacement button (Block)
         btn_block = render_template(
             "___btn_block_item.html", item=item)
-        
+
+
+
+        db, cursor = x.db()
+        q = "UPDATE `items` SET `item_blocked_at`= 0 WHERE `item_pk` = %s"
+        cursor.execute(q, (item_pk,))
+        db.commit()
+
+
+
         # Respond with a mix-replace template
-        return f"""
+        response = f"""
         <template 
             mix-target="#unblock-{item['item_pk']}"
             mix-replace>
@@ -760,9 +771,14 @@ def unblock_item(item_pk):
         """
         return response
 
+
+
     except Exception as ex:
         print(f"Error: {ex}")
         return "Error occurred", 500
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
 
 
 

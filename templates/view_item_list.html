@@ -15,9 +15,18 @@
                     <!-- Access the price -->
                     <p class="card-price">{{ item['item_price'] if item['item_price'] else 'N/A' }} kr.</p>
                 </div>
+                
 
-
+            {% if item['item_blocked_at'] == 0 %}
                 {% include "___btn_block_item.html" %}
+            {% else %}
+                {% include "___btn_unblock_item.html" %}
+            {% endif %}
+            
+
+
+
+
             </div>
         </article>
     {% endfor %}
