@@ -37,7 +37,7 @@ def _________GET_________(): pass
 def showItemList():
     try:
         db, cursor = x.db()
-        q = "SELECT `item_pk`, `item_title`, `item_price`, `item_image` FROM `items`, `item_blocked_at` LIMIT 20"
+        q = "SELECT `item_pk`, `item_title`, `item_price`, `item_image`, `item_blocked_at` FROM `items` LIMIT 20"
         cursor.execute(q)
         items = cursor.fetchall()
         return items
@@ -649,6 +649,48 @@ def convert_epoch_to_datetime(epoch_time):
 
 ##############################
 
+@app.put("/admin/block/<user_pk>")
+def block_user(user_pk):
+    try:
+        if not session.get("user", ""):
+            return redirect(url_for("view_login"))
+        user = session.get("user")
+        if not "admin" in user.get("roles", ""):
+            return redirect(url_for("view_login"))
+
+
+        ic(user_pk)
+
+        user = {
+            "user_pk": user_pk,
+        }
+
+
+        btn_unblock = render_template("___btn_unblock_user.html", user=user)
+
+        response = f"""
+        <template 
+            mix-target="#block-{user['user_pk']}"
+            mix-replace>
+            {btn_unblock}
+        </template>
+        """
+        return response
+
+    except Exception as ex:
+        print(f"Error: {ex}")
+        return "Error occurred", 500
+
+
+    
+    finally:
+        pass
+
+
+
+
+##############################
+
 @app.post("/admin/user-list/block")
 def block_or_unblock_user():
     try:
@@ -808,10 +850,9 @@ def show_admin_item_list():
         items = showItemList()
         
         
-        itemlist = True
         
         
-        return render_template("view_admin.html", items=items, page_id=page_id, itemlist=itemlist, user=user)  
+        return render_template("view_admin.html", items=items, page_id=page_id, user=user)  
     finally:
         pass
     

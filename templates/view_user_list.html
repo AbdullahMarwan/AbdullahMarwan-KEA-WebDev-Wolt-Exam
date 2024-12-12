@@ -40,23 +40,7 @@
     
                     </div>
     
-                    <form action="/admin/user-list/block" method="post">
-                        <!-- Hidden field for user primary key -->
-                        <input type="hidden" name="user_pk" value="{{ user['user_pk'] }}">
-                        
-                        <!-- Hidden field for page_id -->
-                        <input type="hidden" name="page_id" value="{{ page_id }}">
-    
-                        {% if user['user_blocked_at'] %}
-                            <!-- Action for unblocking the user -->
-                            <input type="hidden" name="action" value="unblock">
-                            <button class="btn unblock-btn" id="unblock-block-btn" type="submit">Unblock</button>
-                        {% else %}
-                            <!-- Action for blocking the user -->
-                            <input type="hidden" name="action" value="block">
-                            <button class="btn block-btn" id="unblock-block-btn" type="submit">Block</button>
-                        {% endif %}
-                    </form>
+                    {% include "___btn_block_user.html" %}
                 </div>
             {% endfor %}
         {% else %}
