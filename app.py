@@ -590,6 +590,7 @@ def admin_or_pagination(page_id=1):
         if "admin" not in user.get("roles", ""):
             return redirect(url_for("view_login"))
         
+        
         limit = 20 
         offset = (page_id - 1) * limit  # Offset is based on the page_id
         
@@ -641,11 +642,12 @@ def block_user(user_pk):
         user = session.get("user")
         if not "admin" in user.get("roles", ""):
             return redirect(url_for("view_login"))
-        ic("hello")
 
         user = {
             "user_pk": user_pk,
         }
+
+
 
 
 
@@ -811,20 +813,38 @@ def unblock_item(item_pk):
 ##############################
 
 @app.get("/admin/item/list")
-def show_admin_item_list():
-        try:
-            if not session.get("user", ""):
-                return redirect(url_for("view_login"))
-            user = session.get("user")
-            if "admin" not in user.get("roles", ""):
-                return redirect(url_for("view_login"))
+@app.get("/admin/item/page/<int:page_id>")
+def showItemList(page_id=1):
+    try:
+                # Handle session and user authentication
+        if not session.get("user", ""):
+            return redirect(url_for("view_login"))
+        user = session.get("user")
+        if "admin" not in user.get("roles", ""):
+            return redirect(url_for("view_login"))
+        
+        limit = 20
+        offset = (page_id - 1) * limit
+        db, cursor = x.db()
+        q = "SELECT `item_pk`, `item_title`, `item_price`, `item_image`, `item_blocked_at` FROM `items` LIMIT %s OFFSET %s"
+        cursor.execute(q, (limit, offset))
+        items = cursor.fetchall()
+
+
+        # Render template with paginated content and items
+        return render_template("view_admin.html", items=items, user=user, page_id=page_id)
+    except Exception as ex:
+        print(f"Error fetching items: {ex}")
+        return []  # Return empty list in case of error
+
             
-            items = showItemList(1)
-            
-            # Render template with paginated content and items
-            return render_template("view_admin.html", items=items, user=user)
-        finally:
-            pass
+
+    finally:
+        if "cursor" in locals():
+            cursor.close()
+        if "db" in locals():
+            db.close()
+
 
 
 
