@@ -74,6 +74,7 @@ p {
     background-color: #c82333;
 }
 
+
 /*----------------------------------------------- User List Styling -----------------------------------------------*/
 .portrait-ctn {
     border-radius: 50%;
@@ -232,11 +233,6 @@ p {
 
 /* Desktop */
 @media (min-width: 1024px) {
-    .item-list {
-        display:flex;
-        flex-direction: column;
-        margin-top:3em;
-    }
 
     .item-card {
         flex: 0 1 calc(33.333% - 20px);
@@ -265,4 +261,11 @@ p {
         justify-content: space-around;
         align-items: center;
     } */
+}
+
+@media (min-width: 1440px) {
+    .item-list {
+        grid-template-columns: 1fr 1fr 1fr;
+    }
+
 }
