@@ -649,7 +649,7 @@ def convert_epoch_to_datetime(epoch_time):
 
 ##############################
 
-@app.put("/admin/block/<user_pk>")
+@app.get("/admin/block/<user_pk>")
 def block_user(user_pk):
     try:
         if not session.get("user", ""):
@@ -657,9 +657,7 @@ def block_user(user_pk):
         user = session.get("user")
         if not "admin" in user.get("roles", ""):
             return redirect(url_for("view_login"))
-
-
-        ic(user_pk)
+        ic("hello")
 
         user = {
             "user_pk": user_pk,
