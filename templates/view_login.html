@@ -5,10 +5,8 @@
     <script src="{{ url_for('static', filename='login.js') }}?v=1" defer></script>
     <meta name="viewport" content="width=device-width, initial-scale=1.0" />
     <link rel="stylesheet" href="{{ url_for('static', filename='/css/global.css') }}">
-    <link
-      rel="stylesheet"
-      href="{{ url_for('static', filename='/css/login.css') }}"
-    />
+    <link rel="stylesheet" href="{{ url_for('static', filename='/css/login.css') }}"/>
+    <link rel="stylesheet" href="{{ url_for('static', filename='mixhtml.css') }}"/>
     <script src="{{ url_for('static', filename='header.js') }}" defer></script>
     <title>Login</title>
   </head>
@@ -27,9 +25,7 @@
               name="user_email"
               type="email"
               mix-check="{{ x.REGEX_EMAIL }}"
-              pattern="^[a-zA-Z0-9._%+-]+@[a-zA-Z0-9.-]+\.[a-zA-Z]{2,}$" 
-                title="Please enter a valid email address (e.g., johndoe@example.com)." 
-                required
+              required
             />
 
           </div>
