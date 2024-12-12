@@ -532,67 +532,6 @@ def view_restaurant_add_item():
     
     return render_template('view_restaurant.html', view='add_item', user=user)
 
-# OLD Add item (DELETE when done)
-# @app.route('/restaurant/add_item', methods=['GET', 'POST']) 
-# def restaurant_add_item():
-#     # Allowed image extensions (you can expand this if needed)
-#     ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
-#     # Function to check allowed file extension
-#     def allowed_file(filename):
-#         return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-#     if not session.get("user", ""):
-#         return redirect(url_for("view_login"))
-
-#     user = session.get("user")
-#     if "restaurant" not in user.get("roles", {}):
-#         return redirect(url_for("view_login"))
-    
-#     if request.method == 'POST':
-#         # Get form data (title, price, image)
-#         item_pk = str(uuid.uuid4())  # Generate unique item primary key
-#         item_user_fk = user.get("user_pk")
-#         item_title = request.form.get('item_title')
-#         item_price = request.form.get('item_price')
-#         item_image = request.files.get('item_image')
-
-#         # Check if the image exists and is allowed
-#         if item_image and allowed_file(item_image.filename):
-#             filename = secure_filename(item_image.filename)  # Secure the filename
-#             image_path = os.path.join('static', 'dishes', filename)  # Save inside the 'static/dishes' folder
-            
-#             # Make sure the 'static/dishes' directory exists
-#             dishes_folder = os.path.join('static', 'dishes')
-#             if not os.path.exists(dishes_folder):
-#                 os.makedirs(dishes_folder)  # Create 'dishes' directory if it doesn't exist
-            
-#             # Save the file to the 'static/dishes' folder
-#             item_image.save(image_path)  # Save in 'static/dishes' folder
-            
-#         else:
-#             image_path = None  # Handle case where image is not provided or not allowed
-
-#         # Now insert item details into the database
-#         db, cursor = x.db()
-
-#         q = '''
-#         INSERT INTO `items`(
-#             `item_pk`, `item_user_fk`, `item_title`, `item_price`, `item_image`
-#         ) VALUES (%s, %s, %s, %s, %s)
-#         '''
-#         cursor.execute(q, (
-#             item_pk, item_user_fk, item_title, item_price, filename if item_image else None
-#         ))
-
-        
-#         db.commit()  # Commit changes to the database
-        
-#         # After inserting, redirect to the items page to view all items
-#         return redirect(url_for('restaurant_items', restaurant_id=user.get('user_pk')))
-    
-#     return render_template('view_restaurant.html', view='add_item', user=user)
-
 ########################################################################### RESTAURANT EDIT ITEM
 @app.route('/restaurant/edit_item/<item_id>', methods=['GET', 'POST'])
 def restaurant_edit_item(item_id):
@@ -769,10 +708,6 @@ def block_or_unblock_user():
         if "db" in locals(): db.close()
         
         
-        
-        
-        
-        
 ##############################
 
 @app.get("/item/block<item_pk>")
@@ -820,12 +755,6 @@ def block_item(item_pk):
         </template>
         """
         
-        
-        
-        
-        
-        
-
     except Exception as ex:
         print(ex)
         if "db" in locals():db.rollback()
@@ -843,42 +772,6 @@ def block_item(item_pk):
             return {"error":f"{error}"}
     finally:
         if "db" in locals(): db.close()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ##############################
 
@@ -1077,34 +970,6 @@ def login():
     finally:
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
-
-
-# ############################## #TODO DELETE THIS
-# @app.post("/items")
-# def create_item():
-#     try:
-#         # TODO: validate item_title, item_description, item_price
-#         file, item_image_name = x.validate_item_image()
-
-#         # Save the image
-#         file.save(os.path.join(x.UPLOAD_ITEM_FOLDER, item_image_name))
-#         # TODO: if saving the image went wrong, then rollback by going to the exception
-#         # TODO: Success, commit
-#         return item_image_name
-#     except Exception as ex:
-#         ic(ex)
-#         if "db" in locals(): db.rollback()
-#         if isinstance(ex, x.CustomException): 
-#             toast = render_template("___toast.html", message=ex.message)
-#             return f"""<template mix-target="#toast" mix-bottom>{toast}</template>""", ex.code    
-#         if isinstance(ex, x.mysql.connector.Error):
-#             ic(ex)
-#             return "<template>System upgrating</template>", 500        
-#         return "<template>System under maintenance</template>", 500  
-#     finally:
-#         if "cursor" in locals(): cursor.close()
-#         if "db" in locals(): db.close()    
-
 
 ##############################
 ##############################
