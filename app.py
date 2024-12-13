@@ -782,34 +782,41 @@ def block_item(item_pk):
 ##############################
 
 @app.get("/admin/item/list")
-def show_admin_item_list():
+@app.get("/admin/item/page/<int:page_id>")
+def showItemList(page_id=1):
     try:
+                # Handle session and user authentication
         if not session.get("user", ""):
             return redirect(url_for("view_login"))
         user = session.get("user")
-        if not "admin" in user.get("roles", ""):
+        if "admin" not in user.get("roles", ""):
             return redirect(url_for("view_login"))
-        
-        admin_name = { 
-            "user_name": user['user_name'] 
-        } 
  
-        page_id = 0
+        admin_name = {
+            "user_name": user['user_name']
+        }
         
-        ic("lessagooo")
-        
-        items = showItemList()
-        
-        
-        itemlist = True
-        
-        
-        return render_template("view_admin.html", items=items, page_id=page_id, itemlist=itemlist, user=user, admin_name=admin_name)  
+        limit = 20
+        offset = (page_id - 1) * limit
+        db, cursor = x.db()
+        q = "SELECT `item_pk`, `item_title`, `item_price`, `item_image`, `item_blocked_at` FROM `items` LIMIT %s OFFSET %s"
+        cursor.execute(q, (limit, offset))
+        items = cursor.fetchall()
+ 
+ 
+        # Render template with paginated content and items
+        return render_template("view_admin.html", items=items, user=user, page_id=page_id, admin_name=admin_name)
+    except Exception as ex:
+        print(f"Error fetching items: {ex}")
+        return []  # Return empty list in case of error
+ 
+            
+ 
     finally:
-        pass
-    
-    
-    ##############################
+        if "cursor" in locals():
+            cursor.close()
+        if "db" in locals():
+            db.close()
 
 @app.get("/admin/user/list")
 def show_admin_user_list():
