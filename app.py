@@ -1294,7 +1294,6 @@ def view_delete_profile():
 @x.no_cache
 def request_delete_profile():
     try:
-        ic(f"####################################")
         user = session.get("user")
         user_pk = user.get("user_pk")
         user_email = user.get("user_email")
@@ -1338,7 +1337,7 @@ def request_delete_profile():
         ic("User profile deleted successfully.")
 
         # Send informational email
-        x.send_deletion_info_email(to_email=user_email)
+        x.send_deletion_info_email(user_email=user_email)
         ic("Informational email about deletion sent.")
 
         # Clear session
