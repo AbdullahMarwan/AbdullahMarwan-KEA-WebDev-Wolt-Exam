@@ -622,6 +622,12 @@ def admin_or_pagination(page_id=1):
         if "admin" not in user.get("roles", ""):
             return redirect(url_for("view_login"))
         
+        admin_name = { 
+            "user_name": user['user_name'] 
+        } 
+ 
+        ic("name:", admin_name) 
+        
         limit = 20 
         offset = (page_id - 1) * limit  # Offset is based on the page_id
         
@@ -645,7 +651,7 @@ def admin_or_pagination(page_id=1):
             user1['user_verified_at'] = convert_epoch_to_datetime(user1['user_verified_at'])
 
         # Render template with paginated content and items
-        return render_template("view_admin.html", users=users, page_id=page_id, total_users=total_users, user = user)
+        return render_template("view_admin.html", users=users, page_id=page_id, total_users=total_users, user=user, admin_name=admin_name)
     except Exception as ex:
         ic(f"Exception: {ex}")  # Log the error
         if isinstance(ex, x.mysql.connector.Error):
@@ -784,6 +790,10 @@ def show_admin_item_list():
         if not "admin" in user.get("roles", ""):
             return redirect(url_for("view_login"))
         
+        admin_name = { 
+            "user_name": user['user_name'] 
+        } 
+ 
         page_id = 0
         
         ic("lessagooo")
@@ -794,7 +804,7 @@ def show_admin_item_list():
         itemlist = True
         
         
-        return render_template("view_admin.html", items=items, page_id=page_id, itemlist=itemlist, user=user)  
+        return render_template("view_admin.html", items=items, page_id=page_id, itemlist=itemlist, user=user, admin_name=admin_name)  
     finally:
         pass
     
@@ -1016,7 +1026,7 @@ def user_update():
 
 
 ##############################
-@app.put("/users/block/<user_pk>")
+@app.get("/admin/user/block/<user_pk>")
 def user_block(user_pk):
     try:        
         if not "admin" in session.get("user").get("roles"): return redirect(url_for("view_login"))
@@ -1044,7 +1054,7 @@ def user_block(user_pk):
 
 
 ##############################
-@app.put("/users/unblock/<user_pk>")
+@app.get("/admin/user/unblock/<user_pk>")
 def user_unblock(user_pk):
     try:
         if not "admin" in session.get("user").get("roles"): return redirect(url_for("view_login"))
