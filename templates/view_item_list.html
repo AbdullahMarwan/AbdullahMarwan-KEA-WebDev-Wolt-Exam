@@ -3,14 +3,14 @@
     
     <div class="page-btn-ctn">
         {% if page_id > 1 %}
-        <form action="{{ url_for('showItemList', page_id=page_id - 1) }}" method="get">
+        <form action="{{ url_for('adminShowItemList', page_id=page_id - 1) }}" method="get">
             <button type="submit">Previous Page</button>
         </form>
         {% endif %}
  
         <p name="page_id">Currently on Page: {{ page_id }}</p>
  
-        <form action="{{ url_for('showItemList', page_id=page_id + 1) }}" method="get">
+        <form action="{{ url_for('adminShowItemList', page_id=page_id + 1) }}" method="get">
             <button type="submit">Next Page</button>
         </form>
     </div>

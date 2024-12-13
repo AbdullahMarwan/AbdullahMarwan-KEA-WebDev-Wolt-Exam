@@ -33,12 +33,15 @@ def inject_x():
 def _________GET_________(): pass
 
 ##############################
-def showItemList():
+def showItemList(page_id):
     try:
+        limit = 20
+        offset = (page_id - 1) * limit
         db, cursor = x.db()
-        q = "SELECT `item_pk`, `item_title`, `item_price`, `item_image` FROM `items` LIMIT 20"
-        cursor.execute(q)
+        q = "SELECT `item_pk`, `item_title`, `item_price`, `item_image`, `item_blocked_at` FROM `items` LIMIT %s OFFSET %s"
+        cursor.execute(q, (limit, offset))
         items = cursor.fetchall()
+ 
         return items
     except Exception as ex:
         print(f"Error fetching items: {ex}")
@@ -293,14 +296,14 @@ def view_customer():
         if "customer" not in user.get("roles", ""):
             return redirect(url_for("view_login"))
         
-        items = showItemList()  # Fetch items
+        items = showItemList(page_id=1)  # Fetch items TODO
         restaurants = showRestaurantList()  # Fetch restaurants
         
-        return render_template("view_customer.html", items=items, restaurants = restaurants, user=user)
+        return render_template("view_customer.html", items=items, restaurants=restaurants, user=user)
     except Exception as ex:
         print(f"Error in view_customer: {ex}")
         return "Error occurred", 500
-
+ 
     except Exception as ex:
         if isinstance(ex, x.mysql.connector.Error):
             return f"""<template mix-target="#toast" mix-bottom>Database error occurred.</template>""", 500
@@ -847,15 +850,15 @@ def findProduct(item_pk):
 
 @app.get("/admin/item/list")
 @app.get("/admin/item/page/<int:page_id>")
-def showItemList(page_id=1):
+def adminShowItemList(page_id=1):
     try:
-                # Handle session and user authentication
+        # Handle session and user authentication
         if not session.get("user", ""):
             return redirect(url_for("view_login"))
         user = session.get("user")
         if "admin" not in user.get("roles", ""):
             return redirect(url_for("view_login"))
- 
+        
         admin_name = {
             "user_name": user['user_name']
         }
@@ -866,7 +869,6 @@ def showItemList(page_id=1):
         q = "SELECT `item_pk`, `item_title`, `item_price`, `item_image`, `item_blocked_at` FROM `items` LIMIT %s OFFSET %s"
         cursor.execute(q, (limit, offset))
         items = cursor.fetchall()
-        ic(items)
  
  
         # Render template with paginated content and items
@@ -882,24 +884,6 @@ def showItemList(page_id=1):
             cursor.close()
         if "db" in locals():
             db.close()
-
-@app.get("/admin/user/list")
-def show_admin_user_list():
-    try:
-        if not session.get("user", ""):
-            return redirect(url_for("view_login"))
-        user = session.get("user")
-        if not "admin" in user.get("roles", ""):
-            return redirect(url_for("view_login"))
-        
-        ic("lessagooo")
-        
-        user = showItemList()
-        
-        
-        return render_template("view_admin.html", user=user)  
-    finally:
-        pass
 
 ##############################
 @app.get("/choose-role")

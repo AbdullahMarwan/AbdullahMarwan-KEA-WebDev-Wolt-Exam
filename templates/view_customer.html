@@ -14,21 +14,21 @@
 </head>
 <body>
     {% include "_header_logged-in.html" %}
-
+ 
     <main class="customer-main">
         <div class="map-and-list">            
             <!-- Map container -->
             <section class="map-of-restaurants-customer" id="restaurant-list">
                 <div class="map" id="map"></div>
             </section>
-
+ 
             <!-- List of Restaurants -->
             <section class="list-of-restaurants-customer">
                 <h2>All Restaurants</h2>
                 
                 <input type="text" id="search-restaurants" placeholder="Search for restaurants">
                 <div id="restaurant-results" class="search-results"></div>
-
+ 
                 <div class="restaurant-list-container">
                     <ul id="restaurant-list">
                         {% for restaurant in restaurants %}
@@ -38,11 +38,11 @@
                 </div>
             </section>
         </div>
-
-
+ 
+ 
         {% include "_customer_show_restaurant_items.html" %}
     </main>
-
+ 
     {% include "_bottom.html" %}
 </body>
 </html>
