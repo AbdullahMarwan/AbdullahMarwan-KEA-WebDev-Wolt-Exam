@@ -640,94 +640,7 @@ def convert_epoch_to_datetime(epoch_time):
 
 ##############################
 
-@app.get("/admin/block/<user_pk>")
-def block_user(user_pk):
-    try:
-        if not session.get("user", ""):
-            return redirect(url_for("view_login"))
-        user = session.get("user")
-        if not "admin" in user.get("roles", ""):
-            return redirect(url_for("view_login"))
 
-        user = {
-            "user_pk": user_pk,
-        }
-
-
-
-
-
-
-
-        btn_unblock = render_template("___btn_unblock_user.html", user=user)
-
-        response = f"""
-        <template 
-            mix-target="#block-{user['user_pk']}"
-            mix-replace>
-            {btn_unblock}
-        </template>
-        """
-        return response
-
-    except Exception as ex:
-        print(f"Error: {ex}")
-        return "Error occurred", 500
-
-
-    
-    finally:
-        pass
-
-
-
-
-##############################
-
-@app.post("/admin/user-list/block")
-def block_or_unblock_user():
-    try:
-        if not session.get("user", ""):
-            return redirect(url_for("view_login"))
-        user = session.get("user")
-        if not "admin" in user.get("roles", ""):
-            return redirect(url_for("view_login"))
-        
-        # Get user_pk, action, and page_id from the form
-        user_pk = request.form.get("user_pk")
-        action = request.form.get("action")
-        page_id = request.form.get('page_id', type=int)  # Now it should correctly get the page_id from the form
-
-
-        if not user_pk or action not in ["block", "unblock"]:
-            return redirect(url_for("view_admin"))
-        
-        db, cursor = x.db()
-        
-        if action == "block":
-            epoch_time = int(time.time())
-            query = "UPDATE `users` SET `user_blocked_at` = %s WHERE `user_pk` = %s"
-            cursor.execute(query, (epoch_time, user_pk))
-        elif action == "unblock":
-            query = "UPDATE `users` SET `user_blocked_at` = 0 WHERE `user_pk` = %s"
-            cursor.execute(query, (user_pk,))
-        
-        db.commit()
-
-        # Redirect back to the same page after block/unblock action is performed
-        return redirect(url_for("admin_or_pagination", page_id=page_id))
-
-    except Exception as ex:
-        if isinstance(ex, x.mysql.connector.Error):
-            return f"Database error occurred: {str(ex)}", 500
-        return f"An error occurred: {str(ex)}", 500
-    
-    finally:
-        if "cursor" in locals(): cursor.close()
-        if "db" in locals(): db.close()
-        
-        
-        
         
         
         
@@ -787,6 +700,53 @@ def block_item(item_pk):
     except Exception as ex:
         print(f"Error: {ex}")
         return "Error occurred", 500
+
+
+
+@app.get("/item/unblock/<item_pk>")
+def unblock_item(item_pk):
+    try:
+        user = session.get("user")
+        user_email = user.get("user_email")
+        # Define the item (validate if needed)
+        item = {
+            "item_pk": item_pk  # Add validation logic if required
+        }
+
+
+        # Prepare the block button using a template
+        btn_block = render_template("___btn_block_item.html", item=item)
+
+
+        db, cursor = x.db()  # Assuming x.db() returns a database connection and cursor
+        q = "UPDATE `items` SET `item_blocked_at`= 0 WHERE `item_pk`= %s"
+
+
+        ic("tried to block item")
+
+        # Execute the query with item_pk as a parameter
+        cursor.execute(q, (item_pk,))
+
+
+        db.commit()
+
+
+        # Prepare the response
+        response = f"""
+        <template 
+            mix-target="#unblock-{item['item_pk']}"
+            mix-replace>
+            {btn_block}
+        </template>
+        """
+        return response
+
+    except Exception as ex:
+        print(f"Error: {ex}")
+        return "Error occurred", 500
+
+
+
     
 
 
@@ -828,46 +788,7 @@ def findProduct(item_pk):
 
 
 
-@app.get("/item/unblock/<item_pk>")
-def unblock_item(item_pk):
-    try:
-        # Validate and unblock the item
-        item = {
-            "item_pk": item_pk
-        }
 
-
-        # Prepare the replacement button (Block)
-        btn_block = render_template(
-            "___btn_block_item.html", item=item)
-
-
-
-        db, cursor = x.db()
-        q = "UPDATE `items` SET `item_blocked_at`= 0 WHERE `item_pk` = %s"
-        cursor.execute(q, (item_pk,))
-        db.commit()
-
-
-
-        # Respond with a mix-replace template
-        response = f"""
-        <template 
-            mix-target="#unblock-{item['item_pk']}"
-            mix-replace>
-            {btn_block}
-        </template>
-        """
-        return response
-
-
-
-    except Exception as ex:
-        print(f"Error: {ex}")
-        return "Error occurred", 500
-    finally:
-        if "cursor" in locals(): cursor.close()
-        if "db" in locals(): db.close()
 
 
 
@@ -1192,32 +1113,48 @@ def user_update():
         if "db" in locals(): db.close()
 
 
-##############################
-@app.put("/users/block/<user_pk>")
-def user_block(user_pk):
-    try:        
-        if not "admin" in session.get("user").get("roles"): return redirect(url_for("view_login"))
-        user_pk = x.validate_uuid4(user_pk)
+
+@app.get("/admin/user/block/<user_pk>")
+def block_user(user_pk):
+    try:
+        if not session.get("user", ""):
+            return redirect(url_for("view_login"))
+        user = session.get("user")
+        if not "admin" in user.get("roles", ""):
+            return redirect(url_for("view_login"))
+
+        user = {
+            "user_pk": user_pk,
+        }
+
+
         user_blocked_at = int(time.time())
         db, cursor = x.db()
         q = 'UPDATE users SET user_blocked_at = %s WHERE user_pk = %s'
         cursor.execute(q, (user_blocked_at, user_pk))
         if cursor.rowcount != 1: x.raise_custom_exception("cannot block user", 400)
         db.commit()
-        return """<template>user blocked</template>"""
-    
+
+
+        btn_unblock = render_template("___btn_unblock_user.html", user=user)
+
+        response = f"""
+        <template 
+            mix-target="#block-{user['user_pk']}"
+            mix-replace>
+            {btn_unblock}
+        </template>
+        """
+        return response
+
     except Exception as ex:
-        ic(ex)
-        if "db" in locals(): db.rollback()
-        if isinstance(ex, x.CustomException): 
-            return f"""<template mix-target="#toast" mix-bottom>{ex.message}</template>""", ex.code        
-        if isinstance(ex, x.mysql.connector.Error):
-            ic(ex)
-            return "<template>Database error</template>", 500        
-        return "<template>System under maintenance</template>", 500  
+        print(f"Error: {ex}")
+        return "Error occurred", 500
+
+
+    
     finally:
-        if "cursor" in locals(): cursor.close()
-        if "db" in locals(): db.close()
+        pass
 
 
 ##############################
