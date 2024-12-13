@@ -305,3 +305,38 @@ def send_buy_email(to_email, total_price, item_list):
         print(f"Error: {ex}")
         raise ValueError("Cannot send buy items email.")
 
+def send_deletion_info_email(user_email):  
+    try:  
+        sender_email = "spis.eksamen.2024@gmail.com"  
+        password = "bstw jflj vjdg kvxk"  # Use an App Password instead  
+        if not sender_email or not password:  
+            raise ValueError("Email configuration is missing.")  
+          
+          
+                # Construct the email  
+        message = MIMEMultipart()  
+        message["From"] = sender_email  
+        message["To"] = user_email  
+        message["Subject"] = "Spis profile deleted succesfully"  
+          
+          
+          
+                # Body of the email  
+        body = f"""  
+        <p>Dear User</p>  
+        <p>Your profile has been succefully deleted</p>  
+        <p>Best regards,<br>SPIS Exam Project 2024 Team</p>  
+        """  
+        message.attach(MIMEText(body, "html"))  
+          
+          
+        # Send the email  
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:  
+            server.starttls()  
+            server.login(sender_email, password)  
+            server.sendmail(sender_email, user_email, message.as_string())  
+        ic("delete item email sent succesfully")  
+  
+    except Exception as ex:  
+        print(f"Error: {ex}")  
+        raise ValueError("Cannot send delete profile email.")

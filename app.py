@@ -1306,9 +1306,7 @@ def request_delete_profile():
             # Optionally, flash a message here if desired
             flash("Please log in to delete your profile.", "warning")
             return redirect(url_for("view_login"))
-        
-
-
+    
         # Verify password
         user_password = request.form.get("user_password")
         ic(user_password)
@@ -1338,7 +1336,7 @@ def request_delete_profile():
         ic("User profile deleted successfully.")
 
         # Send informational email
-        x.send_deletion_info_email(to_email=user_email)
+        x.send_deletion_info_email(user_email=user_email) 
         ic("Informational email about deletion sent.")
 
         # Clear session
