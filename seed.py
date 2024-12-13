@@ -65,9 +65,10 @@ try:
             item_title VARCHAR(50) NOT NULL,
             item_price DECIMAL(5,2) NOT NULL,
             item_image VARCHAR(50),
+            item_blocked_at INTEGER UNSIGNED,
             PRIMARY KEY(item_pk)
         );
-        """        
+        """
     cursor.execute(q)
     cursor.execute("ALTER TABLE items ADD FOREIGN KEY (item_user_fk) REFERENCES users(user_pk) ON DELETE CASCADE ON UPDATE RESTRICT")
  
@@ -323,9 +324,9 @@ try:
             dish_id = random.randint(1, 100)
             cursor.execute("""
             INSERT INTO items (
-                item_pk, item_user_fk, item_title, item_price, item_image)
-                VALUES (%s, %s, %s, %s, %s)
-            """, (str(uuid.uuid4()), user_pk, random.choice(dishes), round(random.uniform(50, 999), 2), f"dish_{dish_id}.jpg"))
+                item_pk, item_user_fk, item_title, item_price, item_image, item_blocked_at)
+                VALUES (%s, %s, %s, %s, %s, %s)
+            """, (str(uuid.uuid4()), user_pk, random.choice(dishes), round(random.uniform(50, 999), 2), f"dish_{dish_id}.jpg", 0))
  
  
  
