@@ -284,10 +284,10 @@ def view_customer():
         if "customer" not in user.get("roles", ""):
             return redirect(url_for("view_login"))
         
-        items = showItemList()  # Fetch items
+        items = showItemList(page_id=1)  # Fetch items
         restaurants = showRestaurantList()  # Fetch restaurants
         
-        return render_template("view_customer.html", items=items, restaurants = restaurants, user=user)
+        return render_template("view_customer.html", items=items, restaurants=restaurants, user=user)
     except Exception as ex:
         print(f"Error in view_customer: {ex}")
         return "Error occurred", 500
@@ -707,7 +707,6 @@ def block_item(item_pk):
 def unblock_item(item_pk):
     try:
         user = session.get("user")
-        user_email = user.get("user_email")
         # Define the item (validate if needed)
         item = {
             "item_pk": item_pk  # Add validation logic if required
@@ -720,9 +719,6 @@ def unblock_item(item_pk):
 
         db, cursor = x.db()  # Assuming x.db() returns a database connection and cursor
         q = "UPDATE `items` SET `item_blocked_at`= 0 WHERE `item_pk`= %s"
-
-
-        ic("tried to block item")
 
         # Execute the query with item_pk as a parameter
         cursor.execute(q, (item_pk,))
@@ -1127,16 +1123,20 @@ def block_user(user_pk):
             "user_pk": user_pk,
         }
 
+        btn_unblock = render_template("___btn_unblock_user.html", user=user)
 
-        user_blocked_at = int(time.time())
+
+        epoch_time = int(time.time())
+
         db, cursor = x.db()
         q = 'UPDATE users SET user_blocked_at = %s WHERE user_pk = %s'
-        cursor.execute(q, (user_blocked_at, user_pk))
-        if cursor.rowcount != 1: x.raise_custom_exception("cannot block user", 400)
+
+        # Execute the query with item_pk as a parameter
+        cursor.execute(q, (epoch_time, user_pk))
         db.commit()
 
 
-        btn_unblock = render_template("___btn_unblock_user.html", user=user)
+
 
         response = f"""
         <template 
@@ -1152,9 +1152,9 @@ def block_user(user_pk):
         return "Error occurred", 500
 
 
-    
     finally:
-        pass
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
 
 
 
@@ -1192,14 +1192,16 @@ def unblock_user(user_pk):
             """
             ic("dawg")
 
-            return render_template("view_admin.html")
+
+            return response
             
         except Exception as ex:
             print(f"Error: {ex}")
             return "Error occurred", 500
         
         finally:
-            pass
+            if "cursor" in locals(): cursor.close()
+            if "db" in locals(): db.close()
 
 
 
