@@ -1344,8 +1344,8 @@ def request_delete_profile():
         session.pop("user", None)
         ic("User session cleared.")
 
-        # Return a redirect template to trigger frontend redirection
-        return f"""<template mix-redirect="{url_for("view_login")}"></template>"""
+        return redirect(url_for("view_login"))
+
 
     except Exception as ex:
         ic(f"Exception occurred during profile deletion: {ex}")
