@@ -256,11 +256,10 @@ p {
         max-width: 1200px;
     }
 
-    /* .individual-user {
+    .individual-user {
         display: flex;
         justify-content: space-around;
-        align-items: center;
-    } */
+    }
 }
 
 @media (min-width: 1440px) {

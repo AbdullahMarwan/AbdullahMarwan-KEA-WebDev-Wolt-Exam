@@ -304,4 +304,44 @@ def send_buy_email(to_email, total_price, item_list):
     except Exception as ex:
         print(f"Error: {ex}")
         raise ValueError("Cannot send buy items email.")
+    
 
+    
+
+
+def send_block_email(to_email, item_title, item_price):
+    try:
+        sender_email = "spis.eksamen.2024@gmail.com"
+        password = "bstw jflj vjdg kvxk"  # Use an App Password instead
+        if not sender_email or not password:
+            raise ValueError("Email configuration is missing.")
+
+        receiver_email = to_email
+
+
+        # Construct the email
+        message = MIMEMultipart()
+        message["From"] = sender_email
+        message["To"] = receiver_email
+        message["Subject"] = "One of your items has been blocked."
+
+        # Body of the email
+        body = f"""
+        <p>Dear restaurant manager,</p>
+        <p>One of your items has been blocked: {item_title}, with a price of {item_price}</p>
+        <p>If you did not know about this, please contact our support team immediately.</p>
+        <p>Best regards,<br>SPIS Exam Project 2024 Team</p>
+        """
+        message.attach(MIMEText(body, "html"))
+
+        # Send the email
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            server.starttls()
+            server.login(sender_email, password)
+            server.sendmail(sender_email, receiver_email, message.as_string())
+        print("Bought items email sent successfully!")
+
+    except Exception as ex:
+        print(f"Error: {ex}")
+        raise ValueError("Cannot send buy items email.")
+    

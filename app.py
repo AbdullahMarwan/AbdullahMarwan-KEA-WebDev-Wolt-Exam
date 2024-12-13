@@ -151,6 +151,12 @@ def buy_items():
             ic("Database connection closed.")
 
 
+
+
+
+
+
+
 ##############################
 def showRestaurantList():
     try:
@@ -485,8 +491,8 @@ def restaurant_add_item():
 
         q = '''
         INSERT INTO `items`(
-            `item_pk`, `item_user_fk`, `item_title`, `item_price`, `item_image`
-        ) VALUES (%s, %s, %s, %s, %s)
+            `item_pk`, `item_user_fk`, `item_title`, `item_price`, `item_image`, `item_blocked_at`
+        ) VALUES (%s, %s, %s, %s, %s, 0)
         '''
         cursor.execute(q, (
             item_pk, item_user_fk, item_title, item_price, filename if item_image else None
@@ -730,10 +736,13 @@ def block_or_unblock_user():
 @app.get("/item/block/<item_pk>")
 def block_item(item_pk):
     try:
+        user = session.get("user")
+        user_email = user.get("user_email")
         # Define the item (validate if needed)
         item = {
             "item_pk": item_pk  # Add validation logic if required
         }
+
 
         # Prepare the Unblock button using a template
         btn_unblock = render_template("___btn_unblock_item.html", item=item)
@@ -742,12 +751,27 @@ def block_item(item_pk):
         ic(epoch_time)
 
         db, cursor = x.db()  # Assuming x.db() returns a database connection and cursor
-        q_select = "UPDATE `items` SET `item_blocked_at`= %s WHERE `item_pk`= %s"
+        q_update = "UPDATE `items` SET `item_blocked_at`= %s WHERE `item_pk`= %s"
+
 
         # Execute the query with item_pk as a parameter
-        cursor.execute(q_select, (epoch_time, item_pk))
+        cursor.execute(q_update, (epoch_time, item_pk))
+        result = cursor.fetchone()  # Fetch the result (one row)
+
+        item_title, item_price, to_email = findProduct(item_pk)
+
+
+        if isinstance(result, tuple):
+            item_title, item_price = result
+            ic("product:", item_title, item_price)
+        else:
+            ic("Error occurred:", result)
 
         db.commit()
+
+
+
+        x.send_block_email(to_email=to_email, item_title=item_title, item_price=item_price)
 
 
         # Prepare the response
@@ -763,6 +787,44 @@ def block_item(item_pk):
     except Exception as ex:
         print(f"Error: {ex}")
         return "Error occurred", 500
+    
+
+
+
+
+def findProduct(item_pk):
+    try:
+        db, cursor = x.db()
+        q = "SELECT `item_title`, `item_price`, `item_user_fk` FROM `items` WHERE `item_pk` = %s"
+        restaurant_mail = "SELECT `user_email` FROM `users` WHERE `user_pk` = %s"
+        cursor.execute(q, (item_pk,))
+        product = cursor.fetchone()
+
+
+        if product:
+            item_title = product['item_title']
+            item_price = product['item_price']
+            item_user_fk = product['item_user_fk']
+
+
+        cursor.execute(restaurant_mail, (item_user_fk,))
+        email_result = cursor.fetchone()
+        to_email = email_result['user_email']
+
+        ic(to_email)
+
+
+        return item_title, item_price, to_email
+
+
+
+    except Exception as ex:
+        print(f"Error: {ex}")
+        return "Error occurred", 500
+    
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
 
 
 
