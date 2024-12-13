@@ -716,67 +716,131 @@ def block_or_unblock_user():
         
 ##############################
 
-@app.get("/item/block<item_pk>")
+@app.get("/item/block/<item_pk>")
 def block_item(item_pk):
     try:
-        if not session.get("user", ""):
-            return redirect(url_for("view_login"))
         user = session.get("user")
-        if not "admin" in user.get("roles", ""):
-            return redirect(url_for("view_login"))
-        
-        
-        print(item_pk)
-        
+        user_email = user.get("user_email")
+        # Define the item (validate if needed)
         item = {
-            "item_pk" : x.validate_item_pk(item_pk),
-            "item_blocked_at" : int(time.time())
+            "item_pk": item_pk  # Add validation logic if required
         }
-        
-        
-        btn_unblock = render_template("___btn_unblock_item.html")
-
-        
-        db, cursor = x.db()
-        cursor.execute("""UPDATE items SET item_blocked_at = %s
-                        WHERE item_pk = %s AND item_blocked_at = 0""", (item["item_blocked_at"], item["item_pk"]))
-        if cursor.rowcount == 0: # UPDATE DELETE INSERT
-            raise Exception("User could not be blocked", 404)
+ 
+ 
+        # Prepare the Unblock button using a template
+        btn_unblock = render_template("___btn_unblock_item.html", item=item)
+ 
+        epoch_time = int(time.time())
+        ic(epoch_time)
+ 
+        db, cursor = x.db()  # Assuming x.db() returns a database connection and cursor
+        q_update = "UPDATE `items` SET `item_blocked_at`= %s WHERE `item_pk`= %s"
+ 
+ 
+        # Execute the query with item_pk as a parameter
+        cursor.execute(q_update, (epoch_time, item_pk))
+        result = cursor.fetchone()  # Fetch the result (one row)
+ 
+        item_title, item_price, to_email = findProduct(item_pk)
+ 
+ 
+        if isinstance(result, tuple):
+            item_title, item_price = result
+            ic("product:", item_title, item_price)
+        else:
+            ic("Error occurred:", result)
+ 
         db.commit()
-        
-        
-
-        items = showItemList()
-        ic(items)
-        
-        
-        return f"""
-        <template 
-        mix-target='#block--{item}' 
-        mix-replace>
+ 
+ 
+ 
+        x.send_block_email(to_email=to_email, item_title=item_title, item_price=item_price)
+ 
+ 
+        # Prepare the response
+        response = f"""
+        <template
+            mix-target="#block-{item['item_pk']}"
+            mix-replace>
             {btn_unblock}
         </template>
-        <template mix-target="#toast" mix-bottom>
-            {toast}
+        """
+        return response
+ 
+    except Exception as ex:
+        print(f"Error: {ex}")
+        return "Error occurred", 500
+
+@app.get("/item/unblock/<item_pk>")
+def unblock_item(item_pk):
+    try:
+        user = session.get("user")
+        # Define the item (validate if needed)
+        item = {
+            "item_pk": item_pk  # Add validation logic if required
+        }
+ 
+ 
+        # Prepare the block button using a template
+        btn_block = render_template("___btn_block_item.html", item=item)
+ 
+ 
+        db, cursor = x.db()  # Assuming x.db() returns a database connection and cursor
+        q = "UPDATE `items` SET `item_blocked_at`= 0 WHERE `item_pk`= %s"
+ 
+        # Execute the query with item_pk as a parameter
+        cursor.execute(q, (item_pk,))
+ 
+ 
+        db.commit()
+ 
+ 
+        # Prepare the response
+        response = f"""
+        <template
+            mix-target="#unblock-{item['item_pk']}"
+            mix-replace>
+            {btn_block}
         </template>
         """
-        
+        return response
+ 
     except Exception as ex:
-        print(ex)
-        if "db" in locals():db.rollback()
-        if len(ex.args) >= 2: # own created exception
-            response.status = ex.args[1]
-            toast = template("__toast", message = ex.args[0])
-            return f"""
-                    <template mix-target="#toast" mix-bottom>
-                        {toast}
-                    </template>
-                    """
-        else: # python exception, not under our control
-            error = "System under maintenance. Please try again"
-            response.status = 500
-            return {"error":f"{error}"}
+        print(f"Error: {ex}")
+        return "Error occurred", 500
+    
+def findProduct(item_pk):
+    try:
+        db, cursor = x.db()
+        q = "SELECT `item_title`, `item_price`, `item_user_fk` FROM `items` WHERE `item_pk` = %s"
+        restaurant_mail = "SELECT `user_email` FROM `users` WHERE `user_pk` = %s"
+        cursor.execute(q, (item_pk,))
+        product = cursor.fetchone()
+ 
+ 
+        if product:
+            item_title = product['item_title']
+            item_price = product['item_price']
+            item_user_fk = product['item_user_fk']
+ 
+ 
+        cursor.execute(restaurant_mail, (item_user_fk,))
+        email_result = cursor.fetchone()
+        to_email = email_result['user_email']
+ 
+        ic(to_email)
+ 
+ 
+        return item_title, item_price, to_email
+ 
+ 
+ 
+    except Exception as ex:
+        print(f"Error: {ex}")
+        return "Error occurred", 500
+    
     finally:
+        if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
 
 ##############################
@@ -802,6 +866,7 @@ def showItemList(page_id=1):
         q = "SELECT `item_pk`, `item_title`, `item_price`, `item_image`, `item_blocked_at` FROM `items` LIMIT %s OFFSET %s"
         cursor.execute(q, (limit, offset))
         items = cursor.fetchall()
+        ic(items)
  
  
         # Render template with paginated content and items
