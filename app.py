@@ -596,6 +596,12 @@ def admin_or_pagination(page_id=1):
         if "admin" not in user.get("roles", ""):
             return redirect(url_for("view_login"))
         
+        admin_name = {
+            "user_name": user['user_name']
+        }
+
+        ic("name:", admin_name)
+        
         
         limit = 20 
         offset = (page_id - 1) * limit  # Offset is based on the page_id
@@ -620,7 +626,7 @@ def admin_or_pagination(page_id=1):
             user['user_verified_at'] = convert_epoch_to_datetime(user['user_verified_at'])
 
         # Render template with paginated content and items
-        return render_template("view_admin.html", users=users, page_id=page_id, total_users=total_users, user=user)
+        return render_template("view_admin.html", users=users, page_id=page_id, total_users=total_users, user=user, admin_name=admin_name)
     except Exception as ex:
         ic(f"Exception: {ex}")  # Log the error
         if isinstance(ex, x.mysql.connector.Error):
