@@ -440,7 +440,7 @@ def customer_items(restaurant_id):
 ########################################################################### SHOW ALL ITEMS:
 
 # Route for viewing the restaurant items (when the button is clicked)
-@app.route('/restaurant/items/<restaurant_id>')
+@app.get('/restaurant/items/<restaurant_id>')
 def restaurant_items(restaurant_id):
     if not session.get("user", ""):
         return redirect(url_for("view_login"))
@@ -455,23 +455,23 @@ def restaurant_items(restaurant_id):
     return render_template('view_restaurant.html', view='items', items=items, user=user)
 
 ########################################################################### ADD NEW ITEM
-@app.route('/restaurant/add_item', methods=['GET', 'POST'])
+@app.post('/restaurant/add_item') #TODO
 def restaurant_add_item():
-    # Allowed image extensions (you can expand this if needed)
-    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+    try: 
+        # Allowed image extensions
+        ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg'}
 
-    # Function to check allowed file extension
-    def allowed_file(filename):
-        return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+        # Function to check allowed file extension
+        def allowed_file(filename):
+            return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
 
-    if not session.get("user", ""):
-        return redirect(url_for("view_login"))
+        if not session.get("user", ""):
+            return redirect(url_for("view_login"))
 
-    user = session.get("user")
-    if "restaurant" not in user.get("roles", {}):
-        return redirect(url_for("view_login"))
-    
-    if request.method == 'POST':
+        user = session.get("user")
+        if "restaurant" not in user.get("roles", {}):
+            return redirect(url_for("view_login"))
+        
         # Get form data (title, price, image)
         item_pk = str(uuid.uuid4())  # Generate unique item primary key
         item_user_fk = user.get("user_pk")
@@ -506,12 +506,29 @@ def restaurant_add_item():
         cursor.execute(q, (
             item_pk, item_user_fk, item_title, item_price, filename if item_image else None
         ))
-
         
-        db.commit()  # Commit changes to the database
+        db.commit()  
         
         # After inserting, redirect to the items page to view all items
-        return redirect(url_for('restaurant_items', restaurant_id=user.get('user_pk')))
+        return f"""<template mix-redirect="{url_for("restaurant_items", restaurant_id=user.get('user_pk'))}" mix-data="restaurant_id={user.get('user_pk')}"></template>"""
+    except Exception as ex:
+        ic(f"Exception: {ex}")  # Log the error
+        if isinstance(ex, x.mysql.connector.Error):
+            return "Database error occurred.", 500
+        return "System under maintenance.", 500
+    finally:
+        if "cursor" in locals(): cursor.close()
+        if "db" in locals(): db.close()
+
+@app.get('/restaurant/add_item') #TODO
+def view_restaurant_add_item():
+    ic("Hello")
+    if not session.get("user", ""):
+        return redirect(url_for("view_login"))
+
+    user = session.get("user")
+    if "restaurant" not in user.get("roles", {}):
+        return redirect(url_for("view_login"))
     
     return render_template('view_restaurant.html', view='add_item', user=user)
 
@@ -691,10 +708,6 @@ def block_or_unblock_user():
         if "db" in locals(): db.close()
         
         
-        
-        
-        
-        
 ##############################
 
 @app.get("/item/block<item_pk>")
@@ -742,12 +755,6 @@ def block_item(item_pk):
         </template>
         """
         
-        
-        
-        
-        
-        
-
     except Exception as ex:
         print(ex)
         if "db" in locals():db.rollback()
@@ -765,42 +772,6 @@ def block_item(item_pk):
             return {"error":f"{error}"}
     finally:
         if "db" in locals(): db.close()
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
-
 
 ##############################
 
@@ -999,34 +970,6 @@ def login():
     finally:
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
-
-
-##############################
-@app.post("/items")
-def create_item():
-    try:
-        # TODO: validate item_title, item_description, item_price
-        file, item_image_name = x.validate_item_image()
-
-        # Save the image
-        file.save(os.path.join(x.UPLOAD_ITEM_FOLDER, item_image_name))
-        # TODO: if saving the image went wrong, then rollback by going to the exception
-        # TODO: Success, commit
-        return item_image_name
-    except Exception as ex:
-        ic(ex)
-        if "db" in locals(): db.rollback()
-        if isinstance(ex, x.CustomException): 
-            toast = render_template("___toast.html", message=ex.message)
-            return f"""<template mix-target="#toast" mix-bottom>{toast}</template>""", ex.code    
-        if isinstance(ex, x.mysql.connector.Error):
-            ic(ex)
-            return "<template>System upgrating</template>", 500        
-        return "<template>System under maintenance</template>", 500  
-    finally:
-        if "cursor" in locals(): cursor.close()
-        if "db" in locals(): db.close()    
-
 
 ##############################
 ##############################
