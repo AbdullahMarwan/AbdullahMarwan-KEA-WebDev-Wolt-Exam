@@ -1142,8 +1142,6 @@ def block_user(user_pk):
         db.commit()
 
 
-
-
         response = f"""
         <template 
             mix-target="#block-{user['user_pk']}"
@@ -1165,7 +1163,7 @@ def block_user(user_pk):
 
 
 ##############################
-@app.get("/users/unblock/<user_pk>")
+@app.get("/admin/user/unblock/<user_pk>")
 def unblock_user(user_pk):
         try:
             if not session.get("user", ""):
