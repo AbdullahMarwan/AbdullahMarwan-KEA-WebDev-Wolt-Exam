@@ -39,8 +39,16 @@
                         </div>
     
                     </div>
-    
+
+
+
+                {% if user['user_blocked_at'] == 0 %}
                     {% include "___btn_block_user.html" %}
+                {% else %}
+                    {% include "___btn_unblock_user.html" %}
+                {% endif %}
+
+                
                 </div>
             {% endfor %}
         {% else %}
