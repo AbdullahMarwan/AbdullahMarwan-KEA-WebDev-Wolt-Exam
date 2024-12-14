@@ -426,6 +426,7 @@ color:#007bff;
 .cross-icon-btn {
     background-color: black;
     min-width: 2em;
+    width: 2em;
     height: 2em;
     border-radius: 50%;
     cursor: pointer;

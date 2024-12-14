@@ -331,8 +331,8 @@ def send_deletion_info_email(user_email):
           
           
         # Send the email  
-        with smtplib.SMTP("smtp.gmail.com", 587) as server:  
-            server.starttls()  
+        with smtplib.SMTP("smtp.gmail.com", 587) as server:
+            server.starttls()
             server.login(sender_email, password)  
             server.sendmail(sender_email, user_email, message.as_string())  
         ic("delete item email sent succesfully")  

@@ -58,6 +58,38 @@ section{
 }
 
 /*------------------------------------------  THE CARDS WITH THE ITEMS ------------------------------------------*/
+
+.items-heading {
+    margin-bottom: .5em;
+}
+
+
+.page-btn-ctn {
+    display: flex;
+    align-items: center;
+    justify-content: center;
+    gap: 2em;
+}
+
+.page-btn-ctn button {
+    background-color: #007bff;
+    color: white;
+    border: none;
+    padding: 10px 20px;
+    font-size: 1rem;
+    cursor: pointer;
+    border-radius: 4px;
+}
+
+.page-btn-ctn button:hover {
+    background-color: #0056b3;
+}
+
+.items-search {
+    margin: 0em auto 2em auto;
+}
+
+
 /* Item List Container */
 .item-list {
     display: grid;
@@ -189,6 +221,5 @@ input[type="text"]:focus {
 @media (min-width: 1024px) {
     .items-search{
         max-width:25%;
-        margin:auto;
     }
 }

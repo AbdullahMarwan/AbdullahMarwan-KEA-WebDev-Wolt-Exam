@@ -32,15 +32,25 @@
                 <div class="restaurant-list-container">
                     <ul id="restaurant-list">
                         {% for restaurant in restaurants %}
-                            <li> <a href="/customer/items/{{ restaurant.user_pk }}">{{restaurant['user_name']}}</a> </li>
+                        <li>
+                            <a href="/customer/items/{{ restaurant.user_pk }}">
+                                {{ restaurant['user_name'] }}
+                            </a>
+                        </li>
                         {% endfor %}
                     </ul>
                 </div>
             </section>
         </div>
  
- 
-        {% include "_customer_show_restaurant_items.html" %}
+
+
+    {% if items %}
+        {% include "view_item_list.html" %}
+    {% else %}
+        {% include "view_user_list.html" %}
+    {% endif %}
+     
     </main>
  
     {% include "_bottom.html" %}

@@ -277,7 +277,7 @@ def view_login():
         if "admin" in session.get("user").get("roles"):
             return redirect(url_for("admin_or_pagination"))
         if "customer" in session.get("user").get("roles"):
-            return redirect(url_for("view_customer")) 
+            return redirect(url_for("view_customer_page")) 
         if "partner" in session.get("user").get("roles"):
             return redirect(url_for("view_partner"))     
         if "restaurant" in session.get("user").get("roles"):
@@ -285,9 +285,10 @@ def view_login():
     return render_template("view_login.html", x=x, title="Login", message=request.args.get("message", ""))
 
 ##############################
-@app.get("/customer")
+@app.get('/customer')
+@app.get('/customer/page/<int:page_id>')
 @x.no_cache
-def view_customer():
+def view_customer_page(page_id=1):
     try:
         # Handle session and user authentication
         if not session.get("user", ""):
@@ -295,11 +296,15 @@ def view_customer():
         user = session.get("user")
         if "customer" not in user.get("roles", ""):
             return redirect(url_for("view_login"))
+
+
+        ic(user)
         
-        items = showItemList(page_id=1)  # Fetch items TODO
+        items = showItemList(page_id)  # Fetch items TODO
         restaurants = showRestaurantList()  # Fetch restaurants
+        ic("test")
         
-        return render_template("view_customer.html", items=items, restaurants=restaurants, user=user)
+        return render_template("view_customer.html", items=items, restaurants=restaurants, user=user, page_id=page_id)
     except Exception as ex:
         print(f"Error in view_customer: {ex}")
         return "Error occurred", 500
@@ -362,8 +367,7 @@ def get_restaurants():
             return {"error": "Database error occurred."}, 500
         return {"error": "System under maintenance."}, 500
     finally:
-        if "cursor" in locals(): cursor.close()
-        if "db" in locals(): db.close()
+        pass
 
 ############################## SEARCH FOR RESTAURANT
 @app.route("/api/search-restaurants", methods=["GET"])
@@ -415,17 +419,20 @@ def view_restaurant():
 ########################################################################### ITEMS FOR A SPECIFIC RESTAURANT CUSTOMER POV
 # Route for viewing the restaurant items (when the button is clicked)
 @app.route('/customer/items/<restaurant_id>')
-def customer_items(restaurant_id):
+def view_customer_items(restaurant_id):
     if not session.get("user", ""):
         return redirect(url_for("view_login"))
 
     user = session.get("user")
     if "customer" not in user.get("roles", {}):
         return redirect(url_for("view_login"))
+
+    # Get page_id from query parameters
+    page_id = int(request.args.get('page_id', 1))  # Default to page 1 if not provided
     
     restaurants = showRestaurantList()
+    ic(restaurants)
     
-    print("Restaurant ID after clicking button:", restaurant_id)
 
     items = showItemListByRestaurant(restaurant_id)  # Fetch items based on restaurant_id
     
@@ -438,7 +445,7 @@ def customer_items(restaurant_id):
             restaurant_name = restaurant['user_name']
             break
     
-    return render_template('view_customer.html', items=items, restaurants=restaurants, user=user, restaurant_name=restaurant_name)
+    return render_template('view_customer.html', items=items, restaurants=restaurants, user=user, restaurant_name=restaurant_name, page_id=page_id)
 
 ########################################################################### SHOW ALL ITEMS:
 
@@ -628,9 +635,7 @@ def admin_or_pagination(page_id=1):
         admin_name = { 
             "user_name": user['user_name'] 
         } 
- 
-        ic("name:", admin_name) 
-        
+         
         limit = 20 
         offset = (page_id - 1) * limit  # Offset is based on the page_id
         
@@ -987,11 +992,14 @@ def signup():
 @app.post("/login")
 def login():
     try:
-
+        # Validate user email and password
         user_email = x.validate_user_email()
         user_password = x.validate_user_password()
 
+        # Connect to the database
         db, cursor = x.db()
+
+        # Query to fetch user and their roles
         q = """
             SELECT * FROM users
             JOIN users_roles
@@ -1002,15 +1010,31 @@ def login():
         """
         cursor.execute(q, (user_email,))
         rows = cursor.fetchall()
+
+        # Handle no user found
         if not rows:
             toast = render_template("___toast.html", message="User not registered, deleted, or not verified.")
-            return f"""<template mix-target="#toast">{toast}</template>""", 400     
+            return f"""<template mix-target="#toast">{toast}</template>""", 400
+
+        # Validate password
         if not check_password_hash(rows[0]["user_password"], user_password):
             toast = render_template("___toast.html", message="Invalid credentials.")
             return f"""<template mix-target="#toast">{toast}</template>""", 401
+
+        # Extract roles and add them to the user
         roles = []
         for row in rows:
-            roles.append(row["role_name"])
+            role_pk = row["role_pk"]  # Fetch role primary key from database
+            if role_pk == x.ADMIN_ROLE_PK:
+                roles.append("admin")
+            elif role_pk == x.CUSTOMER_ROLE_PK:
+                roles.append("customer")
+            elif role_pk == x.PARTNER_ROLE_PK:
+                roles.append("partner")
+            elif role_pk == x.RESTAURANT_ROLE_PK:
+                roles.append("restaurant")
+
+        # Create user dictionary
         user = {
             "user_pk": rows[0]["user_pk"],
             "user_name": rows[0]["user_name"],
@@ -1018,24 +1042,30 @@ def login():
             "user_email": rows[0]["user_email"],
             "roles": roles
         }
-        ic(user)
-        session["user"] = user
+        ic(user)  # Log the user object for debugging
+        session["user"] = user  # Store user in session
+
+        # Redirect based on roles
         if len(roles) == 1:
             return f"""<template mix-redirect="/{roles[0]}"></template>"""
         return f"""<template mix-redirect="/choose-role"></template>"""
     except Exception as ex:
         ic(ex)
-        if "db" in locals(): db.rollback()
-        if isinstance(ex, x.CustomException): 
+        if "db" in locals():
+            db.rollback()
+        if isinstance(ex, x.CustomException):
             toast = render_template("___toast.html", message=ex.message)
-            return f"""<template mix-target="#toast" mix-bottom>{toast}</template>""", ex.code    
+            return f"""<template mix-target="#toast" mix-bottom>{toast}</template>""", ex.code
         if isinstance(ex, x.mysql.connector.Error):
             ic(ex)
-            return "<template>System upgrading</template>", 500        
-        return "<template>System under maintenance</template>", 500  
+            return "<template>System upgrading</template>", 500
+        return "<template>System under maintenance</template>", 500
     finally:
-        if "cursor" in locals(): cursor.close()
-        if "db" in locals(): db.close()
+        if "cursor" in locals():
+            cursor.close()
+        if "db" in locals():
+            db.close()
+
 
 ##############################
 ##############################
