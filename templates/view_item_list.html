@@ -42,10 +42,13 @@
 
     </div>
 
-    <div class="items-search">
-        <input type="text" id="search-items" placeholder="Search for items">
-        <div id="item-results" class="search-results"></div>
-    </div>
+
+    {% if user['roles'] == "customer" %}
+        <div class="items-search">
+            <input type="text" id="search-items" placeholder="Search for items">
+            <div id="item-results" class="search-results"></div>
+        </div>
+    {% endif %}
 
 
 
