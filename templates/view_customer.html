@@ -30,15 +30,15 @@
                 <div id="restaurant-results" class="search-results"></div>
  
                 <div class="restaurant-list-container">
-                    <ul id="restaurant-list">
+                    <ul id="restaurant-list" class="restaurant-grid">
                         {% for restaurant in restaurants %}
-                        <li>
-                            <a href="/customer/items/{{ restaurant.user_pk }}">
+                        <li class="restaurant-li">
+                            <a class="restaurant-button" href="/customer/items/{{ restaurant.user_pk }}">
                                 {{ restaurant['user_name'] }}
                             </a>
                         </li>
                         {% endfor %}
-                    </ul>
+                    </ul>                               
                 </div>
             </section>
         </div>

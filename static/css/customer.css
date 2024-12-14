@@ -57,6 +57,85 @@ section{
     }
 }
 
+
+/* Mobile-first: Base styles for smaller screens */
+
+/* General styles for the grid container */
+.restaurant-grid {
+    display: grid;
+    grid-template-columns: 1fr; /* Single-column layout by default */
+    gap: 15px; /* Small space between grid items */
+    list-style: none; /* Remove default list styling */
+    padding: 0; /* Remove padding */
+    margin: 0 auto; /* Center the grid */
+    max-width: 100%; /* Full width on small screens */
+}
+
+/* Styles for individual list items */
+.restaurant-li {
+    text-align: center; /* Center-align content */
+}
+
+/* Styles for buttons */
+.restaurant-button {
+    font-family: var(--font);
+    display: inline-block; /* Makes the button clickable */
+    background-color: #007BFF; /* Blue background */
+    color: #ffffff; /* White text */
+    text-decoration: none; /* Remove underline */
+    font-weight: bold; /* Bold text */
+    font-size: 1rem; /* Standard font size */
+    padding: 10px 20px; /* Inner spacing for button */
+    border: none; /* Remove border */
+    border-radius: 8px; /* Rounded corners */
+    box-shadow: 0 4px 6px rgba(0, 0, 0, 0.1); /* Subtle shadow effect */
+    transition: background-color 0.2s, transform 0.2s, box-shadow 0.2s; /* Animation for hover effect */
+    cursor: pointer; /* Pointer cursor for buttons */
+}
+
+/* Hover effect for buttons */
+.restaurant-button:hover {
+    background-color: #0056b3; /* Darker blue on hover */
+    transform: translateY(-2px); /* Slight lift effect */
+    box-shadow: 0 6px 12px rgba(0, 0, 0, 0.15); /* Stronger shadow on hover */
+}
+
+/* Active state for buttons */
+.restaurant-button:active {
+    transform: translateY(0); /* Reset lift effect */
+    box-shadow: 0 2px 4px rgba(0, 0, 0, 0.2); /* Smaller shadow on click */
+}
+
+/* Larger screens: Add grid layout enhancements for tablets and desktops */
+@media (min-width: 600px) {
+    .restaurant-grid {
+        grid-template-columns: repeat(auto-fill, minmax(150px, 1fr)); /* Two-column layout on medium screens */
+        gap: 20px; /* Increase space between grid items */
+        max-width: 90%; /* Center and constrain grid width */
+    }
+
+    .restaurant-button {
+        font-size: 1.1rem; /* Slightly larger text */
+        padding: 12px 24px; /* More padding for larger screens */
+    }
+}
+
+/* Even larger screens: Enhance layout for desktops */
+@media (min-width: 1024px) {
+    .restaurant-grid {
+        grid-template-columns: repeat(auto-fill, minmax(200px, 1fr)); /* Wider columns for larger screens */
+        gap: 25px; /* More spacing between items */
+        max-width: 1200px; /* Constrain grid width for larger screens */
+    }
+
+    .restaurant-button {
+        font-size: 1.2rem; /* Larger text for readability */
+        padding: 15px 30px; /* More padding for a spacious feel */
+    }
+}
+
+
+
 /*------------------------------------------  THE CARDS WITH THE ITEMS ------------------------------------------*/
 
 .items-heading {
