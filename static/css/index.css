@@ -14,7 +14,6 @@ body {
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    color: #333; /* Dark text color */
     font-family: Arial, sans-serif; /* Fallback font */
 }
 
@@ -35,7 +34,7 @@ body::before {
     left: 5%; /* Place near the left edge */
     top: 50%; /* Center vertically */
     transform: translateY(-50%); /* Align properly */
-    color: #fff; /* White text for contrast */
+    color: #fefefe; /* White text for contrast */
     font-family: var(--font);
     font-size: 5rem; /* Base size for mobile screens */
     text-align: left;
