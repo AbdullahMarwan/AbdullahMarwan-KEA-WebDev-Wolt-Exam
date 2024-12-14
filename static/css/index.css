@@ -1,5 +1,7 @@
+/* Importing a Google Font suitable for food companies */
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@700&display=swap');
 
-/* Generel styling */
+/* General styling */
 * {
     box-sizing: border-box;
     margin: 0;
@@ -7,13 +9,15 @@
 }
 
 body {
-    background-image: url('../dishes/dish_101.avif'); /* Absolut sti */
+    background-image: url('../dishes/dish_101.avif'); /* Background image */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    color: #333;
+    color: #333; /* Dark text color */
+    font-family: Arial, sans-serif; /* Fallback font */
 }
+
 body::before {
     content: "";
     position: fixed;
@@ -22,71 +26,44 @@ body::before {
     width: 100%;
     height: 100%;
     z-index: -1;
+    background: rgba(0, 0, 0, 0.4); /* Overlay to improve text readability */
 }
 
-/* Hoved Overskrift styling */
+/* Main Headline Styling */
 .main-headline {
     position: absolute;
-    left: 5%; /* Flytter teksten til venstre side */
-    top: 45%; /* Placerer lidt under midten vertikalt */
-    transform: translateY(-50%); /* Justerer kun vertikal positionering */
-    color: #534f4f; /* Juster farven efter baggrunden */
-    text-align: left; /* Juster teksten til venstre */
-    transition: opacity 0.3s ease, visibility 0.3s ease;
-    z-index: 1; /* Sørger for, at overskriften er synlig */
-    width: auto; /* Tilpasser bredden automatisk */
-    max-width: 800px; /* Begrænser bredden på større skærme */
-    line-height: 1.2; /* For bedre læsbarhed */
+    left: 5%; /* Place near the left edge */
+    top: 50%; /* Center vertically */
+    transform: translateY(-50%); /* Align properly */
+    color: #fff; /* White text for contrast */
+    font-family: var(--font);
+    font-size: 5rem; /* Base size for mobile screens */
+    text-align: left;
+    line-height: 1.2; /* Better readability */
+    max-width: 90%; /* Prevent text from overflowing on small screens */
+    z-index: 1;
+    transition: font-size 0.3s ease, left 0.3s ease, top 0.3s ease;
 }
 
-/* Responsiv styling */
-@media (max-width: 768px) {
-    .header {
-        flex-direction: column;
-        align-items: flex-start;
-    }
-    .header-center {
-        justify-content: flex-start;
-        margin-top: 10px;
-    }
-    main {
-        height: auto;
-        padding: 20px 10px;
-    }
-    section {
-        margin-top: 100px;
-        padding: 1.5rem;
-        max-width: 80%;
-    }
-}
+/* Responsive Styles */
 
-/* Responsiv styling */
-@media (max-width: 1024px) {
+/* Tablets and Small Laptops */
+@media (min-width: 768px) {
     .main-headline {
-        font-size: 3rem; /* Reducér fontstørrelsen for tablets */
-        left: 8%; /* Juster placeringen lidt tættere på venstre kant */
+        font-size: 5rem; /* Larger font for tablets */
+        left: 8%; /* Move slightly to the right */
+        top: 45%; /* Adjust vertical alignment */
     }
 }
 
-@media (max-width: 768px) {
-    section {
-        margin-top: 100px;
-        padding: 1.5rem;
-        max-width: 80%;
-    }
+/* Larger Screens */
+@media (min-width: 1024px) {
     .main-headline {
-        font-size: 2.5rem; /* Reducér yderligere for mindre skærme */
-        left: 5%; /* Mindre margin på små skærme */
-        top: 50%; /* Juster vertikal placering for mindre skærme */
+        font-size: 7.25rem; /* Larger font for desktops */
+        left: 5%; /* Position further right */
+        bottom: 75%; /* Slightly above center for emphasis */
+        max-width: 60vw; /* Constrain width */
     }
 }
 
-@media (max-width: 480px) {
-    .main-headline {
-        font-size: 2rem; /* Mindre fontstørrelse for mobil */
-        left: 5%; /* Hold teksten tæt på venstre kant */
-        top: 50%; /* Juster vertikal placering */
-        padding: 0 10px; /* Tilføj lidt indre afstand, hvis nødvendigt */
-        max-width: 90%; /* Undgå at teksten går ud over kanten */
-    }
-}
+
