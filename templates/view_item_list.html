@@ -43,7 +43,7 @@
     </div>
 
 
-    {% if user['roles'] == "customer" %}
+    {% if "customer" in user['roles'] %}
         <div class="items-search">
             <input type="text" id="search-items" placeholder="Search for items">
             <div id="item-results" class="search-results"></div>
