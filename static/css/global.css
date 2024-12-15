@@ -303,6 +303,7 @@ header {
     font-family: var(--font);
     text-decoration: none;
     border-radius: 4px;
+    color: #333;
 }
 
 #signup-btn{
