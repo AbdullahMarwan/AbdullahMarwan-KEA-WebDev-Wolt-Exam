@@ -6,12 +6,12 @@
 }
 
 body {
-    background-image: url('../dishes/dish_101.avif'); /* Absolut sti */
+    background-image: url('../dishes/dish_101.avif'); /* Background image */
     background-size: cover;
     background-position: center;
     background-repeat: no-repeat;
     background-attachment: fixed;
-    color: #333;
+    
 }
 
 body::before {
@@ -22,6 +22,7 @@ body::before {
     width: 100%;
     height: 100%;
     z-index: -1;
+  background: rgba(0, 0, 0, 0.4); /* Overlay to improve text readability */
 }
 
 /* Main container */

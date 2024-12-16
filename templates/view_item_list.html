@@ -1,20 +1,57 @@
 <section class="item-section-admin">
-    <h1>All items</h1>
-    
+
+    {% if "customer" in user['roles'] and restaurant_name %}
+        <h1 class="items-heading">All items from - {{ restaurant_name }}</h1>
+    {% else %}
+        <h1 class="items-heading">All items</h1>
+    {% endif %}
+
     <div class="page-btn-ctn">
-        {% if page_id > 1 %}
-        <form action="{{ url_for('adminShowItemList', page_id=page_id - 1) }}" method="get">
-            <button type="submit">Previous Page</button>
-        </form>
-        {% endif %}
- 
-        <p name="page_id">Currently on Page: {{ page_id }}</p>
- 
-        <form action="{{ url_for('adminShowItemList', page_id=page_id + 1) }}" method="get">
-            <button type="submit">Next Page</button>
-        </form>
-    </div>
+
+        {% if "admin" in user['roles'] %}
+            {% if page_id > 1 %}
+            <form action="{{ url_for('adminShowItemList', page_id=page_id - 1) }}" method="get">
+                <button type="submit">Previous Page</button>
+            </form>
+            {% endif %}
+
+
+            <p name="page_id">Currently on Page: {{ page_id }}</p>
     
+            <form action="{{ url_for('adminShowItemList', page_id=page_id + 1) }}" method="get">
+                <button type="submit">Next Page</button>
+            </form>
+        
+
+        {% else %}
+            {% if not restaurant_name %}
+                {% if page_id > 1 %}
+                <form action="{{ url_for('view_customer_page', page_id=page_id - 1) }}" method="get">
+                    <button type="submit">Previous Page</button>
+                </form>
+                {% endif %}
+        
+                <p name="page_id">Currently on Page: {{ page_id }}</p>
+        
+                <form action="{{ url_for('view_customer_page', page_id=page_id + 1) }}" method="get">
+                    <button type="submit">Next Page</button>
+                </form>
+            {% endif %}
+        {% endif %}
+
+
+    </div>
+
+
+    {% if "customer" in user['roles'] %}
+        <div class="items-search">
+            <input type="text" id="search-items" placeholder="Search for items">
+            <div id="item-results" class="search-results"></div>
+        </div>
+    {% endif %}
+
+
+
     {% if items %}
     <div class="item-list">
     {% for item in items %}
@@ -32,12 +69,16 @@
                 </div>
                 
  
-            {% if item['item_blocked_at'] == 0 %}
-                {% include "___btn_block_item.html" %}
+
+            {% if "admin" in user['roles'] %}
+                {% if item['item_blocked_at'] == 0 %}
+                    {% include "___btn_block_item.html" %}
+                {% else %}
+                    {% include "___btn_unblock_item.html" %}
+                {% endif %}
             {% else %}
-                {% include "___btn_unblock_item.html" %}
+                <button type="submit" class="buy" id="buy">Add to cart</button>
             {% endif %}
-            
  
  
  
