@@ -303,6 +303,7 @@ header {
     font-family: var(--font);
     text-decoration: none;
     border-radius: 4px;
+    color: #007bff;
 }
 
 #signup-btn{
@@ -426,6 +427,7 @@ color:#007bff;
 .cross-icon-btn {
     background-color: black;
     min-width: 2em;
+    width: 2em;
     height: 2em;
     border-radius: 50%;
     cursor: pointer;

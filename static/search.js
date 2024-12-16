@@ -1,5 +1,15 @@
 document.getElementById("search-items").addEventListener("input", function () {
     const query = this.value.trim();
+    console.log(`Triggered search-items event with query: ${query}`);
+});
+document.getElementById("search-restaurants").addEventListener("input", function () {
+    const query = this.value.trim();
+    console.log(`Triggered search-restaurants event with query: ${query}`);
+});
+
+
+document.getElementById("search-items").addEventListener("input", function () {
+    const query = this.value.trim();
     const resultsContainer = document.getElementById("item-results");
 
     if (query.length > 0) {

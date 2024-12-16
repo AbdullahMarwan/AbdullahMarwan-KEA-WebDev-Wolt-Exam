@@ -12,32 +12,32 @@
 </head>
 <body>
  
-{% include "_header_logged-in.html" %}
- 
-<main class="admin-main">
- 
-<h1>Welcome {{ admin_name['user_name'] }}</h1>
-<div class="admin-page-buttons">
-    <a
-      href="/admin"
-      class="a-add-item-admin"
-      >Users</a
-    >
+    {% include "_header_logged-in.html" %}
     
-    <a
-        href="/admin/item/list"
-        class="a-items-admin"
-        >Items</a
-    >
-</div>
- 
- 
-{% if items %}
-    {% include "view_item_list.html" %}
-{% else %}
-    {% include "view_user_list.html" %}
-{% endif %}
- 
+    <main class="admin-main">
+    
+    <h1>Welcome {{ admin_name['user_name'] }}</h1>
+    <div class="admin-page-buttons">
+        <a
+        href="/admin"
+        class="a-add-item-admin"
+        >Users</a
+        >
+        
+        <a
+            href="/admin/item/list"
+            class="a-items-admin"
+            >Items</a
+        >
+    </div>
+    
+    
+    {% if items %}
+        {% include "view_item_list.html" %}
+    {% else %}
+        {% include "view_user_list.html" %}
+    {% endif %}
+    
     
 </main>
 </body>

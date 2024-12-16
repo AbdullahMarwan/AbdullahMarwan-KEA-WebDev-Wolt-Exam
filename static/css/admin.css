@@ -238,6 +238,12 @@ p {
         flex: 0 1 calc(33.333% - 20px);
     }
 
+    .individual-user {
+    display: flex;
+    place-items: center;
+    justify-content: space-around;
+    }
+
     .admin-main{
         max-width: 80%;
         margin: auto;
