@@ -1,6 +1,6 @@
 <div class="edit-item-form">
   <h2>Edit Item</h2>
-  <form action="{{ url_for('restaurant_edit_item', item_id=item['item_pk']) }}" method="POST" enctype="multipart/form-data">
+  <form id="frm_edit_item">
     <div class="form-group">
       <label for="item_title">Item Title:</label>
       <input type="text" id="item_title" name="item_title" value="{{ item['item_title'] }}" required>
@@ -13,6 +13,6 @@
       <label for="item_image">Item Image:</label>
       <input type="file" id="item_image" name="item_image" multiple>
     </div>
-    <button type="submit" class="btn btn-primary">Save Changes</button>
+    <button mix-put="/restaurant/edit_item/{{ item['item_pk'] }}" mix-data="#frm_edit_item" class="btn btn-primary">Save Changes</button>
   </form>
 </div>
