@@ -617,7 +617,6 @@ def restaurant_edit_item_put(item_id):
 
     # Redirect to the items list
     return f"""<template mix-redirect="{url_for('restaurant_items', restaurant_id=user.get('user_pk'))}"></template>"""
-    # return redirect(url_for('restaurant_items', restaurant_id=user.get('user_pk')))
 
 ################################################################################
 @app.get("/partner")
