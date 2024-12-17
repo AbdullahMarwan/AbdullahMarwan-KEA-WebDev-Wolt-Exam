@@ -300,7 +300,7 @@ def view_customer_page(page_id=1):
 
         ic(user)
         
-        items = showItemList(page_id)  # Fetch items TODO
+        items = showItemList(page_id)  # Fetch items
         restaurants = showRestaurantList()  # Fetch restaurants
         ic("test")
         
@@ -465,7 +465,7 @@ def restaurant_items(restaurant_id):
     return render_template('view_restaurant.html', view='items', items=items, user=user)
 
 ########################################################################### ADD NEW ITEM
-@app.post('/restaurant/add_item') #TODO
+@app.post('/restaurant/add_item')
 def restaurant_add_item():
     try: 
         # Allowed image extensions
@@ -530,7 +530,7 @@ def restaurant_add_item():
         if "cursor" in locals(): cursor.close()
         if "db" in locals(): db.close()
 
-@app.get('/restaurant/add_item') #TODO
+@app.get('/restaurant/add_item') 
 def view_restaurant_add_item():
     ic("Hello")
     if not session.get("user", ""):
@@ -542,67 +542,81 @@ def view_restaurant_add_item():
     
     return render_template('view_restaurant.html', view='add_item', user=user)
 
-########################################################################### RESTAURANT EDIT ITEM
-@app.route('/restaurant/edit_item/<item_id>', methods=['GET', 'POST'])
-def restaurant_edit_item(item_id):
-    # Allowed image extensions (you can expand this if needed)
-    ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
-
-    # Function to check allowed file extension
-    def allowed_file(filename):
-        return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
-
-    if not session.get("user", ""):
+@app.get('/restaurant/edit_item/<item_id>')
+@x.no_cache
+def restaurant_edit_item_get(item_id):
+    if not session.get("user"):
         return redirect(url_for("view_login"))
 
     user = session.get("user")
     if "restaurant" not in user.get("roles", {}):
         return redirect(url_for("view_login"))
-    
+
     db, cursor = x.db()
 
-    # Fetch the item from the database by its item_id
+    # Fetch the item from the database by its ID
     cursor.execute("SELECT * FROM items WHERE item_pk = %s AND item_user_fk = %s", (item_id, user.get("user_pk")))
     item = cursor.fetchone()
 
     if not item:
-        return redirect(url_for('restaurant_items', restaurant_id=user.get('user_pk')))  # Redirect if item not found
-    
-    if request.method == 'POST':
-        # Handle form submission (updating item details)
-        item_title = request.form.get('item_title')
-        item_price = request.form.get('item_price')
-        item_image = request.files.get('item_image')
-
-        # Optional: process image upload if a new image is provided
-        if item_image and allowed_file(item_image.filename):
-            filename = secure_filename(item_image.filename)
-            image_path = os.path.join('static', 'dishes', filename)  # Correct path for saving inside static/dishes
-            
-            # Make sure the 'static/dishes' directory exists
-            dishes_folder = os.path.join('static', 'dishes')
-            if not os.path.exists(dishes_folder):
-                os.makedirs(dishes_folder)  # Create 'dishes' folder if it doesn't exist
-            
-            # Save the new image to 'static/dishes'
-            item_image.save(image_path)
-        else:
-            image_path = item['item_image']  # Use existing image if no new image is provided
-
-        # Update item details in the database, including the image path if it was updated
-        cursor.execute(''' 
-            UPDATE items 
-            SET item_title = %s, item_price = %s, item_image = %s
-            WHERE item_pk = %s
-        ''', (item_title, item_price, filename if item_image else item['item_image'], item_id))
-
-        db.commit()
-
+        # Redirect if the item is not found
         return redirect(url_for('restaurant_items', restaurant_id=user.get('user_pk')))
 
-    # Render the edit item form
     return render_template('view_restaurant.html', view='edit_item', item=item, user=user)
 
+@app.put('/restaurant/edit_item/<item_id>')
+@x.no_cache
+def restaurant_edit_item_put(item_id):
+    if not session.get("user"):
+        return redirect(url_for("view_login"))
+
+    user = session.get("user")
+    if "restaurant" not in user.get("roles", {}):
+        return redirect(url_for("view_login"))
+
+    db, cursor = x.db()
+
+    # Fetch the item to ensure it belongs to the user
+    cursor.execute("SELECT * FROM items WHERE item_pk = %s AND item_user_fk = %s", (item_id, user.get("user_pk")))
+    item = cursor.fetchone()
+
+    if not item:
+        # Redirect if the item is not found
+        return redirect(url_for('restaurant_items', restaurant_id=user.get('user_pk')))
+
+    # Process form data
+    item_title = request.form.get('item_title')
+    item_price = request.form.get('item_price')
+    item_image = request.files.get('item_image')
+
+    # Validate and save the new image if provided
+    def allowed_file(filename):
+        ALLOWED_EXTENSIONS = {'png', 'jpg', 'jpeg', 'gif'}
+        return '.' in filename and filename.rsplit('.', 1)[1].lower() in ALLOWED_EXTENSIONS
+
+    if item_image and allowed_file(item_image.filename):
+        filename = secure_filename(item_image.filename)
+        image_path = os.path.join('static', 'dishes', filename)
+
+        # Ensure the directory exists
+        os.makedirs(os.path.dirname(image_path), exist_ok=True)
+
+        # Save the image file
+        item_image.save(image_path)
+    else:
+        image_path = item['item_image']  # Use the existing image if no new one is uploaded
+
+    # Update the item in the database
+    cursor.execute('''
+        UPDATE items 
+        SET item_title = %s, item_price = %s, item_image = %s
+        WHERE item_pk = %s
+    ''', (item_title, item_price, filename if item_image else item['item_image'], item_id))
+
+    db.commit()
+
+    # Redirect to the items list
+    return f"""<template mix-redirect="{url_for('restaurant_items', restaurant_id=user.get('user_pk'))}"></template>"""
 
 ################################################################################
 @app.get("/partner")

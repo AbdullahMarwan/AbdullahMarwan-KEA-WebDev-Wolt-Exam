@@ -14,7 +14,7 @@
               <p class="card-price">{{ item['item_price'] if item['item_price'] else 'N/A' }} kr.</p>
 
               <!-- Edit Button -->
-              <a href="{{ url_for('restaurant_edit_item', item_id=item['item_pk']) }}" class="go-to-edit-item">Edit</a>
+              <a href="{{ url_for('restaurant_edit_item_get', item_id=item['item_pk']) }}" class="go-to-edit-item">Edit</a>
 
               <!-- Delete Button with mix-delete functionality -->
               <button class="delete-item" 

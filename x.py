@@ -279,7 +279,7 @@ def send_buy_email(to_email, total_price, item_list):
         message = MIMEMultipart()
         message["From"] = sender_email
         message["To"] = receiver_email
-        message["Subject"] = "You have bought items, good job mate"
+        message["Subject"] = "You have bought items, thank you for shopping at Spis!"
 
         # Body of the email
         body = f"""
