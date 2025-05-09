@@ -170,8 +170,8 @@ def send_verify_email(to_email, user_verification_key):
 
 
         # Email and password of the sender's Gmail account
-        sender_email = "spis.eksamen.2024@gmail.com"
-        password = "bstw jflj vjdg kvxk"  # If 2FA is on, use an App Password instead
+        sender_email = "kealearningwebdev@gmail.com"
+        password = "pjzr vftl ejlt byid"  # If 2FA is on, use an App Password instead
 
         # Receiver email address
         receiver_email = to_email
@@ -210,8 +210,8 @@ def send_forgot_password_email(to_email, user_verification_key):
 
 
         # Email and password of the sender's Gmail account
-        sender_email = "spis.eksamen.2024@gmail.com"
-        password = "bstw jflj vjdg kvxk"  # If 2FA is on, use an App Password instead
+        sender_email = "kealearningwebdev@gmail.com"
+        password = "pjzr vftl ejlt byid"  # If 2FA is on, use an App Password instead
 
         # Receiver email address
         receiver_email = to_email
@@ -244,8 +244,8 @@ def send_forgot_password_email(to_email, user_verification_key):
 
 def send_buy_email(to_email, total_price, item_list):
     try:
-        sender_email = "spis.eksamen.2024@gmail.com"
-        password = "bstw jflj vjdg kvxk"  # Use an App Password instead
+        sender_email = "kealearningwebdev@gmail.com"
+        password = "pjzr vftl ejlt byid"  # Use an App Password instead
         if not sender_email or not password:
             raise ValueError("Email configuration is missing.")
 
@@ -307,8 +307,8 @@ def send_buy_email(to_email, total_price, item_list):
 
 def send_deletion_info_email(user_email):  
     try:  
-        sender_email = "spis.eksamen.2024@gmail.com"  
-        password = "bstw jflj vjdg kvxk"  # Use an App Password instead  
+        sender_email = "kealearningwebdev@gmail.com"  
+        password = "pjzr vftl ejlt byid"  # Use an App Password instead  
         if not sender_email or not password:  
             raise ValueError("Email configuration is missing.")  
           
@@ -343,8 +343,8 @@ def send_deletion_info_email(user_email):
     
 def send_block_email(to_email, item_title, item_price):
     try:
-        sender_email = "spis.eksamen.2024@gmail.com"
-        password = "bstw jflj vjdg kvxk"  # Use an App Password instead
+        sender_email = "kealearningwebdev@gmail.com"
+        password = "pjzr vftl ejlt byid"  # Use an App Password instead
         if not sender_email or not password:
             raise ValueError("Email configuration is missing.")
  
